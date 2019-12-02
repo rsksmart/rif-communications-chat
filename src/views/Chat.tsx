@@ -43,10 +43,8 @@ class Chat extends React.Component<IChatProps> {
         <hr />
         <div
           style={{
-            display: "flex",
             paddingLeft: "8px",
-            paddingRight: "8px",
-            flexFlow: "row wrap"
+            paddingRight: "8px"
           }}
         >
           {contact.chat.map(m => (

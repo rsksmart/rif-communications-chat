@@ -11,28 +11,43 @@ export default ({ message }: IChatBubbleProps) => {
     return (
       <div
         style={{
-          border: "1px solid #ccc",
-          borderRadius: "5px",
-          right: 0,
-          backgroundColor: "#e6f7ff",
-          padding: "5px",
-          marginLeft: "auto"
+          display: "flex",
+          marginBottom: "5px",
+          width: "100%"
         }}
       >
-        {message.content}
+        <span
+          style={{
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            backgroundColor: "#e6f7ff",
+            padding: "5px",
+            marginLeft: "auto"
+          }}
+        >
+          {message.content}
+        </span>
       </div>
     );
 
   return (
     <div
       style={{
-        border: "1px solid #ccc",
-        borderRadius: "5px",
-        padding: "5px"
+        display: "flex",
+        marginBottom: "5px",
+        width: "100%"
       }}
-      className="bg-light"
     >
-      <p>{message.content}</p>
+      <div
+        style={{
+          border: "1px solid #ccc",
+          borderRadius: "5px",
+          padding: "5px"
+        }}
+        className="bg-light"
+      >
+        <p>{message.content}</p>
+      </div>
     </div>
   );
 };
