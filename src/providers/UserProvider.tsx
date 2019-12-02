@@ -1,4 +1,5 @@
 import React, { Component, createContext } from "react";
+import publicIp from "public-ip";
 
 import User from "models/User";
 import * as RifCommunications from "libs/RIFcomms";
@@ -43,9 +44,12 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     this.changeRNS = this.changeRNS.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // connect to bootnode
     // timeout to reconnect when you get disconnected - every 30 seconds
+
+    //Getting public IP address
+    console.log(await publicIp.v4());
   }
 
   public render() {
