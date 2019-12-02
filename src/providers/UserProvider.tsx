@@ -1,13 +1,16 @@
 import React, { Component, createContext } from "react";
 import publicIp from "public-ip";
 
-import User from "models/User";
+import libp2p from "libp2p";
 import * as RifCommunications from "libs/RIFcomms";
-import { create } from "peer-info";
+import User from "models/User";
+import { PeerId } from "peer-id";
+import { create, PeerInfo } from "peer-info";
 
 export interface IUserProvider {
   state: {
     readonly user?: User;
+    readonly clientNode?: libp2p;
   };
   actions: {
     createUser: () => Promise<void>;
@@ -25,6 +28,7 @@ const { Provider, Consumer } = createContext<IUserProvider>({
     }
   },
   state: {
+    clientNode: undefined,
     user: undefined
   }
 });
@@ -32,6 +36,7 @@ const { Provider, Consumer } = createContext<IUserProvider>({
 interface IUserProviderProps {}
 interface IUserProviderState {
   user?: User;
+  clientNode?: libp2p;
 }
 
 class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
@@ -44,8 +49,8 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     this.changeRNS = this.changeRNS.bind(this);
   }
 
-  async componentDidMount() {
-    // connect to bootnode
+  public async componentDidMount() {
+    await this.connectToNode();
     // timeout to reconnect when you get disconnected - every 30 seconds
 
     //Getting public IP address
@@ -73,11 +78,35 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     );
   }
 
+  private async connectToNode() {
+    if (this.state.clientNode) {
+      const bootNodeAddr: string = process.env.REACT_APP_BOOTNODE_ADDR
+        ? process.env.REACT_APP_BOOTNODE_ADDR
+        : "putDefaultStringBootnodeHere";
+      RifCommunications.connectToNode(this.state.clientNode, bootNodeAddr);
+    }
+  }
+
+  private async createNode(user: User) {
+    if (!this.state.clientNode) {
+      return RifCommunications.createNode(user.pi, "127.0.0.1", 80);
+    }
+    return this.state.clientNode;
+  }
+
   private async createUser() {
-    const pid = await RifCommunications.createKey("hello");
-    const pi = await create(pid);
+    const pid = await RifCommunications.createKey();
+    const pi = await RifCommunications.createPeerInfo(pid);
     const rnsName = localStorage.getItem("rns");
-    this.setState({ user: new User({ pi, rnsName }) });
+    const user = new User({ pi, rnsName });
+    const node: libp2p | undefined = await this.createNode(user);
+    if (node) {
+      await this.connectToNode();
+      this.setState({
+        clientNode: node,
+        user
+      });
+    }
   }
 
   private async changeRNS(rnsName: string) {

@@ -10,5 +10,14 @@ declare module "peer-info" {
     multiaddrs: MultiaddrSet;
     constructor(peerId: any);
   }
-  export const create: (_options: any) => Promise<PeerInfo>;
+
+  /*export const create: (
+    _options: any,
+    callback?: (err: Error, peer: PeerInfo, callback: () => void) => void
+  ) => void;*/
+
+  export const create: (
+    peerId: any,
+    callback?: (err: Error, peer: PeerInfo) => void
+  ) => void;
 }

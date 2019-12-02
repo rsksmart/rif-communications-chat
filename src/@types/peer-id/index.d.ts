@@ -9,6 +9,7 @@ declare module "peer-id" {
     marshalPubKey: () => any;
     marshalPrivKey: () => any;
     marshal: (excludePriv?: boolean) => any;
+    toB58String: () => string;
   }
   class PeerIdWithIs extends PeerId {}
   export const createWithKeyChain: (
@@ -17,5 +18,15 @@ declare module "peer-id" {
     opts: any,
     callback: (err: Error, peer: PeerId) => void
   ) => void;
-  export const create: (_options: any) => Promise<PeerId>;
+
+  //export const create: (_options: any) => Promise<PeerId>;
+  export const create: (
+    _options: any,
+    callback: (err: Error, peer: PeerId) => void
+  ) => void;
+
+  export const createFromPubKey: (
+    key: any,
+    callback: (err: Error, peer: PeerId) => void
+  ) => void;
 }
