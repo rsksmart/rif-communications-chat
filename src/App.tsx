@@ -8,6 +8,8 @@ import Header from "components/Header";
 // import Footer from "components/Footer";
 import { history } from "routes";
 
+console.log(process.env.REACT_APP_RNS_SERVER);
+
 const App: React.FC = () => {
   return (
     <UserProvider.Provider>

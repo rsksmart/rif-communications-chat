@@ -43,6 +43,11 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     this.changeRNS = this.changeRNS.bind(this);
   }
 
+  componentDidMount() {
+    // connect to bootnode
+    // timeout to reconnect when you get disconnected - every 30 seconds
+  }
+
   public render() {
     const { user } = this.state;
     const { createUser, changeRNS } = this;
