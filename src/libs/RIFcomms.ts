@@ -54,17 +54,17 @@ export function createKey(): Promise<PeerId> {
 }
 
 export function createNode(
-  peer: PeerInfo,
+  peerInfo: PeerInfo,
   host: string,
   port: number
 ): Promise<libp2p> {
   let node: any;
 
-  peer.multiaddrs.add(
+  peerInfo.multiaddrs.add(
     new Multiaddr(`/ip4/${host}/tcp/${port}/http/p2p-webrtc-direct`)
   );
   node = new WebRTCDirectBundle({
-    peer
+    peerInfo
   });
 
   return new Promise<libp2p>((resolve, reject) => {
