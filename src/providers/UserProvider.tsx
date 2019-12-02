@@ -67,13 +67,15 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   private async createUser() {
     const pid = await RifCommunications.createKey("hello");
     const pi = await create(pid);
-    this.setState({ user: new User({ pi }) });
+    const rnsName = localStorage.getItem("rns");
+    this.setState({ user: new User({ pi, rnsName }) });
   }
 
   private async changeRNS(rnsName: string) {
     const { user } = this.state;
     if (user) {
       user.rnsName = rnsName;
+      localStorage.setItem("rns", rnsName);
       this.setState({ user });
     }
   }

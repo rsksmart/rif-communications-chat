@@ -1,4 +1,4 @@
 export interface IUserInfo {
   readonly publicKey: string;
-  readonly rnsName?: string;
+  readonly rnsName?: string | null;
 }

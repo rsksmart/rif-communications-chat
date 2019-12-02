@@ -1,6 +1,5 @@
 import React from "react";
 import { Router } from "react-router-dom";
-import Container from "react-bootstrap/Container";
 
 import UserProvider from "providers/UserProvider";
 import ChatProvider from "providers/ChatProvider";
@@ -24,9 +23,9 @@ const App: React.FC = () => {
             <Header />
 
             {/* Content of the dapp*/}
-            <Container style={{ paddingTop: "1em" }}>
+            <div style={{ paddingTop: "1em" }}>
               <Routes />
-            </Container>
+            </div>
             <div style={{ flexGrow: 1 }} />
 
             {/*<Footer />*/}

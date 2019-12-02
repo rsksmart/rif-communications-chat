@@ -13,7 +13,8 @@ import { createBrowserHistory } from "history";
 export const ROUTES = {
   CHATS: "/",
   PROFILE: "/profile",
-  EXAMPLE: "/example"
+  EXAMPLE: "/example",
+  CHAT: (publicKey?: string) => `/chat/${publicKey ? publicKey : ":publicKey"}`
 };
 
 export const history = createBrowserHistory();

@@ -10,7 +10,7 @@ import { ROUTES } from "routes";
 export default () => (
   <Navbar variant="dark" bg="dark" expand="lg" sticky="top">
     <LinkContainer to={ROUTES.CHATS}>
-      <Navbar.Brand>{"< Chats"}</Navbar.Brand>
+      <Nav.Link>Chats</Nav.Link>
     </LinkContainer>
     <Nav className="ml-auto justify-content-center">
       <LinkContainer to={ROUTES.CHATS}>
@@ -27,6 +27,7 @@ export default () => (
               <Nav.Link>Profile</Nav.Link>
             </LinkContainer>
           )}
+          {!user && <Nav.Link style={{ opacity: 0 }}>Profile</Nav.Link>}
         </Nav>
       )}
     </UserProvider.Consumer>

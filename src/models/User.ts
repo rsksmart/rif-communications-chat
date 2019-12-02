@@ -3,12 +3,12 @@ import crypto from "libp2p-crypto";
 import { IUserInfo } from "types";
 
 export interface IUserParams {
-  rnsName?: string;
+  rnsName?: string | null;
   pi: PeerInfo;
 }
 
 export default class User implements IUserInfo {
-  public rnsName?: string;
+  public rnsName?: string | null;
   public pi: PeerInfo;
 
   constructor({ rnsName, pi }: IUserParams) {

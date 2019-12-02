@@ -1,4 +1,5 @@
 import React from "react";
+import { Image, ListGroup, Button, Container, Col, Row } from "react-bootstrap";
 
 import Contact from "models/Contact";
 import User from "models/User";
@@ -8,6 +9,8 @@ import ChatProvider from "providers/ChatProvider";
 
 import ContactDetails from "components/ContactDetails";
 import ContactModal from "components/ContactModal";
+
+import lonely from "assets/lonely.png";
 
 import { ROUTES, history } from "routes";
 
@@ -35,14 +38,36 @@ class Profile extends React.Component<IProfileProps> {
     return (
       <div style={{ textAlign: "center" }}>
         <ContactDetails user={user} changeRNS={changeRNS} />
-        <h3>Contacs:</h3>
+        <h2 style={{ marginTop: "2em" }}>
+          Contacs: <ContactModal />
+        </h2>
 
-        <ContactModal />
-        {contacts.map(c => (
-          <p>
-            {c.rnsName}, {c.publicKey}
-          </p>
-        ))}
+        {contacts.length > 0 && (
+          <ListGroup variant="flush" style={{ textAlign: "left" }}>
+            {contacts.map(c => (
+              <div
+                key={c.publicKey}
+                onClick={() => history.push(ROUTES.CHAT(c.publicKey))}
+              >
+                <ListGroup.Item>
+                  <h5>{c.rnsName ? `${c.rnsName}.rsk` : ""}</h5>
+                  <small>{c.publicKey}</small>
+                </ListGroup.Item>
+              </div>
+            ))}
+          </ListGroup>
+        )}
+        {contacts.length < 1 && (
+          <>
+            <Image
+              src={lonely}
+              style={{
+                maxWidth: 150
+              }}
+            />
+            <p>It feels lonely here, let's find some friends!</p>
+          </>
+        )}
       </div>
     );
   }

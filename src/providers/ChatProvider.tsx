@@ -1,6 +1,7 @@
 import React, { Component, createContext } from "react";
 
-import Contact from "models/Contact";
+import Contact, { IContactParams } from "models/Contact";
+import Message from "models/Message";
 
 export interface IChatProvider {
   state: {
@@ -8,12 +9,16 @@ export interface IChatProvider {
   };
   actions: {
     addContact: (contact: Contact) => void;
+    getContact: (pubKey: string) => Contact | undefined;
+    addMessage: (message: Message, contact: Contact) => void;
   };
 }
 
 const { Provider, Consumer } = createContext<IChatProvider>({
   actions: {
-    addContact: () => {}
+    addContact: () => {},
+    getContact: () => undefined,
+    addMessage: () => {}
   },
   state: {
     contacts: []
@@ -34,17 +39,26 @@ class ChatProvider extends Component<IChatProviderProps, IChatProviderState> {
     };
 
     this.addContact = this.addContact.bind(this);
+    this.getContact = this.getContact.bind(this);
+    this.addMessage = this.addMessage.bind(this);
+  }
+
+  componentDidMount() {
+    const ls = JSON.parse(localStorage.getItem("contacts") || "[]");
+    this.setState({ contacts: ls.map((c: IContactParams) => new Contact(c)) });
   }
 
   public render() {
     const { contacts } = this.state;
-    const { addContact } = this;
+    const { addContact, getContact, addMessage } = this;
 
     return (
       <Provider
         value={{
           actions: {
-            addContact
+            addContact,
+            getContact,
+            addMessage
           },
           state: {
             contacts
@@ -57,10 +71,26 @@ class ChatProvider extends Component<IChatProviderProps, IChatProviderState> {
   }
 
   public addContact(contact: Contact) {
-    console.log("does this get even called?");
-    const { contacts } = this.state;
-    contacts.push(contact);
+    const contacts = [...this.state.contacts, contact].sort((a, b) => {
+      if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
+      else if (!a.rnsName) return -1;
+      else if (!b.rnsName) return 1;
+      return a.rnsName < b.rnsName ? -1 : 1;
+    });
+    localStorage.setItem("contacts", JSON.stringify(contacts));
     this.setState({ contacts });
+  }
+
+  public getContact(pubKey: string) {
+    const { contacts } = this.state;
+    const contact = contacts.find(c => c.publicKey === pubKey);
+    return contact;
+  }
+
+  public addMessage(message: Message, contact: Contact) {
+    contact.chat.push(message);
+    localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
+    this.forceUpdate();
   }
 }
 
