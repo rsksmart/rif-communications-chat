@@ -86,7 +86,12 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
 
   private async createNode(user: User) {
     if (!this.state.clientNode) {
-      return RifCommunications.createNode(user.pi, await publicIp.v4(), 80);
+      try {
+        return RifCommunications.createNode(user.pi, await publicIp.v4(), 80);
+      } catch (e) {
+        // At least start with localhost if public IP can not be obtained
+        return RifCommunications.createNode(user.pi, "127.0.0.1", 80);
+      }
     }
     return this.state.clientNode;
   }

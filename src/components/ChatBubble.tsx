@@ -4,12 +4,14 @@ import Message, { MESSAGE_SENDER } from "models/Message";
 
 interface IChatBubbleProps {
   message: Message;
+  index: any;
 }
 
-export default ({ message }: IChatBubbleProps) => {
+export default ({ message, index }: IChatBubbleProps) => {
   if (message.sender === MESSAGE_SENDER.ME)
     return (
       <div
+        key={index}
         style={{
           display: "flex",
           marginBottom: "5px",
@@ -32,6 +34,7 @@ export default ({ message }: IChatBubbleProps) => {
 
   return (
     <div
+      key={index}
       style={{
         display: "flex",
         marginBottom: "5px",

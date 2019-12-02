@@ -47,8 +47,8 @@ class Chat extends React.Component<IChatProps> {
             paddingRight: "8px"
           }}
         >
-          {contact.chat.map(m => (
-            <ChatBubble message={m} />
+          {contact.chat.map((m, i) => (
+            <ChatBubble message={m} key={i} index={i} />
           ))}
         </div>
         <div
@@ -80,7 +80,7 @@ class Chat extends React.Component<IChatProps> {
                   name="content"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  defaultValue={values.content}
+                  value={values.content}
                   autoComplete="off"
                   autoFocus
                   style={{ width: "100%" }}
