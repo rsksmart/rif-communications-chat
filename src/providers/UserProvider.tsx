@@ -52,9 +52,6 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   public async componentDidMount() {
     await this.connectToNode();
     // timeout to reconnect when you get disconnected - every 30 seconds
-
-    //Getting public IP address
-    console.log(await publicIp.v4());
   }
 
   public render() {
@@ -89,7 +86,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
 
   private async createNode(user: User) {
     if (!this.state.clientNode) {
-      return RifCommunications.createNode(user.pi, "127.0.0.1", 80);
+      return RifCommunications.createNode(user.pi, await publicIp.v4(), 80);
     }
     return this.state.clientNode;
   }
