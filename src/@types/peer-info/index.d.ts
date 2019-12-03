@@ -1,3 +1,5 @@
+import { PeerId } from "peer-id";
+
 // TODO: CHECK THE ACTUAL IMPLEMENTATION AND CREATE RIGHT TYPINGs
 
 declare module "peer-info" {
@@ -6,7 +8,7 @@ declare module "peer-info" {
   }
 
   export class PeerInfo {
-    id: any;
+    id: PeerId;
     multiaddrs: MultiaddrSet;
     constructor(peerId: any);
   }

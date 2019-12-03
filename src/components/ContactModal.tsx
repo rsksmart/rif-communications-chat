@@ -3,10 +3,14 @@ import { Button, Modal, InputGroup, FormControl } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { generatePrivate, getPublic } from "eccrypto";
+import * as RifCommunications from "libs/RIFcomms";
 
 import Contact from "models/Contact";
-import ChatProvider from "providers/ChatProvider";
+import ChatProvider from "providers/UserProvider";
 import { ROUTES, history } from "routes";
+import { PeerId } from "peer-id";
+import crypto from "libp2p-crypto";
 
 interface IProps {
   large?: boolean;
@@ -41,16 +45,24 @@ export default (props: IProps) => {
               return errors;
             }}
             onSubmit={({ rnsName }: FormValues, actions) => {
+              //TODO: FETCH PUB KEY FROM RNS
+              /*const pubKey = crypto.keys
+                  .marshalPublicKey(peerId.pubKey, "secp256k1")
+                  .toString("base64");*/
+              debugger;
+              const pubKey: Buffer = Buffer.from(
+                "CAISIQKk3/BUJVEA21l/SYa3OJIFG/ac6+RbugR3FohZJRtaYQ=="
+              );
               const contact = new Contact({
                 rnsName,
-                publicKey: Math.floor(Math.random() * 10000000000).toString(36),
+                publicKey: pubKey.toString(),
                 multiaddr: ""
               });
               addContact(contact);
               actions.resetForm();
               actions.setErrors({});
               handleClose();
-              history.push(ROUTES.CHAT(contact.publicKey));
+              history.push(ROUTES.CHAT(rnsName));
             }}
             initialValues={{
               rnsName: "",
