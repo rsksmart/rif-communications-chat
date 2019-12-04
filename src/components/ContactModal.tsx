@@ -7,6 +7,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Contact from "models/Contact";
 import ChatProvider from "providers/ChatProvider";
 import { ROUTES, history } from "routes";
+import { fetchUserByName } from '../services/UserService';
 
 interface IProps {
   large?: boolean;
@@ -41,16 +42,23 @@ export default (props: IProps) => {
               return errors;
             }}
             onSubmit={({ rnsName }: FormValues, actions) => {
-              const contact = new Contact({
-                rnsName,
-                publicKey: Math.floor(Math.random() * 10000000000).toString(36),
-                multiaddr: ""
-              });
-              addContact(contact);
-              actions.resetForm();
-              actions.setErrors({});
-              handleClose();
-              history.push(ROUTES.CHAT(contact.publicKey));
+              fetchUserByName(rnsName)
+                .then(userDoc => {
+
+                  const contact = new Contact({
+                    rnsName,
+                    publicKey: userDoc.publicKey,
+                    multiaddr: ""
+                  });
+                  addContact(contact);
+                  actions.resetForm();
+                  actions.setErrors({});
+                  handleClose();
+                  history.push(ROUTES.CHAT(contact.publicKey));
+                })
+                .catch(error => {
+                  actions.setErrors({ rnsName: "User does not exist!" });
+                });
             }}
             initialValues={{
               rnsName: "",
@@ -66,60 +74,60 @@ export default (props: IProps) => {
               errors,
               submitForm
             }) => (
-              <>
-                <Button
-                  className={`btn-circle ${props.large && "btn-xl"}`}
-                  variant="primary"
-                  onClick={handleShow}
-                >
-                  <FontAwesomeIcon icon={faPlus} />
-                </Button>
+                <>
+                  <Button
+                    className={`btn-circle ${props.large && "btn-xl"}`}
+                    variant="primary"
+                    onClick={handleShow}
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </Button>
 
-                <Modal show={show} onHide={handleClose}>
-                  <Form onSubmit={handleSubmit}>
-                    <Modal.Header closeButton>
-                      <Modal.Title>Create new Contact</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      Eter RNS name to search for contact
+                  <Modal show={show} onHide={handleClose}>
+                    <Form onSubmit={handleSubmit}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Create new Contact</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        Eter RNS name to search for contact
                       <InputGroup className="mb-3" style={{ marginTop: "1em" }}>
-                        <FormControl
-                          placeholder="Your name"
-                          aria-label="Your name"
-                          aria-describedby="basic-addon2"
-                          name="rnsName"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          defaultValue={values.rnsName}
-                          autoComplete="off"
-                          autoFocus
-                          required
-                        />
-                        <InputGroup.Append>
-                          <InputGroup.Text id="basic-addon2">
-                            .rsk
+                          <FormControl
+                            placeholder="Your name"
+                            aria-label="Your name"
+                            aria-describedby="basic-addon2"
+                            name="rnsName"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            defaultValue={values.rnsName}
+                            autoComplete="off"
+                            autoFocus
+                            required
+                          />
+                          <InputGroup.Append>
+                            <InputGroup.Text id="basic-addon2">
+                              .rsk
                           </InputGroup.Text>
-                        </InputGroup.Append>
-                      </InputGroup>
-                      {errors.rnsName && (
-                        <small style={{ color: "red" }}>{errors.rnsName}</small>
-                      )}
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        variant="primary"
-                        type="submit"
-                        className="ml-auto justify-content-end"
-                        disabled={!isValid}
-                        onClick={submitForm}
-                      >
-                        Add contact
+                          </InputGroup.Append>
+                        </InputGroup>
+                        {errors.rnsName && (
+                          <small style={{ color: "red" }}>{errors.rnsName}</small>
+                        )}
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button
+                          variant="primary"
+                          type="submit"
+                          className="ml-auto justify-content-end"
+                          disabled={!isValid}
+                          onClick={submitForm}
+                        >
+                          Add contact
                       </Button>
-                    </Modal.Footer>
-                  </Form>
-                </Modal>
-              </>
-            )}
+                      </Modal.Footer>
+                    </Form>
+                  </Modal>
+                </>
+              )}
           </Formik>
         )}
       </ChatProvider.Consumer>

@@ -78,14 +78,12 @@ export default () => (
     {({ state: { user }, actions: { changeRNS } }) => (
       <ChatProvider.Consumer>
         {({ state: { contacts }, actions: { addContact } }) => (
-          <>
-            <Profile
-              user={user}
-              contacts={contacts}
-              addContact={addContact}
-              changeRNS={changeRNS}
-            />
-          </>
+          <Profile
+            user={user}
+            contacts={contacts}
+            addContact={addContact}
+            changeRNS={changeRNS}
+          />
         )}
       </ChatProvider.Consumer>
     )}

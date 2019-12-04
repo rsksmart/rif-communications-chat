@@ -7,6 +7,7 @@ import User from "models/User";
 import { PeerId } from "peer-id";
 import { create, PeerInfo } from "peer-info";
 
+
 export interface IUserProvider {
   state: {
     readonly user?: User;
@@ -33,7 +34,7 @@ const { Provider, Consumer } = createContext<IUserProvider>({
   }
 });
 
-interface IUserProviderProps {}
+interface IUserProviderProps { }
 interface IUserProviderState {
   user?: User;
   clientNode?: libp2p;
@@ -56,14 +57,17 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
 
   public render() {
     const { user } = this.state;
-    const { createUser, changeRNS } = this;
+    const {
+      createUser,
+      changeRNS,
+    } = this;
 
     return (
       <Provider
         value={{
           actions: {
             createUser,
-            changeRNS
+            changeRNS,
           },
           state: {
             user
