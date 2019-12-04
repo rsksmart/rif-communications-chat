@@ -70,7 +70,6 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   public async componentDidMount() {
     const ls = JSON.parse(localStorage.getItem("contacts") || "[]");
     this.setState({ contacts: ls.map((c: IContactParams) => new Contact(c)) });
-    debugger;
     try {
       await this.connectToNode();
     } catch (e) {
@@ -126,7 +125,6 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   public async addMessage(message: Message, contact: Contact) {
-    debugger;
     contact.chat.push(message);
     localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
     this.forceUpdate();
@@ -161,10 +159,8 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     const pi = await RifCommunications.createPeerInfo(pid);
     const rnsName = localStorage.getItem("rns");
     const user = new User({ pi, rnsName });
-    debugger;
     const node: libp2p | undefined = await this.createNode(user);
     if (node) {
-      debugger;
       this.setState({
         clientNode: node,
         user
