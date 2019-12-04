@@ -2,7 +2,6 @@ import React from "react";
 import { Router } from "react-router-dom";
 
 import UserProvider from "providers/UserProvider";
-import ChatProvider from "providers/ChatProvider";
 import Routes from "views/Routes";
 import Header from "components/Header";
 // import Footer from "components/Footer";
@@ -13,27 +12,25 @@ console.log(process.env.REACT_APP_RNS_SERVER);
 const App: React.FC = () => {
   return (
     <UserProvider.Provider>
-      <ChatProvider.Provider>
-        <Router history={history}>
-          <div
-            style={{
-              minHeight: "100vh",
-              display: "flex",
-              flexDirection: "column"
-            }}
-          >
-            <Header />
+      <Router history={history}>
+        <div
+          style={{
+            minHeight: "100vh",
+            display: "flex",
+            flexDirection: "column"
+          }}
+        >
+          <Header />
 
-            {/* Content of the dapp*/}
-            <div style={{ paddingTop: "1em" }}>
-              <Routes />
-            </div>
-            <div style={{ flexGrow: 1 }} />
-
-            {/*<Footer />*/}
+          {/* Content of the dapp*/}
+          <div style={{ paddingTop: "1em" }}>
+            <Routes />
           </div>
-        </Router>
-      </ChatProvider.Provider>
+          <div style={{ flexGrow: 1 }} />
+
+          {/*<Footer />*/}
+        </div>
+      </Router>
     </UserProvider.Provider>
   );
 };

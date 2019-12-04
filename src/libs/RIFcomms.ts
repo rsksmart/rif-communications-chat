@@ -5,7 +5,7 @@ import SECIO from "libp2p-secio";
 import WebRTCDirect from "libp2p-webrtc-direct";
 import WS from "libp2p-websockets";
 import Multiaddr from "multiaddr";
-import { create, PeerId } from "peer-id";
+import { create, createFromPubKey, PeerId } from "peer-id";
 import { create as peer_info_create, PeerInfo } from "peer-info";
 
 export function connectToNode(
@@ -15,7 +15,7 @@ export function connectToNode(
   return new Promise<void>((resolve, reject) => {
     origin.dial(destination, (err, val) => {
       if (err) {
-        reject();
+        throw err;
       } else {
         setTimeout(() => {
           resolve();
@@ -37,6 +37,20 @@ export function createPeerInfo(pId: PeerId): Promise<PeerInfo> {
   });
 }
 
+export function createPeerIdFromPublicKey(
+  publicKey: string | Buffer
+): Promise<PeerId> {
+  return new Promise<PeerId>((resolve, reject) => {
+    createFromPubKey(publicKey, (err: Error, peerId: PeerId) => {
+      if (err) {
+        reject();
+      } else {
+        resolve(peerId);
+      }
+    });
+  });
+}
+
 export function createKey(): Promise<PeerId> {
   const opts = {
     bits: 256,
@@ -50,6 +64,28 @@ export function createKey(): Promise<PeerId> {
         resolve(peer);
       }
     });
+  });
+}
+
+export function sendMsg(
+  client: libp2p,
+  recipient: PeerInfo,
+  message: string,
+  partialAddressing?: boolean
+): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    client.dht.sendMessage(
+      recipient.id,
+      message,
+      partialAddressing !== undefined ? partialAddressing : false,
+      (err: Error) => {
+        if (err) {
+          reject();
+        } else {
+          resolve();
+        }
+      }
+    );
   });
 }
 

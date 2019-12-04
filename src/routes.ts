@@ -14,7 +14,7 @@ export const ROUTES = {
   CHATS: "/",
   PROFILE: "/profile",
   EXAMPLE: "/example",
-  CHAT: (publicKey?: string) => `/chat/${publicKey ? publicKey : ":publicKey"}`
+  CHAT: (rnsName?: string) => `/chat/${rnsName ? rnsName : ":rnsName"}`
 };
 
 export const history = createBrowserHistory();

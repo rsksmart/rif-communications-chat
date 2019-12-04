@@ -23,7 +23,7 @@ export default class User implements IUserInfo {
 
   get publicKey() {
     return crypto.keys
-      .marshalPublicKey(this.pi.id._pubKey, "secp256k1")
+      .marshalPublicKey(this.pi.id.pubKey, "secp256k1")
       .toString("base64");
   }
 }

@@ -6,7 +6,6 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Form } from "formik";
 
 import UserProvider from "providers/UserProvider";
-import ChatProvider from "providers/ChatProvider";
 
 import Contact from "models/Contact";
 import User from "models/User";
@@ -25,7 +24,7 @@ interface FormValues {
   content: string;
 }
 
-interface IChatRouteProps extends RouteComponentProps<{ publicKey: string }> {}
+interface IChatRouteProps extends RouteComponentProps<{ rnsName: string }> {}
 
 class Chat extends React.Component<IChatProps> {
   componentDidMount() {
@@ -105,16 +104,12 @@ class Chat extends React.Component<IChatProps> {
 
 export default (props: IChatRouteProps) => (
   <UserProvider.Consumer>
-    {({ state: { user } }) => (
-      <ChatProvider.Consumer>
-        {({ actions: { getContact, addMessage } }) => (
-          <Chat
-            user={user}
-            contact={getContact(props.match.params.publicKey)}
-            addMessage={addMessage}
-          />
-        )}
-      </ChatProvider.Consumer>
+    {({ state: { user }, actions: { getContact, addMessage } }) => (
+      <Chat
+        user={user}
+        contact={getContact(props.match.params.rnsName)}
+        addMessage={addMessage}
+      />
     )}
   </UserProvider.Consumer>
 );
