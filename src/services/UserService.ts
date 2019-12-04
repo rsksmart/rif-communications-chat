@@ -1,6 +1,6 @@
 const TLD = ".rsk";
 
-const fetchUserByName = async (rnsName: string): Promise<{ domain: string, publicKey: string }> => {
+const fetchUserByName = async (rnsName: string): Promise<string> => {
     return new Promise((resolve, reject) => {
         fetch(`http://localhost:3010/api/domain?domain=${rnsName + TLD}`)
             .then(response => {

@@ -45,18 +45,19 @@ export default (props: IProps) => {
             }}
             onSubmit={({ rnsName }: FormValues, actions) => {
               fetchUserByName(rnsName)
-                .then(userDoc => {
+                .then(publicKey => {
 
                   const contact = new Contact({
                     rnsName,
-                    publicKey: userDoc.publicKey,
+                    publicKey: publicKey,
                     multiaddr: ""
                   });
                   addContact(contact);
                   actions.resetForm();
                   actions.setErrors({});
                   handleClose();
-                  history.push(ROUTES.CHAT(contact.publicKey));
+
+                  history.push(ROUTES.CHAT(contact.rnsName));
                 })
                 .catch(error => {
                   actions.setErrors({ rnsName: "User does not exist!" });
