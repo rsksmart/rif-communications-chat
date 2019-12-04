@@ -3,9 +3,11 @@ import { Button, Modal, InputGroup, FormControl } from "react-bootstrap";
 import { Formik, Form } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { generatePrivate, getPublic } from "eccrypto";
+import * as RifCommunications from "libs/RIFcomms";
 
 import Contact from "models/Contact";
-import ChatProvider from "providers/ChatProvider";
+import ChatProvider from "providers/UserProvider";
 import { ROUTES, history } from "routes";
 import { fetchUserByName } from '../services/UserService';
 

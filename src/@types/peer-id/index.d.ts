@@ -26,7 +26,7 @@ declare module "peer-id" {
   ) => void;
 
   export const createFromPubKey: (
-    key: any,
+    key: string | Buffer,
     callback: (err: Error, peer: PeerId) => void
   ) => void;
 }

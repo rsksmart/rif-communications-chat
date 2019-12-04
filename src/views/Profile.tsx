@@ -5,7 +5,6 @@ import Contact from "models/Contact";
 import User from "models/User";
 
 import UserProvider from "providers/UserProvider";
-import ChatProvider from "providers/ChatProvider";
 
 import ContactDetails from "components/ContactDetails";
 import ContactModal from "components/ContactModal";
@@ -46,8 +45,8 @@ class Profile extends React.Component<IProfileProps> {
           <ListGroup variant="flush" style={{ textAlign: "left" }}>
             {contacts.map(c => (
               <div
-                key={c.publicKey}
-                onClick={() => history.push(ROUTES.CHAT(c.publicKey))}
+                key={c.rnsName}
+                onClick={() => history.push(ROUTES.CHAT(c.rnsName))}
               >
                 <ListGroup.Item>
                   <h5>{c.rnsName ? `${c.rnsName}.rsk` : ""}</h5>
@@ -75,17 +74,15 @@ class Profile extends React.Component<IProfileProps> {
 
 export default () => (
   <UserProvider.Consumer>
-    {({ state: { user }, actions: { changeRNS } }) => (
-      <ChatProvider.Consumer>
-        {({ state: { contacts }, actions: { addContact } }) => (
-          <Profile
-            user={user}
-            contacts={contacts}
-            addContact={addContact}
-            changeRNS={changeRNS}
-          />
-        )}
-      </ChatProvider.Consumer>
+    {({ state: { contacts, user }, actions: { addContact, changeRNS } }) => (
+      <>
+        <Profile
+          user={user}
+          contacts={contacts}
+          addContact={addContact}
+          changeRNS={changeRNS}
+        />
+      </>
     )}
   </UserProvider.Consumer>
 );
