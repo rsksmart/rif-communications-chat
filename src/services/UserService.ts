@@ -1,6 +1,6 @@
-const TLD = ".rsk";
-const BASE_ADD = "http://64.225.35.211:3000/";
-const API_ADD = BASE_ADD + "/api";
+const TLD = '.rsk';
+const BASE_ADD = 'http://64.225.35.211:3000/';
+const API_ADD = BASE_ADD + '/api';
 
 const fetchUserByName = async (rnsName: string): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -27,19 +27,19 @@ const checkUserExists = async (rnsName: string) => {
 };
 
 const addUserName = async (
-  rnsName: string
+  rnsName: string,
 ): Promise<{ domain: string; publicKey: string }> => {
   return new Promise((resolve, reject) => {
     fetch(`${API_ADD}/add`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         domain: rnsName + TLD,
-        publicKey: Math.floor(Math.random() * 10000000000).toString(36)
-      })
+        publicKey: Math.floor(Math.random() * 10000000000).toString(36),
+      }),
     })
       .then(response => response.json())
       .then(body => resolve(body))
