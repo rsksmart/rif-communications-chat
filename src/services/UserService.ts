@@ -28,6 +28,7 @@ const checkUserExists = async (rnsName: string) => {
 
 const addUserName = async (
   rnsName: string,
+  publicKey: string,
 ): Promise<{ domain: string; publicKey: string }> => {
   return new Promise((resolve, reject) => {
     fetch(`${API_ADD}/add`, {
@@ -38,7 +39,7 @@ const addUserName = async (
       },
       body: JSON.stringify({
         domain: rnsName + TLD,
-        publicKey: Math.floor(Math.random() * 10000000000).toString(36),
+        publicKey,
       }),
     })
       .then(response => response.json())

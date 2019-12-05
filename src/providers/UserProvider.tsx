@@ -208,7 +208,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   private async changeRNS(rnsName: string) {
     const { user } = this.state;
     if (user && user.rnsName !== rnsName) {
-      addUserName(rnsName).then(() => {
+      addUserName(rnsName, user.publicKey).then(() => {
         user.rnsName = rnsName;
         localStorage.setItem('rns', rnsName);
         this.setState({ user });
