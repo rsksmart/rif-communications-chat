@@ -4,7 +4,6 @@ import { Formik, Form } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { checkUserExists } from "../services/UserService";
-import { addUserName } from "../services/UserService";
 
 import { IUserInfo } from "types";
 
@@ -51,13 +50,8 @@ export default ({ user, changeRNS }: IRnsModal) => {
           return errors;
         }}
         onSubmit={({ rnsName }: FormValues) => {
-          addUserName(rnsName)
-            .then(() => {
-              changeRNS(rnsName);
-            })
-            .finally(() => {
-              handleClose();
-            });
+          changeRNS(rnsName);
+          handleClose();
         }}
         initialValues={{ rnsName: user.rnsName || "" }}
       >

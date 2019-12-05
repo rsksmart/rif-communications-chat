@@ -9,6 +9,7 @@ import { create, PeerInfo } from "peer-info";
 import Contact, { IContactParams } from "models/Contact";
 import Message, { MESSAGE_SENDER } from "models/Message";
 import { sendMsg } from "libs/RIFcomms";
+import { addUserName } from "../services/UserService";
 
 
 export interface IUserProvider {
@@ -209,11 +210,15 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   private async changeRNS(rnsName: string) {
+
     const { user } = this.state;
-    if (user) {
-      user.rnsName = rnsName;
-      localStorage.setItem("rns", rnsName);
-      this.setState({ user });
+    if (user && user.rnsName && user.rnsName !== rnsName) {
+      addUserName(rnsName)
+        .then(() => {
+          user.rnsName = rnsName;
+          localStorage.setItem("rns", rnsName);
+          this.setState({ user });
+        });
     }
   }
 }
