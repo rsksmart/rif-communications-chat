@@ -11,6 +11,7 @@ import ChatProvider from "providers/UserProvider";
 import { ROUTES, history } from "routes";
 import { PeerId } from "peer-id";
 import crypto from "libp2p-crypto";
+import http from "http";
 
 interface IProps {
   large?: boolean;
@@ -45,23 +46,37 @@ export default (props: IProps) => {
               return errors;
             }}
             onSubmit={({ rnsName }: FormValues, actions) => {
-              //TODO: FETCH PUB KEY FROM RNS
-              /*const pubKey = crypto.keys
-                  .marshalPublicKey(peerId.pubKey, "secp256k1")
-                  .toString("base64");*/
-              const pubKey: Buffer = Buffer.from(
-                "CAISIQKPd+GA5CS+pyh+a3KpD50QXJdpI16ytQoPrtQJ2ixYig=="
-              );
-              const contact = new Contact({
-                rnsName,
-                publicKey: pubKey.toString(),
-                multiaddr: ""
+              const options = {
+                hostname: "localhost",
+                port: 3010,
+                path: `/api/domain?domain=${rnsName}.rsk`,
+                method: "GET"
+              };
+
+              const req = http.request(options, res => {
+                console.log(`statusCode: ${res.statusCode}`);
+
+                res.on("data", d => {
+                  debugger;
+                  const pubKey: Buffer = Buffer.from(d);
+                  const contact = new Contact({
+                    rnsName,
+                    publicKey: pubKey.toString(),
+                    multiaddr: ""
+                  });
+                  addContact(contact);
+                  actions.resetForm();
+                  actions.setErrors({});
+                  handleClose();
+                  history.push(ROUTES.CHAT(rnsName));
+                });
               });
-              addContact(contact);
-              actions.resetForm();
-              actions.setErrors({});
-              handleClose();
-              history.push(ROUTES.CHAT(rnsName));
+
+              req.on("error", error => {
+                console.error(error);
+              });
+
+              req.end(); //Sends request
             }}
             initialValues={{
               rnsName: "",

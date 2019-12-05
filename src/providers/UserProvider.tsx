@@ -124,8 +124,6 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   public processKadMsg(kadMsgObj: any, provider) {
-    debugger;
-
     const { contacts } = provider.state;
     const contact = contacts.find(
       c => c.peerInfo.id._idB58String === kadMsgObj.sender
@@ -141,7 +139,6 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   public async addMessage(message: Message, contact: Contact) {
-    debugger;
     contact.chat.push(message);
     localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
     this.forceUpdate();
@@ -154,7 +151,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     if (this.state.clientNode) {
       const bootNodeAddr: string = process.env.REACT_APP_BOOTNODE_ADDR
         ? process.env.REACT_APP_BOOTNODE_ADDR
-        : "/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAm6qx1QaHxYu5XpvXZkKPVc5ou7GdMfZ1fqujpLoytEdUr";
+        : "/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw";
       RifCommunications.connectToNode(this.state.clientNode, bootNodeAddr);
     }
   }
