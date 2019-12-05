@@ -9,9 +9,7 @@ import * as RifCommunications from "libs/RIFcomms";
 import Contact from "models/Contact";
 import ChatProvider from "providers/UserProvider";
 import { ROUTES, history } from "routes";
-import { PeerId } from "peer-id";
-import crypto from "libp2p-crypto";
-import http from "http";
+import { fetchUserByName } from '../services/UserService';
 
 interface IProps {
   large?: boolean;
@@ -25,6 +23,16 @@ interface FormValues {
 interface FormErrors {
   rnsName?: string;
   publicKey?: string;
+}
+
+interface IFormikProps {
+  handleSubmit,
+  handleChange,
+  handleBlur,
+  values,
+  isValid,
+  errors,
+  submitForm
 }
 
 export default (props: IProps) => {
@@ -46,52 +54,31 @@ export default (props: IProps) => {
               return errors;
             }}
             onSubmit={({ rnsName }: FormValues, actions) => {
-              const options = {
-                hostname: "localhost",
-                port: 3010,
-                path: `/api/domain?domain=${rnsName}.rsk`,
-                method: "GET"
-              };
+              fetchUserByName(rnsName)
+                .then(publicKey => {
 
-              const req = http.request(options, res => {
-                console.log(`statusCode: ${res.statusCode}`);
-
-                res.on("data", d => {
-                  debugger;
-                  const pubKey: Buffer = Buffer.from(d);
                   const contact = new Contact({
                     rnsName,
-                    publicKey: pubKey.toString(),
+                    publicKey: publicKey,
                     multiaddr: ""
                   });
                   addContact(contact);
                   actions.resetForm();
                   actions.setErrors({});
                   handleClose();
-                  history.push(ROUTES.CHAT(rnsName));
+
+                  history.push(ROUTES.CHAT(contact.rnsName));
+                })
+                .catch(error => {
+                  actions.setErrors({ rnsName: "User does not exist!" });
                 });
-              });
-
-              req.on("error", error => {
-                console.error(error);
-              });
-
-              req.end(); //Sends request
             }}
             initialValues={{
               rnsName: "",
               publicKey: ""
             }}
           >
-            {({
-              handleSubmit,
-              handleChange,
-              handleBlur,
-              values,
-              isValid,
-              errors,
-              submitForm
-            }) => (
+            {(formik: IFormikProps) => (
               <>
                 <Button
                   className={`btn-circle ${props.large && "btn-xl"}`}
@@ -102,7 +89,7 @@ export default (props: IProps) => {
                 </Button>
 
                 <Modal show={show} onHide={handleClose}>
-                  <Form onSubmit={handleSubmit}>
+                  <Form onSubmit={formik.handleSubmit}>
                     <Modal.Header closeButton>
                       <Modal.Title>Create new Contact</Modal.Title>
                     </Modal.Header>
@@ -114,9 +101,9 @@ export default (props: IProps) => {
                           aria-label="Your name"
                           aria-describedby="basic-addon2"
                           name="rnsName"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          defaultValue={values.rnsName}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          defaultValue={formik.values.rnsName}
                           autoComplete="off"
                           autoFocus
                           required
@@ -127,8 +114,8 @@ export default (props: IProps) => {
                           </InputGroup.Text>
                         </InputGroup.Append>
                       </InputGroup>
-                      {errors.rnsName && (
-                        <small style={{ color: "red" }}>{errors.rnsName}</small>
+                      {formik.errors.rnsName && (
+                        <small style={{ color: "red" }}>{formik.errors.rnsName}</small>
                       )}
                     </Modal.Body>
                     <Modal.Footer>
@@ -136,8 +123,8 @@ export default (props: IProps) => {
                         variant="primary"
                         type="submit"
                         className="ml-auto justify-content-end"
-                        disabled={!isValid}
-                        onClick={submitForm}
+                        disabled={!formik.isValid}
+                        onClick={formik.submitForm}
                       >
                         Add contact
                       </Button>
