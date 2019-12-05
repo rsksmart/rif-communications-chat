@@ -69,7 +69,6 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   public async componentDidMount() {
     const ls = JSON.parse(localStorage.getItem("contacts") || "[]");
     this.setState({ contacts: ls.map((c: IContactParams) => new Contact(c)) });
-    debugger;
     try {
       await this.connectToNode();
     } catch (e) {
@@ -124,6 +123,23 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     return contact;
   }
 
+  public processKadMsg(kadMsgObj: any, provider) {
+    debugger;
+
+    const { contacts } = provider.state;
+    const contact = contacts.find(
+      c => c.peerInfo.id._idB58String === kadMsgObj.sender
+    );
+
+    if (contact) {
+      const msg = new Message({
+        content: kadMsgObj.msg,
+        sender: MESSAGE_SENDER.THEM
+      });
+      provider.addMessage(msg, contact);
+    }
+  }
+
   public async addMessage(message: Message, contact: Contact) {
     debugger;
     contact.chat.push(message);
@@ -138,7 +154,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     if (this.state.clientNode) {
       const bootNodeAddr: string = process.env.REACT_APP_BOOTNODE_ADDR
         ? process.env.REACT_APP_BOOTNODE_ADDR
-        : "/ip4/127.0.0.1/tcp/57629/ws/ipfs/16Uiu2HAm6XGts8i2qC1hKAwmD6QrvKigwfTfEbvu1B5ocUaptHwW";
+        : "/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAm6qx1QaHxYu5XpvXZkKPVc5ou7GdMfZ1fqujpLoytEdUr";
       RifCommunications.connectToNode(this.state.clientNode, bootNodeAddr);
     }
   }
@@ -146,24 +162,40 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   private async createNode(user: User) {
     if (!this.state.clientNode) {
       try {
-        return RifCommunications.createNode(user.pi, await publicIp.v4(), 80);
+        return RifCommunications.createNode(
+          user.pi,
+          await publicIp.v4(),
+          80,
+          this.processKadMsg,
+          this
+        );
       } catch (e) {
         // At least start with localhost if public IP can not be obtained
-        return RifCommunications.createNode(user.pi, "127.0.0.1", 80);
+        return RifCommunications.createNode(
+          user.pi,
+          "127.0.0.1",
+          80,
+          this.processKadMsg,
+          this
+        );
       }
     }
     return this.state.clientNode;
   }
 
   private async createUser() {
-    const pid = await RifCommunications.createKey();
+    const keystore = localStorage.getItem("keystore");
+    const pidCreatFunc =
+      keystore !== null && keystore !== ""
+        ? RifCommunications.createPeerIdFromJSON
+        : RifCommunications.createKey;
+
+    const pid = await pidCreatFunc();
     const pi = await RifCommunications.createPeerInfo(pid);
     const rnsName = localStorage.getItem("rns");
     const user = new User({ pi, rnsName });
-    debugger;
     const node: libp2p | undefined = await this.createNode(user);
     if (node) {
-      debugger;
       this.setState({
         clientNode: node,
         user

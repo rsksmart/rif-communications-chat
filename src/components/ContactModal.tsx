@@ -49,9 +49,8 @@ export default (props: IProps) => {
               /*const pubKey = crypto.keys
                   .marshalPublicKey(peerId.pubKey, "secp256k1")
                   .toString("base64");*/
-              debugger;
               const pubKey: Buffer = Buffer.from(
-                "CAISIQKk3/BUJVEA21l/SYa3OJIFG/ac6+RbugR3FohZJRtaYQ=="
+                "CAISIQKPd+GA5CS+pyh+a3KpD50QXJdpI16ytQoPrtQJ2ixYig=="
               );
               const contact = new Contact({
                 rnsName,
