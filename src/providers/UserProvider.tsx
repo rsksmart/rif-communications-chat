@@ -108,14 +108,20 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   public addContact(contact: Contact) {
-    const contacts = [...this.state.contacts, contact].sort((a, b) => {
-      if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
-      else if (!a.rnsName) return -1;
-      else if (!b.rnsName) return 1;
-      return a.rnsName < b.rnsName ? -1 : 1;
-    });
-    localStorage.setItem("contacts", JSON.stringify(contacts));
-    this.setState({ contacts });
+    if (!this.state.contacts.find(c => c.publicKey === contact.publicKey)) {
+      // TODO: perhaps more efficient insert would be better than sort?
+      const contacts = [
+        ...this.state.contacts,
+        contact
+      ].sort((a, b) => {
+        if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
+        else if (!a.rnsName) return -1;
+        else if (!b.rnsName) return 1;
+        return a.rnsName < b.rnsName ? -1 : 1;
+      });
+      localStorage.setItem("contacts", JSON.stringify(contacts));
+      this.setState({ contacts });
+    }
   }
 
   public getContact(rnsName: string) {

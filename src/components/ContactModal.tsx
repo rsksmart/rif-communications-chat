@@ -25,6 +25,16 @@ interface FormErrors {
   publicKey?: string;
 }
 
+interface IFormikProps {
+  handleSubmit,
+  handleChange,
+  handleBlur,
+  values,
+  isValid,
+  errors,
+  submitForm
+}
+
 export default (props: IProps) => {
   const [show, setShow] = useState(false);
 
@@ -68,69 +78,61 @@ export default (props: IProps) => {
               publicKey: ""
             }}
           >
-            {({
-              handleSubmit,
-              handleChange,
-              handleBlur,
-              values,
-              isValid,
-              errors,
-              submitForm
-            }) => (
-                <>
-                  <Button
-                    className={`btn-circle ${props.large && "btn-xl"}`}
-                    variant="primary"
-                    onClick={handleShow}
-                  >
-                    <FontAwesomeIcon icon={faPlus} />
-                  </Button>
+            {(formik: IFormikProps) => (
+              <>
+                <Button
+                  className={`btn-circle ${props.large && "btn-xl"}`}
+                  variant="primary"
+                  onClick={handleShow}
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </Button>
 
-                  <Modal show={show} onHide={handleClose}>
-                    <Form onSubmit={handleSubmit}>
-                      <Modal.Header closeButton>
-                        <Modal.Title>Create new Contact</Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body>
-                        Eter RNS name to search for contact
+                <Modal show={show} onHide={handleClose}>
+                  <Form onSubmit={formik.handleSubmit}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>Create new Contact</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      Eter RNS name to search for contact
                       <InputGroup className="mb-3" style={{ marginTop: "1em" }}>
-                          <FormControl
-                            placeholder="Your name"
-                            aria-label="Your name"
-                            aria-describedby="basic-addon2"
-                            name="rnsName"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            defaultValue={values.rnsName}
-                            autoComplete="off"
-                            autoFocus
-                            required
-                          />
-                          <InputGroup.Append>
-                            <InputGroup.Text id="basic-addon2">
-                              .rsk
+                        <FormControl
+                          placeholder="Your name"
+                          aria-label="Your name"
+                          aria-describedby="basic-addon2"
+                          name="rnsName"
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          defaultValue={formik.values.rnsName}
+                          autoComplete="off"
+                          autoFocus
+                          required
+                        />
+                        <InputGroup.Append>
+                          <InputGroup.Text id="basic-addon2">
+                            .rsk
                           </InputGroup.Text>
-                          </InputGroup.Append>
-                        </InputGroup>
-                        {errors.rnsName && (
-                          <small style={{ color: "red" }}>{errors.rnsName}</small>
-                        )}
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button
-                          variant="primary"
-                          type="submit"
-                          className="ml-auto justify-content-end"
-                          disabled={!isValid}
-                          onClick={submitForm}
-                        >
-                          Add contact
+                        </InputGroup.Append>
+                      </InputGroup>
+                      {formik.errors.rnsName && (
+                        <small style={{ color: "red" }}>{formik.errors.rnsName}</small>
+                      )}
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        className="ml-auto justify-content-end"
+                        disabled={!formik.isValid}
+                        onClick={formik.submitForm}
+                      >
+                        Add contact
                       </Button>
-                      </Modal.Footer>
-                    </Form>
-                  </Modal>
-                </>
-              )}
+                    </Modal.Footer>
+                  </Form>
+                </Modal>
+              </>
+            )}
           </Formik>
         )}
       </ChatProvider.Consumer>
