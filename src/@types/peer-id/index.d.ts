@@ -29,4 +29,9 @@ declare module "peer-id" {
     key: string | Buffer,
     callback: (err: Error, peer: PeerId) => void
   ) => void;
+
+  export const createFromJSON: (
+    obj: any,
+    callback: (err: Error, peer: PeerId) => void
+  ) => void;
 }

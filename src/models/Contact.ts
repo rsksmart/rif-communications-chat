@@ -13,7 +13,7 @@ export interface IContactParams {
 
 export default class Contact implements IUserInfo {
   rnsName?: string;
-  peerInfo?: PeerInfo;
+  peerInfo: PeerInfo;
   publicKey: string;
   chat: Message[];
 

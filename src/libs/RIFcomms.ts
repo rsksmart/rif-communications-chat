@@ -5,7 +5,7 @@ import SECIO from "libp2p-secio";
 import WebRTCDirect from "libp2p-webrtc-direct";
 import WS from "libp2p-websockets";
 import Multiaddr from "multiaddr";
-import { create, createFromPubKey, PeerId } from "peer-id";
+import { create, createFromJSON, createFromPubKey, PeerId } from "peer-id";
 import { create as peer_info_create, PeerInfo } from "peer-info";
 
 export function connectToNode(
@@ -37,6 +37,19 @@ export function createPeerInfo(pId: PeerId): Promise<PeerInfo> {
   });
 }
 
+export function createPeerIdFromJSON(): Promise<PeerId> {
+  const jsonObject = JSON.parse(localStorage.getItem("keystore") || "{}");
+  return new Promise<PeerId>((resolve, reject) => {
+    createFromJSON(jsonObject, (err: Error, peerId: PeerId) => {
+      if (err) {
+        reject();
+      } else {
+        resolve(peerId);
+      }
+    });
+  });
+}
+
 export function createPeerIdFromPublicKey(
   publicKey: string | Buffer
 ): Promise<PeerId> {
@@ -61,6 +74,7 @@ export function createKey(): Promise<PeerId> {
       if (err) {
         reject(err);
       } else {
+        localStorage.setItem("keystore", JSON.stringify(peer));
         resolve(peer);
       }
     });
@@ -92,7 +106,9 @@ export function sendMsg(
 export function createNode(
   peerInfo: PeerInfo,
   host: string,
-  port: number
+  port: number,
+  sendMsgFunc: any,
+  provider
 ): Promise<libp2p> {
   let node: any;
 
@@ -106,8 +122,8 @@ export function createNode(
   return new Promise<libp2p>((resolve, reject) => {
     node.dht.registerListener(
       "kad-msg-received",
-      (kadMsg: string) => {
-        // TODO: Here we need to paint the user message in the window
+      (kadMsg: any) => {
+        sendMsgFunc(kadMsg, provider);
       },
       () => {
         resolve(
