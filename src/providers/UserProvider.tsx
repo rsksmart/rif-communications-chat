@@ -1,15 +1,15 @@
-import React, { Component, createContext } from "react";
-import publicIp from "public-ip";
+import React, { Component, createContext } from 'react';
+import publicIp from 'public-ip';
 
-import libp2p from "libp2p";
-import * as RifCommunications from "libs/RIFcomms";
-import User from "models/User";
-import { PeerId } from "peer-id";
-import { create, PeerInfo } from "peer-info";
-import Contact, { IContactParams } from "models/Contact";
-import Message, { MESSAGE_SENDER } from "models/Message";
-import { sendMsg } from "libs/RIFcomms";
-
+import libp2p from 'libp2p';
+import * as RifCommunications from 'libs/RIFcomms';
+import User from 'models/User';
+import { PeerId } from 'peer-id';
+import { create, PeerInfo } from 'peer-info';
+import Contact, { IContactParams } from 'models/Contact';
+import Message, { MESSAGE_SENDER } from 'models/Message';
+import { sendMsg } from 'libs/RIFcomms';
+import { addUserName } from '../services/UserService';
 
 export interface IUserProvider {
   state: {
@@ -34,18 +34,18 @@ const { Provider, Consumer } = createContext<IUserProvider>({
     changeRNS: () => {
       return new Promise(resolve => resolve());
     },
-    addContact: () => { },
+    addContact: () => {},
     getContact: () => undefined,
-    addMessage: () => { }
+    addMessage: () => {},
   },
   state: {
     clientNode: undefined,
     contacts: [],
-    user: undefined
-  }
+    user: undefined,
+  },
 });
 
-interface IUserProviderProps { }
+interface IUserProviderProps {}
 interface IUserProviderState {
   contacts: Contact[];
   user?: User;
@@ -57,7 +57,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     super(props);
 
     this.state = {
-      contacts: []
+      contacts: [],
     };
 
     this.createUser = this.createUser.bind(this);
@@ -68,7 +68,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   public async componentDidMount() {
-    const ls = JSON.parse(localStorage.getItem("contacts") || "[]");
+    const ls = JSON.parse(localStorage.getItem('contacts') || '[]');
     this.setState({ contacts: ls.map((c: IContactParams) => new Contact(c)) });
     try {
       await this.connectToNode();
@@ -93,13 +93,13 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
             changeRNS,
             addContact,
             getContact,
-            addMessage
+            addMessage,
           },
           state: {
             clientNode,
             contacts,
-            user
-          }
+            user,
+          },
         }}
       >
         {this.props.children}
@@ -110,16 +110,13 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   public addContact(contact: Contact) {
     if (!this.state.contacts.find(c => c.publicKey === contact.publicKey)) {
       // TODO: perhaps more efficient insert would be better than sort?
-      const contacts = [
-        ...this.state.contacts,
-        contact
-      ].sort((a, b) => {
+      const contacts = [...this.state.contacts, contact].sort((a, b) => {
         if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
         else if (!a.rnsName) return -1;
         else if (!b.rnsName) return 1;
         return a.rnsName < b.rnsName ? -1 : 1;
       });
-      localStorage.setItem("contacts", JSON.stringify(contacts));
+      localStorage.setItem('contacts', JSON.stringify(contacts));
       this.setState({ contacts });
     }
   }
@@ -133,13 +130,13 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   public processKadMsg(kadMsgObj: any, provider) {
     const { contacts } = provider.state;
     const contact = contacts.find(
-      c => c.peerInfo.id._idB58String === kadMsgObj.sender
+      c => c.peerInfo.id._idB58String === kadMsgObj.sender,
     );
 
     if (contact) {
       const msg = new Message({
         content: kadMsgObj.msg,
-        sender: MESSAGE_SENDER.THEM
+        sender: MESSAGE_SENDER.THEM,
       });
       provider.addMessage(msg, contact);
     }
@@ -147,7 +144,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
 
   public async addMessage(message: Message, contact: Contact) {
     contact.chat.push(message);
-    localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
+    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
     this.forceUpdate();
     if (message.sender === MESSAGE_SENDER.ME && contact.peerInfo) {
       await sendMsg(this.state.clientNode, contact.peerInfo, message.content);
@@ -158,7 +155,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     if (this.state.clientNode) {
       const bootNodeAddr: string = process.env.REACT_APP_BOOTNODE_ADDR
         ? process.env.REACT_APP_BOOTNODE_ADDR
-        : "/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw";
+        : '/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw';
       RifCommunications.connectToNode(this.state.clientNode, bootNodeAddr);
     }
   }
@@ -171,16 +168,16 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
           await publicIp.v4(),
           80,
           this.processKadMsg,
-          this
+          this,
         );
       } catch (e) {
         // At least start with localhost if public IP can not be obtained
         return RifCommunications.createNode(
           user.pi,
-          "127.0.0.1",
+          '127.0.0.1',
           80,
           this.processKadMsg,
-          this
+          this,
         );
       }
     }
@@ -188,21 +185,21 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   private async createUser() {
-    const keystore = localStorage.getItem("keystore");
+    const keystore = localStorage.getItem('keystore');
     const pidCreatFunc =
-      keystore !== null && keystore !== ""
+      keystore !== null && keystore !== ''
         ? RifCommunications.createPeerIdFromJSON
         : RifCommunications.createKey;
 
     const pid = await pidCreatFunc();
     const pi = await RifCommunications.createPeerInfo(pid);
-    const rnsName = localStorage.getItem("rns");
+    const rnsName = localStorage.getItem('rns');
     const user = new User({ pi, rnsName });
     const node: libp2p | undefined = await this.createNode(user);
     if (node) {
       this.setState({
         clientNode: node,
-        user
+        user,
       });
       await this.connectToNode();
     }
@@ -210,10 +207,12 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
 
   private async changeRNS(rnsName: string) {
     const { user } = this.state;
-    if (user) {
-      user.rnsName = rnsName;
-      localStorage.setItem("rns", rnsName);
-      this.setState({ user });
+    if (user && user.rnsName !== rnsName) {
+      addUserName(rnsName).then(() => {
+        user.rnsName = rnsName;
+        localStorage.setItem('rns', rnsName);
+        this.setState({ user });
+      });
     }
   }
 }
