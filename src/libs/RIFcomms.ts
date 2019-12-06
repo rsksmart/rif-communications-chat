@@ -1,16 +1,16 @@
-import libp2p from "libp2p";
-import KadDHT from "libp2p-kad-dht";
-import Mplex from "libp2p-mplex";
-import SECIO from "libp2p-secio";
-import WebRTCDirect from "libp2p-webrtc-direct";
-import WS from "libp2p-websockets";
-import Multiaddr from "multiaddr";
-import { create, createFromJSON, createFromPubKey, PeerId } from "peer-id";
-import { create as peer_info_create, PeerInfo } from "peer-info";
+import libp2p from 'libp2p';
+import KadDHT from 'libp2p-kad-dht';
+import Mplex from 'libp2p-mplex';
+import SECIO from 'libp2p-secio';
+import WebRTCDirect from 'libp2p-webrtc-direct';
+import WS from 'libp2p-websockets';
+import Multiaddr from 'multiaddr';
+import { create, createFromJSON, createFromPubKey, PeerId } from 'peer-id';
+import { create as peer_info_create, PeerInfo } from 'peer-info';
 
 export function connectToNode(
   origin: libp2p,
-  destination: string
+  destination: string,
 ): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     origin.dial(destination, (err, val) => {
@@ -38,7 +38,7 @@ export function createPeerInfo(pId: PeerId): Promise<PeerInfo> {
 }
 
 export function createPeerIdFromJSON(): Promise<PeerId> {
-  const jsonObject = JSON.parse(localStorage.getItem("keystore") || "{}");
+  const jsonObject = JSON.parse(localStorage.getItem('keystore') || '{}');
   return new Promise<PeerId>((resolve, reject) => {
     createFromJSON(jsonObject, (err: Error, peerId: PeerId) => {
       if (err) {
@@ -51,7 +51,7 @@ export function createPeerIdFromJSON(): Promise<PeerId> {
 }
 
 export function createPeerIdFromPublicKey(
-  publicKey: string | Buffer
+  publicKey: string | Buffer,
 ): Promise<PeerId> {
   return new Promise<PeerId>((resolve, reject) => {
     createFromPubKey(publicKey, (err: Error, peerId: PeerId) => {
@@ -67,14 +67,14 @@ export function createPeerIdFromPublicKey(
 export function createKey(): Promise<PeerId> {
   const opts = {
     bits: 256,
-    keyType: "secp256k1"
+    keyType: 'secp256k1',
   };
   return new Promise<PeerId>((resolve, reject) => {
     create(opts, (err: Error, peer: PeerId) => {
       if (err) {
         reject(err);
       } else {
-        localStorage.setItem("keystore", JSON.stringify(peer));
+        localStorage.setItem('keystore', JSON.stringify(peer));
         resolve(peer);
       }
     });
@@ -85,12 +85,14 @@ export function sendMsg(
   client: libp2p,
   recipient: PeerInfo,
   message: string,
-  partialAddressing?: boolean
+  msgNonce: number,
+  partialAddressing?: boolean,
 ): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     client.dht.sendMessage(
       recipient.id,
       message,
+      msgNonce,
       partialAddressing !== undefined ? partialAddressing : false,
       (err: Error) => {
         if (err) {
@@ -98,7 +100,7 @@ export function sendMsg(
         } else {
           resolve();
         }
-      }
+      },
     );
   });
 }
@@ -108,20 +110,20 @@ export function createNode(
   host: string,
   port: number,
   sendMsgFunc: any,
-  provider
+  provider,
 ): Promise<libp2p> {
   let node: any;
 
   peerInfo.multiaddrs.add(
-    new Multiaddr(`/ip4/${host}/tcp/${port}/http/p2p-webrtc-direct`)
+    new Multiaddr(`/ip4/${host}/tcp/${port}/http/p2p-webrtc-direct`),
   );
   node = new WebRTCDirectBundle({
-    peerInfo
+    peerInfo,
   });
 
   return new Promise<libp2p>((resolve, reject) => {
     node.dht.registerListener(
-      "kad-msg-received",
+      'kad-msg-received',
       (kadMsg: any) => {
         sendMsgFunc(kadMsg, provider);
       },
@@ -135,9 +137,9 @@ export function createNode(
                 resolve2(node);
               }
             });
-          })
+          }),
         );
-      }
+      },
     );
   });
 }
@@ -147,7 +149,7 @@ class WebRTCDirectBundle extends libp2p {
     const webRTCDirect = new WebRTCDirect();
     const upgrader = {
       upgradeInbound: (maConn: () => {}) => maConn,
-      upgradeOutbound: (maConn: () => {}) => maConn
+      upgradeOutbound: (maConn: () => {}) => maConn,
     };
     const ws = new WS({ upgrader });
 
@@ -155,18 +157,18 @@ class WebRTCDirectBundle extends libp2p {
       config: {
         dht: {
           enabled: true,
-          kBucketSize: 20
+          kBucketSize: 20,
         },
         peerDiscovery: {
-          autoDial: false
-        }
+          autoDial: false,
+        },
       },
       modules: {
         connEncryption: [SECIO],
         dht: KadDHT,
         streamMuxer: [Mplex],
-        transport: [ws, webRTCDirect]
-      }
+        transport: [ws, webRTCDirect],
+      },
     };
     super({ ...options, ...defaults });
   }

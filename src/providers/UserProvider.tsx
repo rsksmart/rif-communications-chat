@@ -16,6 +16,7 @@ export interface IUserProvider {
     readonly user?: User;
     readonly clientNode?: libp2p;
     contacts: Contact[];
+    sentMsgs: number;
   };
   actions: {
     createUser: () => Promise<void>;
@@ -41,6 +42,7 @@ const { Provider, Consumer } = createContext<IUserProvider>({
   state: {
     clientNode: undefined,
     contacts: [],
+    sentMsgs: 0,
     user: undefined,
   },
 });
@@ -48,6 +50,7 @@ const { Provider, Consumer } = createContext<IUserProvider>({
 interface IUserProviderProps {}
 interface IUserProviderState {
   contacts: Contact[];
+  sentMsgs: number;
   user?: User;
   clientNode?: libp2p;
 }
@@ -58,6 +61,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
 
     this.state = {
       contacts: [],
+      sentMsgs: 0,
     };
 
     this.createUser = this.createUser.bind(this);
@@ -83,6 +87,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     const { createUser, changeRNS } = this;
     const { contacts } = this.state;
     const { clientNode } = this.state;
+    const { sentMsgs } = this.state;
     const { addContact, getContact, addMessage } = this;
 
     return (
@@ -98,6 +103,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
           state: {
             clientNode,
             contacts,
+            sentMsgs,
             user,
           },
         }}
@@ -147,7 +153,17 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
     this.forceUpdate();
     if (message.sender === MESSAGE_SENDER.ME && contact.peerInfo) {
-      await sendMsg(this.state.clientNode, contact.peerInfo, message.content);
+      await sendMsg(
+        this.state.clientNode,
+        contact.peerInfo,
+        message.content,
+        this.state.sentMsgs,
+        true,
+      );
+
+      this.setState({
+        sentMsgs: this.state.sentMsgs + 1,
+      });
     }
   }
 
