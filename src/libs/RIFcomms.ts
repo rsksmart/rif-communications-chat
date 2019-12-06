@@ -115,6 +115,9 @@ export function createNode(
   let node: any;
 
   peerInfo.multiaddrs.add(
+    new Multiaddr(`/ip4/${host}/tcp/443/https/p2p-webrtc-direct`),
+    new Multiaddr(`/ip4/${host}/tcp/${port}/https/p2p-webrtc-direct`),
+    new Multiaddr(`/ip4/${host}/tcp/443/http/p2p-webrtc-direct`),
     new Multiaddr(`/ip4/${host}/tcp/${port}/http/p2p-webrtc-direct`),
   );
   node = new WebRTCDirectBundle({

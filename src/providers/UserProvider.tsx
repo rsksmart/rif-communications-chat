@@ -171,7 +171,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     if (this.state.clientNode) {
       const bootNodeAddr: string = process.env.REACT_APP_BOOTNODE_ADDR
         ? process.env.REACT_APP_BOOTNODE_ADDR
-        : '/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw';
+        : '/ip4/127.0.0.1/tcp/443/wss/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw';
       RifCommunications.connectToNode(this.state.clientNode, bootNodeAddr);
     }
   }
