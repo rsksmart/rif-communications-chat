@@ -1,5 +1,7 @@
 const TLD = '.rsk';
-const BASE_ADD = 'http://64.225.35.211:3010';
+const BASE_ADD: string = process.env.REACT_APP_RNS_SERVER
+  ? process.env.REACT_APP_RNS_SERVER
+  : 'http://64.225.35.211:3010';
 const API_ADD = BASE_ADD + '/api';
 
 const fetchUserByName = async (rnsName: string): Promise<string> => {
