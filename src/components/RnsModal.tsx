@@ -38,7 +38,6 @@ export default ({ user, changeRNS }: IRnsModal) => {
             errors.rnsName = 'Required';
           }
           const userExists = await checkUserExists(rnsName);
-          console.log('RNSMODAL::: userExists:', userExists);
           if (userExists) {
             errors.rnsName = 'Already registered.';
           }

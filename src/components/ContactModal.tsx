@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { Button, Modal, InputGroup, FormControl } from "react-bootstrap";
-import { Formik, Form } from "formik";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { generatePrivate, getPublic } from "eccrypto";
-import * as RifCommunications from "libs/RIFcomms";
+import React, { useState } from 'react';
+import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
+import { Formik, Form } from 'formik';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { generatePrivate, getPublic } from 'eccrypto';
+import * as RifCommunications from 'libs/RIFcomms';
 
-import Contact from "models/Contact";
-import ChatProvider from "providers/UserProvider";
-import { ROUTES, history } from "routes";
-import { fetchUserByName } from '../services/UserService';
+import Contact from 'models/Contact';
+import ChatProvider from 'providers/UserProvider';
+import { ROUTES, history } from 'routes';
+import { fetchUserByName, checkUserExists } from '../services/UserService';
 
 interface IProps {
   large?: boolean;
@@ -26,13 +26,13 @@ interface FormErrors {
 }
 
 interface IFormikProps {
-  handleSubmit,
-  handleChange,
-  handleBlur,
-  values,
-  isValid,
-  errors,
-  submitForm
+  handleSubmit;
+  handleChange;
+  handleBlur;
+  values;
+  isValid;
+  errors;
+  submitForm;
 }
 
 export default (props: IProps) => {
@@ -46,21 +46,24 @@ export default (props: IProps) => {
       <ChatProvider.Consumer>
         {({ actions: { addContact } }) => (
           <Formik
-            validate={({ rnsName }: FormValues) => {
+            validate={async ({ rnsName }: FormValues) => {
               let errors: FormErrors = {};
               if (!rnsName) {
-                errors.rnsName = "Required";
+                errors.rnsName = 'Required';
+              }
+              const userExists = await checkUserExists(rnsName);
+              if (!userExists) {
+                errors.rnsName = 'User does not exist.';
               }
               return errors;
             }}
             onSubmit={({ rnsName }: FormValues, actions) => {
               fetchUserByName(rnsName)
                 .then(publicKey => {
-
                   const contact = new Contact({
                     rnsName,
                     publicKey: publicKey,
-                    multiaddr: ""
+                    multiaddr: '',
                   });
                   addContact(contact);
                   actions.resetForm();
@@ -70,18 +73,18 @@ export default (props: IProps) => {
                   history.push(ROUTES.CHAT(contact.rnsName));
                 })
                 .catch(error => {
-                  actions.setErrors({ rnsName: "User does not exist!" });
+                  actions.setErrors({ rnsName: 'User does not exist!' });
                 });
             }}
             initialValues={{
-              rnsName: "",
-              publicKey: ""
+              rnsName: '',
+              publicKey: '',
             }}
           >
             {(formik: IFormikProps) => (
               <>
                 <Button
-                  className={`btn-circle ${props.large && "btn-xl"}`}
+                  className={`btn-circle ${props.large && 'btn-xl'}`}
                   variant="primary"
                   onClick={handleShow}
                 >
@@ -95,7 +98,7 @@ export default (props: IProps) => {
                     </Modal.Header>
                     <Modal.Body>
                       Eter RNS name to search for contact
-                      <InputGroup className="mb-3" style={{ marginTop: "1em" }}>
+                      <InputGroup className="mb-3" style={{ marginTop: '1em' }}>
                         <FormControl
                           placeholder="Your name"
                           aria-label="Your name"
@@ -115,7 +118,9 @@ export default (props: IProps) => {
                         </InputGroup.Append>
                       </InputGroup>
                       {formik.errors.rnsName && (
-                        <small style={{ color: "red" }}>{formik.errors.rnsName}</small>
+                        <small style={{ color: 'red' }}>
+                          {formik.errors.rnsName}
+                        </small>
                       )}
                     </Modal.Body>
                     <Modal.Footer>
