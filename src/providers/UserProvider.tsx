@@ -72,8 +72,15 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   public async componentDidMount() {
-    const ls = JSON.parse(localStorage.getItem('contacts') || '[]');
-    this.setState({ contacts: ls.map((c: IContactParams) => new Contact(c)) });
+    const keystore = localStorage.getItem('keystore');
+    if (keystore && keystore !== '') {
+      await this.setupUser(RifCommunications.createPeerIdFromJSON);
+    }
+
+    const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+    this.setState({
+      contacts: contacts.map((c: IContactParams) => new Contact(c)),
+    });
     try {
       await this.connectToNode();
     } catch (e) {
@@ -201,12 +208,10 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   private async createUser() {
-    const keystore = localStorage.getItem('keystore');
-    const pidCreatFunc =
-      keystore !== null && keystore !== ''
-        ? RifCommunications.createPeerIdFromJSON
-        : RifCommunications.createKey;
+    await this.setupUser(RifCommunications.createKey);
+  }
 
+  private async setupUser(pidCreatFunc: () => Promise<PeerId>) {
     const pid = await pidCreatFunc();
     const pi = await RifCommunications.createPeerInfo(pid);
     const rnsName = localStorage.getItem('rns');
