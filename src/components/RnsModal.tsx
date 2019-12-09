@@ -36,16 +36,15 @@ export default ({ user, changeRNS }: IRnsModal) => {
           let errors: FormErrors = {};
           if (!rnsName) {
             errors.rnsName = 'Required';
+          } else if (!RegExp(/^([\w\d.\-_]+){3,20}$/).test(rnsName)) {
+            errors.rnsName =
+              'Min 3 alphanumeric characters plus ".", "_" and "-" only.';
+          } else {
+            const userExists = await checkUserExists(rnsName);
+            if (userExists) {
+              errors.rnsName = 'Already registered.';
+            }
           }
-          const userExists = await checkUserExists(rnsName);
-          if (userExists) {
-            errors.rnsName = 'Already registered.';
-          }
-
-          // TODO: make 2 validations - valid name and check if it is not registered already
-          // else if () {
-          //   errors.rnsName = 'Already registered';
-          // }
           return errors;
         }}
         onSubmit={({ rnsName }: FormValues) => {
@@ -78,7 +77,12 @@ export default ({ user, changeRNS }: IRnsModal) => {
                     aria-label="Your name"
                     aria-describedby="basic-addon2"
                     name="rnsName"
-                    onChange={handleChange}
+                    onChange={event => {
+                      let { value } = event.target;
+
+                      event.target.value = value.toLowerCase();
+                      handleChange(event);
+                    }}
                     onBlur={handleBlur}
                     defaultValue={values.rnsName}
                     autoComplete="off"

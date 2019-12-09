@@ -50,10 +50,14 @@ export default (props: IProps) => {
               let errors: FormErrors = {};
               if (!rnsName) {
                 errors.rnsName = 'Required';
-              }
-              const userExists = await checkUserExists(rnsName);
-              if (!userExists) {
-                errors.rnsName = 'User does not exist.';
+              } else if (!RegExp(/^([\w\d.\-_]+){3,20}$/).test(rnsName)) {
+                errors.rnsName =
+                  'Min 3 alphanumeric characters plus ".", "_" and "-" only.';
+              } else {
+                const userExists = await checkUserExists(rnsName);
+                if (!userExists) {
+                  errors.rnsName = 'User does not exist.';
+                }
               }
               return errors;
             }}
@@ -81,7 +85,15 @@ export default (props: IProps) => {
               publicKey: '',
             }}
           >
-            {(formik: IFormikProps) => (
+            {({
+              handleSubmit,
+              handleChange,
+              handleBlur,
+              values,
+              isValid,
+              errors,
+              submitForm,
+            }) => (
               <>
                 <Button
                   className={`btn-circle ${props.large && 'btn-xl'}`}
@@ -92,7 +104,7 @@ export default (props: IProps) => {
                 </Button>
 
                 <Modal show={show} onHide={handleClose}>
-                  <Form onSubmit={formik.handleSubmit}>
+                  <Form onSubmit={handleSubmit}>
                     <Modal.Header closeButton>
                       <Modal.Title>Create new Contact</Modal.Title>
                     </Modal.Header>
@@ -104,9 +116,14 @@ export default (props: IProps) => {
                           aria-label="Your name"
                           aria-describedby="basic-addon2"
                           name="rnsName"
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          defaultValue={formik.values.rnsName}
+                          onChange={event => {
+                            let { value } = event.target;
+
+                            event.target.value = value.toLowerCase();
+                            handleChange(event);
+                          }}
+                          onBlur={handleBlur}
+                          defaultValue={values.rnsName}
                           autoComplete="off"
                           autoFocus
                           required
@@ -117,10 +134,8 @@ export default (props: IProps) => {
                           </InputGroup.Text>
                         </InputGroup.Append>
                       </InputGroup>
-                      {formik.errors.rnsName && (
-                        <small style={{ color: 'red' }}>
-                          {formik.errors.rnsName}
-                        </small>
+                      {errors.rnsName && (
+                        <small style={{ color: 'red' }}>{errors.rnsName}</small>
                       )}
                     </Modal.Body>
                     <Modal.Footer>
@@ -128,8 +143,8 @@ export default (props: IProps) => {
                         variant="primary"
                         type="submit"
                         className="ml-auto justify-content-end"
-                        disabled={!formik.isValid}
-                        onClick={formik.submitForm}
+                        disabled={!isValid}
+                        onClick={submitForm}
                       >
                         Add contact
                       </Button>
