@@ -1,17 +1,18 @@
-import React from "react";
-import { Image, ListGroup, Button, Container, Col, Row } from "react-bootstrap";
+import React from 'react';
+import { Image, ListGroup, Button, Container, Col, Row } from 'react-bootstrap';
 
-import Contact from "models/Contact";
-import User from "models/User";
+import Contact from 'models/Contact';
+import User from 'models/User';
 
-import UserProvider from "providers/UserProvider";
+import UserProvider from 'providers/UserProvider';
 
-import ContactDetails from "components/ContactDetails";
-import ContactModal from "components/ContactModal";
+import ContactDetails from 'components/ContactDetails';
+import ContactModal from 'components/ContactModal';
+import PublicKey from 'components/PublicKey';
 
-import lonely from "assets/lonely.png";
+import lonely from 'assets/lonely.png';
 
-import { ROUTES, history } from "routes";
+import { ROUTES, history } from 'routes';
 
 interface IProfileProps {
   user?: User;
@@ -35,22 +36,22 @@ class Profile extends React.Component<IProfileProps> {
     }
 
     return (
-      <div style={{ textAlign: "center" }}>
+      <div style={{ textAlign: 'center' }}>
         <ContactDetails user={user} changeRNS={changeRNS} />
-        <h2 style={{ marginTop: "2em" }}>
+        <h2 style={{ marginTop: '2em' }}>
           Contacs: <ContactModal />
         </h2>
 
         {contacts.length > 0 && (
-          <ListGroup variant="flush" style={{ textAlign: "left" }}>
+          <ListGroup variant="flush" style={{ textAlign: 'left' }}>
             {contacts.map(c => (
               <div
                 key={c.rnsName}
                 onClick={() => history.push(ROUTES.CHAT(c.rnsName))}
               >
                 <ListGroup.Item>
-                  <h5>{c.rnsName ? `${c.rnsName}.rsk` : ""}</h5>
-                  <small>{c.publicKey}</small>
+                  <h5>{c.rnsName ? `${c.rnsName}.rsk` : ''}</h5>
+                  <PublicKey publicKey={c.publicKey} paddingLeft="0em" />
                 </ListGroup.Item>
               </div>
             ))}
@@ -61,7 +62,7 @@ class Profile extends React.Component<IProfileProps> {
             <Image
               src={lonely}
               style={{
-                maxWidth: 150
+                maxWidth: 150,
               }}
             />
             <p>It feels lonely here, let's find some friends!</p>
