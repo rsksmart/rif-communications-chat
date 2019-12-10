@@ -8,13 +8,14 @@
  * <LinkContainer to={ROUTES.EXAMPLE}><a>Link to example</a></LinkContainer>
  * <button onClick={() => history.push(ROUTES.EXAMPLE)}>Example button</button>
  */
-import { createBrowserHistory } from "history";
+import { createBrowserHistory } from 'history';
 
 export const ROUTES = {
-  CHATS: "/",
-  PROFILE: "/profile",
-  EXAMPLE: "/example",
-  CHAT: (rnsName?: string) => `/chat/${rnsName ? rnsName : ":rnsName"}`
+  CHATS: '/',
+  PROFILE: '/profile',
+  EXAMPLE: '/example',
+  CHAT: (rnsName?: string) => `/chat/${rnsName ? rnsName : ':rnsName'}`,
+  CLEAR: '/clear',
 };
 
 export const history = createBrowserHistory();
