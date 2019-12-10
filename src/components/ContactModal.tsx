@@ -8,6 +8,7 @@ import * as RifCommunications from 'libs/RIFcomms';
 
 import Contact from 'models/Contact';
 import ChatProvider from 'providers/UserProvider';
+import PublicKey from '../components/PublicKey';
 import { ROUTES, history } from 'routes';
 import { fetchUserByName } from '../services/UserService';
 
@@ -143,7 +144,7 @@ export default (props: IProps) => {
                         <small style={{ color: 'red' }}>{errors.rnsName}</small>
                       )}
                       {!errors.rnsName && publicKey && (
-                        <small>{publicKey}</small>
+                        <PublicKey publicKey={publicKey} paddingLeft="0em" />
                       )}
                       {isLoading && <small>Fetching user...</small>}
                     </Modal.Body>
