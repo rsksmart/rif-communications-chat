@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
-import { Formik, Form } from 'formik';
+import { Formik } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { checkUserExists } from '../services/UserService';
@@ -62,7 +62,7 @@ export default ({ user, changeRNS }: IRnsModal) => {
           errors,
           submitForm,
         }) => (
-          <Form onSubmit={handleSubmit}>
+          <form>
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>Get your RNS pseudonym now!</Modal.Title>
@@ -93,7 +93,7 @@ export default ({ user, changeRNS }: IRnsModal) => {
                     <InputGroup.Text id="basic-addon2">.rsk</InputGroup.Text>
                   </InputGroup.Append>
                 </InputGroup>
-                {values.rnsName === user.rnsName && errors.rnsName && (
+                {errors.rnsName && (
                   <small style={{ color: 'red' }}>{errors.rnsName}</small>
                 )}
               </Modal.Body>
@@ -109,7 +109,7 @@ export default ({ user, changeRNS }: IRnsModal) => {
                 </Button>
               </Modal.Footer>
             </Modal>
-          </Form>
+          </form>
         )}
       </Formik>
     </span>
