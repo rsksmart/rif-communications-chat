@@ -9,7 +9,7 @@ import * as RifCommunications from 'libs/RIFcomms';
 import Contact from 'models/Contact';
 import ChatProvider from 'providers/UserProvider';
 import { ROUTES, history } from 'routes';
-import { fetchUserByName, checkUserExists } from '../services/UserService';
+import { fetchUserByName } from '../services/UserService';
 
 interface IProps {
   large?: boolean;
@@ -37,6 +37,8 @@ interface IFormikProps {
 
 export default (props: IProps) => {
   const [show, setShow] = useState(false);
+  const [publicKey, setPublicKey] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -52,37 +54,39 @@ export default (props: IProps) => {
                 errors.rnsName = 'Required';
               } else if (!RegExp(/^([\w\d.\-_]+){3,20}$/).test(rnsName)) {
                 errors.rnsName =
-                  'Min 3 alphanumeric characters plus ".", "_" and "-" only.';
+                  'Min 3 alphanumeric characters plus optional ".", "_" and "-" only.';
               } else {
-                const userExists = await checkUserExists(rnsName);
-                if (!userExists) {
+                try {
+                  setIsLoading(true);
+                  const contactPK = await fetchUserByName(rnsName);
+                  setPublicKey(contactPK);
+                } catch (e) {
                   errors.rnsName = 'User does not exist.';
+                } finally {
+                  setIsLoading(false);
                 }
               }
               return errors;
             }}
             onSubmit={({ rnsName }: FormValues, actions) => {
-              fetchUserByName(rnsName)
-                .then(publicKey => {
-                  const contact = new Contact({
-                    rnsName,
-                    publicKey: publicKey,
-                    multiaddr: '',
-                  });
-                  addContact(contact);
-                  actions.resetForm();
-                  actions.setErrors({});
-                  handleClose();
+              const contact = new Contact({
+                rnsName,
+                publicKey: publicKey,
+                multiaddr: '',
+              });
+              addContact(contact);
+              actions.resetForm();
+              actions.setErrors({});
+              handleClose();
 
-                  history.push(ROUTES.CHAT(contact.rnsName));
-                })
-                .catch(error => {
-                  actions.setErrors({ rnsName: 'User does not exist!' });
-                });
+              history.push(ROUTES.CHAT(contact.rnsName));
             }}
             initialValues={{
               rnsName: '',
               publicKey: '',
+            }}
+            initialErrors={{
+              rnsName: 'Required',
             }}
           >
             {({
@@ -92,7 +96,6 @@ export default (props: IProps) => {
               values,
               isValid,
               errors,
-              submitForm,
             }) => (
               <>
                 <Button
@@ -120,6 +123,8 @@ export default (props: IProps) => {
                             let { value } = event.target;
 
                             event.target.value = value.toLowerCase();
+                            errors.rnsName = '';
+                            setPublicKey('');
                             handleChange(event);
                           }}
                           onBlur={handleBlur}
@@ -137,6 +142,10 @@ export default (props: IProps) => {
                       {errors.rnsName && (
                         <small style={{ color: 'red' }}>{errors.rnsName}</small>
                       )}
+                      {!errors.rnsName && publicKey && (
+                        <small>{publicKey}</small>
+                      )}
+                      {isLoading && <small>Fetching user...</small>}
                     </Modal.Body>
                     <Modal.Footer>
                       <Button
@@ -144,7 +153,6 @@ export default (props: IProps) => {
                         type="submit"
                         className="ml-auto justify-content-end"
                         disabled={!isValid}
-                        onClick={submitForm}
                       >
                         Add contact
                       </Button>
