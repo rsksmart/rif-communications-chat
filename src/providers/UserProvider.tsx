@@ -24,6 +24,7 @@ export interface IUserProvider {
     addContact: (contact: Contact) => void;
     getContact: (pubKey: string) => Contact | undefined;
     addMessage: (message: Message, contact: Contact) => void;
+    clearStorage: () => void;
   };
 }
 
@@ -38,6 +39,7 @@ const { Provider, Consumer } = createContext<IUserProvider>({
     addContact: () => {},
     getContact: () => undefined,
     addMessage: () => {},
+    clearStorage: () => {},
   },
   state: {
     clientNode: undefined,
@@ -91,7 +93,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
 
   public render() {
     const { user } = this.state;
-    const { createUser, changeRNS } = this;
+    const { createUser, changeRNS, clearStorage } = this;
     const { contacts } = this.state;
     const { clientNode } = this.state;
     const { sentMsgs } = this.state;
@@ -106,6 +108,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
             addContact,
             getContact,
             addMessage,
+            clearStorage,
           },
           state: {
             clientNode,
@@ -235,6 +238,16 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
         this.setState({ user });
       });
     }
+  }
+
+  public clearStorage() {
+    this.setState({
+      clientNode: undefined,
+      contacts: [],
+      sentMsgs: 0,
+      user: undefined,
+    });
+    localStorage.clear();
   }
 }
 
