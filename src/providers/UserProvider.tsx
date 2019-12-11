@@ -238,7 +238,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   ) {
     const { user, node } = await this.createPeer(pidCreatFunc, keystore);
     if (node) {
-      await this.setState(
+      this.setState(
         {
           clientNode: node,
           user,
@@ -315,7 +315,6 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
         },
         async () => {
           await this.connectToNode();
-          history.push(ROUTES.PROFILE);
         },
       );
     }

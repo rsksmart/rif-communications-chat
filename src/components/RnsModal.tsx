@@ -57,7 +57,7 @@ export default (props: IProps) => {
               return errors;
             }}
             onSubmit={({ rnsName }: FormValues) => {
-              changeRNS(rnsName).then(() => createUser());
+              createUser().then(() => changeRNS(rnsName));
               handleClose();
             }}
             initialValues={{
