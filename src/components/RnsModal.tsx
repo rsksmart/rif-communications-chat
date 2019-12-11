@@ -90,7 +90,7 @@ export default ({ user, changeRNS }: IRnsModal) => {
                     required
                   />
                   <InputGroup.Append>
-                    <InputGroup.Text id="basic-addon2">.rsk</InputGroup.Text>
+                    <InputGroup.Text id="basic-addon2">.comms19.rsk</InputGroup.Text>
                   </InputGroup.Append>
                 </InputGroup>
                 {errors.rnsName && (
