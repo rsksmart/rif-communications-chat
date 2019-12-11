@@ -37,7 +37,7 @@ class Profile extends React.Component<IProfileProps> {
 
     return (
       <div style={{ textAlign: 'center' }}>
-        <ContactDetails user={user} changeRNS={changeRNS} />
+        <ContactDetails user={user} />
         <h2 style={{ marginTop: '2em' }}>
           Contacs: <ContactModal />
         </h2>
