@@ -10,6 +10,7 @@ import Contact, { IContactParams } from 'models/Contact';
 import Message, { MESSAGE_SENDER } from 'models/Message';
 import { sendMsg } from 'libs/RIFcomms';
 import { addUserName } from '../services/UserService';
+import { ROUTES, history } from 'routes';
 
 interface IImportJson {
   rnsName: string;
@@ -231,11 +232,16 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   private async setupUser(pidCreatFunc: () => Promise<PeerId>) {
     const { user, node } = await this.createPeer();
     if (node) {
-      this.setState({
-        clientNode: node,
-        user,
-      });
-      await this.connectToNode();
+      this.setState(
+        {
+          clientNode: node,
+          user,
+        },
+        async () => {
+          await this.connectToNode();
+          history.push(ROUTES.PROFILE);
+        },
+      );
     }
   }
 
@@ -287,12 +293,17 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     localStorage.setItem('contacts', JSON.stringify(userJson.contacts));
     const { user, node } = await this.createPeer();
     if (node) {
-      this.setState({
-        clientNode: node,
-        user,
-        contacts: userJson.contacts,
-      });
-      await this.connectToNode();
+      this.setState(
+        {
+          clientNode: node,
+          user,
+          contacts: userJson.contacts,
+        },
+        async () => {
+          await this.connectToNode();
+          history.push(ROUTES.PROFILE);
+        },
+      );
     }
   }
 }
