@@ -57,9 +57,10 @@ const checkUserExists = async (rnsName: string) => {
 const addUserName = async (
   rnsName: string,
   publicKey: string,
+  address: string,
 ): Promise<{ domain: string; publicKey: string }> => {
   return new Promise((resolve, reject) => {
-    fetch(`${API_ADD}/add`, {
+    fetch(`${RNS_MAINNET_API}/setSubdomainNode`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -67,7 +68,8 @@ const addUserName = async (
       },
       body: JSON.stringify({
         domain: rnsName + TLD,
-        publicKey,
+        str: publicKey,
+        address: address,
       }),
     })
       .then(response => response.json())

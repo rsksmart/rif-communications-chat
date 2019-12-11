@@ -232,7 +232,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   private async changeRNS(rnsName: string) {
     const { user } = this.state;
     if (user && user.rnsName !== rnsName) {
-      addUserName(rnsName, user.publicKey).then(() => {
+      addUserName(rnsName, user.publicKey, user.address || '0x2824b21e348d520a50cddfa77ba158822160dd94').then(() => {
         user.rnsName = rnsName;
         localStorage.setItem('rns', rnsName);
         this.setState({ user });

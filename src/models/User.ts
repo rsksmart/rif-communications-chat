@@ -6,6 +6,7 @@ export interface IUserParams {
   rnsName?: string | null;
   pi: PeerInfo;
   host?: string | null;
+  address?: string | null;
 }
 
 export default class User implements IUserInfo {
@@ -13,12 +14,14 @@ export default class User implements IUserInfo {
   public pi: PeerInfo;
   public host?: string | null;
   public port?: number | null;
+  public address?: string | null;
 
-  constructor({ rnsName, pi, host }: IUserParams) {
+  constructor({ rnsName, pi, host, address }: IUserParams) {
     this.rnsName = rnsName;
     this.pi = pi;
     this.host = host;
     this.port = 80;
+    this.address = address;
   }
 
   get publicKey() {
