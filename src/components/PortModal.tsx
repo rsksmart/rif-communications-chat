@@ -81,7 +81,6 @@ export default (props: IProps) => {
                           onClick={event => {
                             try {
                               importUser(JSON.parse(importText));
-                              history.push(ROUTES.PROFILE);
                             } catch (e) {}
                           }}
                         >
