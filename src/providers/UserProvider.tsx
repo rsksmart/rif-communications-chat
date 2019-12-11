@@ -88,7 +88,10 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   public async componentDidMount() {
     const keystore = localStorage.getItem('keystore');
     if (keystore && keystore !== '') {
-      await this.setupUser(RifCommunications.createPeerIdFromJSON);
+      await this.setupUser(
+        RifCommunications.createPeerIdFromJSON,
+        JSON.parse(keystore),
+      );
     }
 
     const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
@@ -226,11 +229,15 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   private async createUser() {
+    console.log(RifCommunications.createKey);
     await this.setupUser(RifCommunications.createKey);
   }
 
-  private async setupUser(pidCreatFunc: () => Promise<PeerId>) {
-    const { user, node } = await this.createPeer();
+  private async setupUser(
+    pidCreatFunc: (keystore) => Promise<PeerId>,
+    keystore?,
+  ) {
+    const { user, node } = await this.createPeer(pidCreatFunc, keystore);
     if (node) {
       this.setState(
         {
@@ -245,8 +252,13 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     }
   }
 
-  private async createPeer() {
-    const pid = await RifCommunications.createPeerIdFromJSON();
+  private async createPeer(
+    pidCreatFunc: (keystoreJson?) => Promise<PeerId>,
+    keystore?,
+  ) {
+    const keystoreJson =
+      keystore || JSON.parse(localStorage.getItem('keystore') || '{}');
+    const pid = await pidCreatFunc(keystoreJson);
     const pi = await RifCommunications.createPeerInfo(pid);
     const rnsName = localStorage.getItem('rns');
     const user = new User({ pi, rnsName });
@@ -291,7 +303,10 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     localStorage.setItem('keystore', userJson.keystore);
 
     localStorage.setItem('contacts', JSON.stringify(userJson.contacts));
-    const { user, node } = await this.createPeer();
+    const { user, node } = await this.createPeer(
+      RifCommunications.createPeerIdFromJSON,
+      userJson.keystore,
+    );
     if (node) {
       this.setState(
         {
