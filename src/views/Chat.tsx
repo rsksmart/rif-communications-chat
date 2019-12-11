@@ -44,6 +44,7 @@ class Chat extends React.Component<IChatProps> {
           style={{
             paddingLeft: '8px',
             paddingRight: '8px',
+            paddingBottom: '56px',
           }}
         >
           {contact.chat.map((m, i) => (
