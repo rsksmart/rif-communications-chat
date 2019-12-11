@@ -31,7 +31,6 @@ class Profile extends React.Component<IProfileProps> {
     // This should never happen as we are intercepting in the componentDidMount,
     // but typescript does not like not having check here
     if (!user) {
-      history.push(ROUTES.CHATS);
       return null;
     }
 

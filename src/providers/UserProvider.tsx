@@ -25,6 +25,8 @@ export interface IUserProvider {
     getContact: (pubKey: string) => Contact | undefined;
     addMessage: (message: Message, contact: Contact) => void;
     clearStorage: () => void;
+    exportUser: () => string;
+    importUser: (state) => void;
   };
 }
 
@@ -40,6 +42,8 @@ const { Provider, Consumer } = createContext<IUserProvider>({
     getContact: () => undefined,
     addMessage: () => {},
     clearStorage: () => {},
+    exportUser: () => '',
+    importUser: () => {},
   },
   state: {
     clientNode: undefined,
@@ -71,6 +75,8 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     this.addContact = this.addContact.bind(this);
     this.getContact = this.getContact.bind(this);
     this.addMessage = this.addMessage.bind(this);
+    this.exportUser = this.exportUser.bind(this);
+    this.importUser = this.importUser.bind(this);
   }
 
   public async componentDidMount() {
@@ -98,6 +104,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     const { clientNode } = this.state;
     const { sentMsgs } = this.state;
     const { addContact, getContact, addMessage } = this;
+    const { exportUser, importUser } = this;
 
     return (
       <Provider
@@ -109,6 +116,8 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
             getContact,
             addMessage,
             clearStorage,
+            exportUser,
+            importUser,
           },
           state: {
             clientNode,
@@ -248,6 +257,37 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
       user: undefined,
     });
     localStorage.clear();
+  }
+
+  public exportUser() {
+    return JSON.stringify(
+      {
+        rnsName: localStorage.getItem('rns'),
+        keystore: localStorage.getItem('keystore'),
+        contacts: this.state.contacts,
+      },
+      undefined,
+      2,
+    );
+  }
+  public async importUser(userJson) {
+    localStorage.setItem('rns', userJson.rnsName);
+    localStorage.setItem('keystore', userJson.keystore);
+
+    localStorage.setItem('contacts', JSON.stringify(userJson.contacts));
+    const pid = await RifCommunications.createPeerIdFromJSON();
+    const pi = await RifCommunications.createPeerInfo(pid);
+    const rnsName = localStorage.getItem('rns');
+    const user = new User({ pi, rnsName });
+    const node: libp2p | undefined = await this.createNode(user);
+    if (node) {
+      this.setState({
+        clientNode: node,
+        user,
+        contacts: userJson.contacts,
+      });
+      await this.connectToNode();
+    }
   }
 }
 

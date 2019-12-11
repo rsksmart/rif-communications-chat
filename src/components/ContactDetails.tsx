@@ -3,6 +3,7 @@ import React from 'react';
 import { IUserInfo } from 'types';
 import RnsModal from 'components/RnsModal';
 import PublicKey from 'components/PublicKey';
+import PortModal from 'components/PortModal';
 import { Image } from 'react-bootstrap';
 import cosmonaut from 'assets/cosmonaut.png';
 
@@ -33,6 +34,7 @@ export default ({ user, changeRNS }: IContactDetailsCard) => (
         <RnsModal user={user} changeRNS={changeRNS} />
       </h4>
       <PublicKey publicKey={user.publicKey} />
+      <PortModal></PortModal>
     </div>
   </div>
 );
