@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, Modal, InputGroup, FormControl, Row, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
@@ -14,10 +14,12 @@ interface IRnsModal {
 
 interface FormValues {
   rnsName: string;
+  address: string;
 }
 
 interface FormErrors {
   rnsName?: string;
+  address?: string;
 }
 
 export default ({ user, changeRNS }: IRnsModal) => {
@@ -32,7 +34,7 @@ export default ({ user, changeRNS }: IRnsModal) => {
         <FontAwesomeIcon icon={faPencilAlt} />
       </Button>
       <Formik
-        validate={async ({ rnsName }: FormValues) => {
+        validate={async ({ rnsName, address }: FormValues) => {
           let errors: FormErrors = {};
           if (!rnsName) {
             errors.rnsName = 'Required';
@@ -41,17 +43,25 @@ export default ({ user, changeRNS }: IRnsModal) => {
               'Min 3 alphanumeric characters plus ".", "_" and "-" only.';
           } else {
             const userExists = await checkUserExists(rnsName);
+            console.log(userExists)
             if (userExists) {
               errors.rnsName = 'Already registered.';
             }
           }
+
+          if(address && !/^(0x)?[0-9a-f]{40}$/i.test(address))
+            errors.address = 'Invalid address.';
+
           return errors;
         }}
         onSubmit={({ rnsName }: FormValues) => {
           changeRNS(rnsName);
           handleClose();
         }}
-        initialValues={{ rnsName: user.rnsName || '' }}
+        initialValues={{
+          rnsName: user.rnsName || '',
+          address: user.address || ''
+        }}
       >
         {({
           handleSubmit,
@@ -96,6 +106,32 @@ export default ({ user, changeRNS }: IRnsModal) => {
                 {errors.rnsName && (
                   <small style={{ color: 'red' }}>{errors.rnsName}</small>
                 )}
+                <InputGroup className="mb-3" style={{ marginTop: '1em' }}>
+                  <FormControl
+                    placeholder="RSK Mainnet Address"
+                    aria-label="SK Mainnet Address"
+                    aria-describedby="basic-addon2"
+                    name="address"
+                    onChange={event => {
+                      handleChange(event);
+                    }}
+                    onBlur={handleBlur}
+                    defaultValue={values.address}
+                    autoComplete="off"
+                    autoFocus
+                    required
+                  />
+                </InputGroup>
+                {errors.address && (
+                  <React.Fragment>
+                    <small style={{ color: 'red' }}>{errors.address}</small>
+                    <br />
+                  </React.Fragment>
+                )}
+                <small>
+                  This field is optional. If you don't have a wallet you can ask us for the
+                  domain ownership when you create one.
+                </small>
               </Modal.Body>
               <Modal.Footer>
                 <Button

@@ -4,7 +4,7 @@ const BASE_ADD: string = process.env.REACT_APP_RNS_SERVER
   : 'http://64.225.35.211:3010';
 const API_ADD = BASE_ADD + '/api';
 
-const RNS_MAINNET_API = process.env.RNS_MAINNET_API;
+const RNS_MAINNET_API = `http://localhost:3001`;
 
 const fetchUserByName = async (rnsName: string): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -28,14 +28,13 @@ const checkUserExists = async (rnsName: string) => {
     .then(res => {
       if (res && res.body)
         return res.json();
-      resolve(true);
     })
     .then(res => {
       if(res && res.status && res.status.status !== 'AVAILABLE')
         resolve(true);
       resolve(false);
     })
-    .catch(() => resolve(true))
+    .catch(error => resolve(error))
   });
 };
 
