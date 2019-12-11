@@ -11,6 +11,11 @@ import Message, { MESSAGE_SENDER } from 'models/Message';
 import { sendMsg } from 'libs/RIFcomms';
 import { addUserName } from '../services/UserService';
 
+interface IImportJson {
+  rnsName: string;
+  keystore: string;
+  contacts: Contact[];
+}
 export interface IUserProvider {
   state: {
     readonly user?: User;
@@ -26,7 +31,7 @@ export interface IUserProvider {
     addMessage: (message: Message, contact: Contact) => void;
     clearStorage: () => void;
     exportUser: () => string;
-    importUser: (state) => void;
+    importUser: (userJson: IImportJson) => void;
   };
 }
 
@@ -224,11 +229,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   private async setupUser(pidCreatFunc: () => Promise<PeerId>) {
-    const pid = await pidCreatFunc();
-    const pi = await RifCommunications.createPeerInfo(pid);
-    const rnsName = localStorage.getItem('rns');
-    const user = new User({ pi, rnsName });
-    const node: libp2p | undefined = await this.createNode(user);
+    const { user, node } = await this.createPeer();
     if (node) {
       this.setState({
         clientNode: node,
@@ -236,6 +237,15 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
       });
       await this.connectToNode();
     }
+  }
+
+  private async createPeer() {
+    const pid = await RifCommunications.createPeerIdFromJSON();
+    const pi = await RifCommunications.createPeerInfo(pid);
+    const rnsName = localStorage.getItem('rns');
+    const user = new User({ pi, rnsName });
+    const node: libp2p | undefined = await this.createNode(user);
+    return { user, node };
   }
 
   private async changeRNS(rnsName: string) {
@@ -270,16 +280,12 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
       2,
     );
   }
-  public async importUser(userJson) {
+  public async importUser(userJson: IImportJson) {
     localStorage.setItem('rns', userJson.rnsName);
     localStorage.setItem('keystore', userJson.keystore);
 
     localStorage.setItem('contacts', JSON.stringify(userJson.contacts));
-    const pid = await RifCommunications.createPeerIdFromJSON();
-    const pi = await RifCommunications.createPeerInfo(pid);
-    const rnsName = localStorage.getItem('rns');
-    const user = new User({ pi, rnsName });
-    const node: libp2p | undefined = await this.createNode(user);
+    const { user, node } = await this.createPeer();
     if (node) {
       this.setState({
         clientNode: node,
