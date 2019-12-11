@@ -229,7 +229,6 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
   }
 
   private async createUser() {
-    console.log(RifCommunications.createKey);
     await this.setupUser(RifCommunications.createKey);
   }
 
