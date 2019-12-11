@@ -54,7 +54,7 @@ export default (props: IProps) => {
       )}
       <span>
         <UserProvider.Consumer>
-          {({ actions: { dumpState, putState } }) => (
+          {({ actions: { exportUser, importUser } }) => (
             <Modal
               show={isImport || isExport}
               onHide={handleClose}
@@ -80,7 +80,7 @@ export default (props: IProps) => {
                           className="ml-auto justify-content-end"
                           onClick={event => {
                             try {
-                              putState(JSON.parse(importText));
+                              importUser(JSON.parse(importText));
                               history.push(ROUTES.PROFILE);
                             } catch (e) {}
                           }}
@@ -95,7 +95,7 @@ export default (props: IProps) => {
                       readOnly
                       as="textarea"
                       rows="3"
-                      value={dumpState()}
+                      value={exportUser()}
                       style={{ height: '60vh' }}
                     />
                   )}
