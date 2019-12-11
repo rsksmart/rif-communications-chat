@@ -29,7 +29,7 @@ export default ({ user, changeRNS }: IContactDetailsCard) => (
       }}
     >
       <h4>
-        {user.rnsName && `${user.rnsName}.rsk `}
+        {user.rnsName && `${user.rnsName}.comms19.rsk `}
         <RnsModal user={user} changeRNS={changeRNS} />
       </h4>
       <PublicKey publicKey={user.publicKey} />

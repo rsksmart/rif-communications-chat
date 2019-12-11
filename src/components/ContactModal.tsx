@@ -136,7 +136,7 @@ export default (props: IProps) => {
                         />
                         <InputGroup.Append>
                           <InputGroup.Text id="basic-addon2">
-                            .rsk
+                            .comms19.rsk
                           </InputGroup.Text>
                         </InputGroup.Append>
                       </InputGroup>

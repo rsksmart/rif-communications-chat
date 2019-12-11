@@ -8,6 +8,7 @@
     "@fortawesome/react-fontawesome": "^0.1.7",
     "bootstrap": "^4.3.1",
     "eccrypto": "rootstock/eccrypto#master",
+    "eth-ens-namehash": "^2.0.8",
     "formik": "^2.0.6",
     "js-libp2p-crypto": "0.2.0",
     "libp2p": "rootstock/js-libp2p#stable",
@@ -28,7 +29,8 @@
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
-    "typescript": "3.6.4"
+    "typescript": "3.6.4",
+    "web3": "^1.2.4"
   },
   "scripts": {
     "start": "react-scripts start",

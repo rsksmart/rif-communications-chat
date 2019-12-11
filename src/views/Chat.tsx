@@ -37,7 +37,7 @@ class Chat extends React.Component<IChatProps> {
     return (
       <div>
         <h5 style={{ paddingLeft: "8px", paddingRight: "8px" }}>
-          {contact.rnsName ? `${contact.rnsName}.rsk` : contact.publicKey}
+          {contact.rnsName ? `${contact.rnsName}.comms19.rsk` : contact.publicKey}
         </h5>
         <hr />
         <div

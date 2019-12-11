@@ -47,7 +47,7 @@ export default () => (
                     onClick={() => history.push(ROUTES.CHAT(c.rnsName))}
                   >
                     <ListGroup.Item>
-                      <h5>{c.rnsName ? `${c.rnsName}.rsk` : ""}</h5>
+                      <h5>{c.rnsName ? `${c.rnsName}.comms19.rsk` : ""}</h5>
                       <small>
                         {c.chat.length > 0 && c.chat[c.chat.length - 1].content}
                       </small>

@@ -1,3 +1,7 @@
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
+import { hash as namehash } from 'eth-ens-namehash';
+
 const TLD = '.comms19.rsk';
 const BASE_ADD: string = process.env.REACT_APP_RNS_SERVER
   ? process.env.REACT_APP_RNS_SERVER
@@ -5,21 +9,33 @@ const BASE_ADD: string = process.env.REACT_APP_RNS_SERVER
 const API_ADD = BASE_ADD + '/api';
 
 const RNS_MAINNET_API = `http://localhost:3001`;
+const RSK_PUBLIC_NODE = `https://public-node.rsk.co`;
+
+const STR_ABI: AbiItem[] = [
+  {
+    constant: true,
+    inputs: [
+      { name: "node", type: "bytes32" }
+    ],
+    name: "str",
+    outputs: [
+      { name: "", type: "string" }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  }
+];
+const STR_ADDRESS = '0x87c51c497830d42b88a9cb5a09873da48d856cf2';
 
 const fetchUserByName = async (rnsName: string): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    fetch(`${API_ADD}/domain?domain=${rnsName + TLD}`)
-      .then(response => {
-        if (response.status === 404) {
-          throw new Error(response.statusText);
-        }
-        return response.json();
-      })
-      .then(body => {
-        resolve(body);
-      })
-      .catch(err => reject(err));
-  });
+  const web3 = new Web3(RSK_PUBLIC_NODE);
+  const strResolver = new web3.eth.Contract(STR_ABI, STR_ADDRESS);
+
+  const domain = rnsName + TLD;
+  const node = namehash(domain);
+
+  return strResolver.methods.str(node).call();
 };
 
 const checkUserExists = async (rnsName: string) => {

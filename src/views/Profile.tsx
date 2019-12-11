@@ -50,7 +50,7 @@ class Profile extends React.Component<IProfileProps> {
                 onClick={() => history.push(ROUTES.CHAT(c.rnsName))}
               >
                 <ListGroup.Item>
-                  <h5>{c.rnsName ? `${c.rnsName}.rsk` : ''}</h5>
+                  <h5>{c.rnsName ? `${c.rnsName}.comms19.rsk` : ''}</h5>
                   <PublicKey publicKey={c.publicKey} paddingLeft="0em" />
                 </ListGroup.Item>
               </div>
