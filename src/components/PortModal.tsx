@@ -31,7 +31,14 @@ export default (props: IProps) => {
   return (
     <>
       {props.importOnly ? (
-        <Button onClick={handleImport}>Import Existing</Button>
+        <Button
+          variant="outline-primary"
+          size="sm"
+          style={{ border: 'none' }}
+          onClick={handleImport}
+        >
+          Import Existing
+        </Button>
       ) : (
         <Button
           variant="primary"
