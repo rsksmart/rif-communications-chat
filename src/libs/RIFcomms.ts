@@ -109,7 +109,6 @@ export function createNode(
   host: string,
   port: number,
   sendMsgFunc: any,
-  provider,
 ): Promise<libp2p> {
   let node: any;
 
@@ -124,7 +123,7 @@ export function createNode(
     node.dht.registerListener(
       'kad-msg-received',
       (kadMsg: any) => {
-        sendMsgFunc(kadMsg, provider);
+        sendMsgFunc(kadMsg);
       },
       () => {
         resolve(

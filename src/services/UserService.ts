@@ -4,7 +4,7 @@ const BASE_ADD: string = process.env.REACT_APP_RNS_SERVER
   : 'http://64.225.35.211:3010';
 const API_ADD = BASE_ADD + '/api';
 
-const fetchUserByName = async (rnsName: string): Promise<string> => {
+export const fetchUserByName = async (rnsName: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     fetch(`${API_ADD}/domain?domain=${rnsName + TLD}`)
       .then(response => {
@@ -20,7 +20,23 @@ const fetchUserByName = async (rnsName: string): Promise<string> => {
   });
 };
 
-const checkUserExists = async (rnsName: string) => {
+export const getName = async (pubKey: string): Promise<string[]> => {
+  return new Promise((resolve, reject) => {
+    fetch(`${API_ADD}/lookup?publicKey=${pubKey}`)
+      .then(response => {
+        if (response.status === 404) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then(body => {
+        resolve(body);
+      })
+      .catch(err => reject(err));
+  });
+};
+
+export const checkUserExists = async (rnsName: string) => {
   return new Promise((resolve, reject) => {
     fetch(`${API_ADD}/domain?domain=${rnsName + TLD}`)
       .then(res => resolve(res.status === 200))
@@ -28,7 +44,7 @@ const checkUserExists = async (rnsName: string) => {
   });
 };
 
-const addUserName = async (
+export const addUserName = async (
   rnsName: string,
   publicKey: string,
 ): Promise<{ domain: string; publicKey: string }> => {
@@ -49,5 +65,3 @@ const addUserName = async (
       .catch(err => reject(err));
   });
 };
-
-export { fetchUserByName, checkUserExists, addUserName };

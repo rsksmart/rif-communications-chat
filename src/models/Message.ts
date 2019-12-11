@@ -1,6 +1,6 @@
 export enum MESSAGE_SENDER {
   ME,
-  THEM
+  THEM,
 }
 
 export interface IMessageParams {

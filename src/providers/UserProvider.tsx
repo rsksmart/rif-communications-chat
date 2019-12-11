@@ -6,7 +6,7 @@ import * as RifCommunications from 'libs/RIFcomms';
 import User from 'models/User';
 import { PeerId } from 'peer-id';
 import { create, PeerInfo } from 'peer-info';
-import Contact, { IContactParams } from 'models/Contact';
+import Contact, { IContactParams, createContactFromID } from 'models/Contact';
 import Message, { MESSAGE_SENDER } from 'models/Message';
 import { sendMsg } from 'libs/RIFcomms';
 import { addUserName } from '../services/UserService';
@@ -83,6 +83,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     this.addMessage = this.addMessage.bind(this);
     this.exportUser = this.exportUser.bind(this);
     this.importUser = this.importUser.bind(this);
+    this.processKadMsg = this.processKadMsg.bind(this);
   }
 
   public async componentDidMount() {
@@ -161,19 +162,33 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     return contact;
   }
 
-  public processKadMsg(kadMsgObj: any, provider) {
-    const { contacts } = provider.state;
-    const contact = contacts.find(
-      c => c.peerInfo.id._idB58String === kadMsgObj.sender,
+  public async processKadMsg(kadMsgObj: any) {
+    let { contacts } = this.state;
+    let contact = contacts.find(
+      c =>
+        c.peerInfo &&
+        c.peerInfo.id &&
+        c.peerInfo.id._idB58String === kadMsgObj.sender,
     );
 
-    if (contact) {
-      const msg = new Message({
-        content: kadMsgObj.msg,
-        sender: MESSAGE_SENDER.THEM,
+    if (!contact) {
+      contact = await createContactFromID(kadMsgObj.sender);
+
+      contacts = [...contacts, contact].sort((a, b) => {
+        if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
+        else if (!a.rnsName) return -1;
+        else if (!b.rnsName) return 1;
+        return a.rnsName < b.rnsName ? -1 : 1;
       });
-      provider.addMessage(msg, contact);
+      localStorage.setItem('contacts', JSON.stringify(contacts));
     }
+
+    const msg = new Message({
+      content: kadMsgObj.msg,
+      sender: MESSAGE_SENDER.THEM,
+    });
+    this.addMessage(msg, contact);
+    this.setState({ contacts });
   }
 
   public async addMessage(message: Message, contact: Contact) {
@@ -212,7 +227,6 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
           await publicIp.v4(),
           80,
           this.processKadMsg,
-          this,
         );
       } catch (e) {
         // At least start with localhost if public IP can not be obtained
@@ -221,7 +235,6 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
           '127.0.0.1',
           80,
           this.processKadMsg,
-          this,
         );
       }
     }
