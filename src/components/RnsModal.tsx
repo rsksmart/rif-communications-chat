@@ -57,11 +57,7 @@ export default (props: IProps) => {
               return errors;
             }}
             onSubmit={({ rnsName }: FormValues) => {
-              changeRNS(rnsName)
-                .then(() => createUser())
-                .then(() => {
-                  if (isNew) history.push(ROUTES.PROFILE);
-                });
+              changeRNS(rnsName).then(() => createUser());
               handleClose();
             }}
             initialValues={{

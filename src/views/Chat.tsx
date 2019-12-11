@@ -1,18 +1,18 @@
-import React from "react";
-import { Button, FormControl } from "react-bootstrap";
-import { RouteComponentProps } from "react-router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { Formik, Form } from "formik";
+import React from 'react';
+import { Button, FormControl } from 'react-bootstrap';
+import { RouteComponentProps } from 'react-router';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { Formik, Form } from 'formik';
 
-import UserProvider from "providers/UserProvider";
+import UserProvider from 'providers/UserProvider';
 
-import Contact from "models/Contact";
-import User from "models/User";
-import Message, { MESSAGE_SENDER } from "models/Message";
-import ChatBubble from "components/ChatBubble";
+import Contact from 'models/Contact';
+import User from 'models/User';
+import Message, { MESSAGE_SENDER } from 'models/Message';
+import ChatBubble from 'components/ChatBubble';
 
-import { ROUTES, history } from "routes";
+import { ROUTES, history } from 'routes';
 
 interface IChatProps {
   user?: User;
@@ -36,14 +36,14 @@ class Chat extends React.Component<IChatProps> {
     if (!contact) return <p>Couldn't find requested user</p>;
     return (
       <div>
-        <h5 style={{ paddingLeft: "8px", paddingRight: "8px" }}>
+        <h5 style={{ paddingLeft: '8px', paddingRight: '8px' }}>
           {contact.rnsName ? `${contact.rnsName}.rsk` : contact.publicKey}
         </h5>
         <hr />
         <div
           style={{
-            paddingLeft: "8px",
-            paddingRight: "8px"
+            paddingLeft: '8px',
+            paddingRight: '8px',
           }}
         >
           {contact.chat.map((m, i) => (
@@ -52,12 +52,12 @@ class Chat extends React.Component<IChatProps> {
         </div>
         <div
           style={{
-            position: "fixed",
+            position: 'fixed',
             bottom: 0,
-            backgroundColor: "#EEE",
-            padding: "8px",
-            paddingRight: "40px",
-            width: "100%"
+            backgroundColor: '#EEE',
+            padding: '8px',
+            paddingRight: '40px',
+            width: '100%',
           }}
         >
           <Formik
@@ -65,14 +65,14 @@ class Chat extends React.Component<IChatProps> {
               addMessage(new Message({ content }), contact);
               actions.resetForm();
             }}
-            initialValues={{ content: "" }}
+            initialValues={{ content: '' }}
           >
             {({
               handleSubmit,
               handleChange,
               handleBlur,
               values,
-              submitForm
+              submitForm,
             }) => (
               <Form onSubmit={handleSubmit}>
                 <FormControl
@@ -82,14 +82,14 @@ class Chat extends React.Component<IChatProps> {
                   value={values.content}
                   autoComplete="off"
                   autoFocus
-                  style={{ width: "100%" }}
+                  style={{ width: '100%' }}
                 />
                 <Button
                   type="submit"
                   className="btn-circle"
                   onClick={submitForm}
                   disabled={!values.content}
-                  style={{ position: "fixed", bottom: "10px", right: ".5em" }}
+                  style={{ position: 'fixed', bottom: '10px', right: '.5em' }}
                 >
                   <FontAwesomeIcon icon={faPaperPlane} />
                 </Button>

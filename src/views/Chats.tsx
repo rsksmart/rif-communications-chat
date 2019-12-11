@@ -3,9 +3,11 @@ import { Button, Image, ListGroup } from 'react-bootstrap';
 
 import UserProvider from 'providers/UserProvider';
 import ContactModal from 'components/ContactModal';
+import PortModal from 'components/PortModal';
 import labitconf from 'assets/labitconf.png';
 
 import { ROUTES, history } from 'routes';
+import RnsModal from 'components/RnsModal';
 
 export default () => (
   <UserProvider.Consumer>
@@ -22,14 +24,17 @@ export default () => (
             <p>
               Welcome to the RIF Communications laBITconf developers preview.
             </p>
-            <Button
-              onClick={async () => {
-                await createUser();
-                history.push(ROUTES.PROFILE);
+            <span
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
               }}
             >
-              Create new identity
-            </Button>
+              <RnsModal isNew />
+              <span>or</span>
+              <PortModal importOnly />
+            </span>
           </>
         )}
         {user && (
