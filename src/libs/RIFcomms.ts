@@ -37,12 +37,11 @@ export function createPeerInfo(pId: PeerId): Promise<PeerInfo> {
   });
 }
 
-export function createPeerIdFromJSON(): Promise<PeerId> {
-  const jsonObject = JSON.parse(localStorage.getItem('keystore') || '{}');
+export function createPeerIdFromJSON(keystoreJson): Promise<PeerId> {
   return new Promise<PeerId>((resolve, reject) => {
-    createFromJSON(jsonObject, (err: Error, peerId: PeerId) => {
+    createFromJSON(keystoreJson, (err: Error, peerId: PeerId) => {
       if (err) {
-        reject();
+        reject(err);
       } else {
         resolve(peerId);
       }

@@ -31,13 +31,12 @@ class Profile extends React.Component<IProfileProps> {
     // This should never happen as we are intercepting in the componentDidMount,
     // but typescript does not like not having check here
     if (!user) {
-      history.push(ROUTES.CHATS);
       return null;
     }
 
     return (
       <div style={{ textAlign: 'center' }}>
-        <ContactDetails user={user} changeRNS={changeRNS} />
+        <ContactDetails user={user} />
         <h2 style={{ marginTop: '2em' }}>
           Contacs: <ContactModal />
         </h2>
