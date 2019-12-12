@@ -91,6 +91,7 @@ export default (props: IProps) => {
             }}
           >
             {({
+              handleSubmit,
               handleChange,
               handleBlur,
               values,
@@ -108,7 +109,7 @@ export default (props: IProps) => {
                 </Button>
 
                 <Modal show={show} onHide={handleClose}>
-                  <form>
+                  <Form onSubmit={handleSubmit}>
                     <Modal.Header closeButton>
                       <Modal.Title>Create new Contact</Modal.Title>
                     </Modal.Header>
@@ -154,12 +155,11 @@ export default (props: IProps) => {
                         type="submit"
                         className="ml-auto justify-content-end"
                         disabled={!isValid}
-                        onClick={submitForm}
                       >
                         Add contact
                       </Button>
                     </Modal.Footer>
-                  </form>
+                  </Form>
                 </Modal>
               </>
             )}
