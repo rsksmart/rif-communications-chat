@@ -114,11 +114,11 @@ export default (props: IProps) => {
                       <Modal.Title>Create new Contact</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                      Eter RNS name to search for contact
+                      Enter RNS name of your friend to connect
                       <InputGroup className="mb-3" style={{ marginTop: '1em' }}>
                         <FormControl
-                          placeholder="Your name"
-                          aria-label="Your name"
+                          placeholder="Your friend's name"
+                          aria-label="Your friend's name"
                           aria-describedby="basic-addon2"
                           name="rnsName"
                           onChange={event => {
