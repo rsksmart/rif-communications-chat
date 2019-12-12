@@ -30,10 +30,12 @@ class Chat extends React.Component<IChatProps> {
   componentDidMount() {
     if (!this.props.user) history.push(ROUTES.CHATS);
   }
+
   public render() {
     const { user, contact, addMessage } = this.props;
     if (!user) return null;
     if (!contact) return <p>Couldn't find requested user</p>;
+
     return (
       <div>
         <h5 style={{ paddingLeft: '8px', paddingRight: '8px' }}>
@@ -50,6 +52,11 @@ class Chat extends React.Component<IChatProps> {
           {contact.chat.map((m, i) => (
             <ChatBubble message={m} key={i} index={i} />
           ))}
+          <div
+            ref={el => {
+              if (el) el.scrollIntoView();
+            }}
+          />
         </div>
         <div
           style={{
