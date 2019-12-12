@@ -27,12 +27,6 @@ interface FormValues {
 interface IChatRouteProps extends RouteComponentProps<{ rnsName: string }> {}
 
 class Chat extends React.Component<IChatProps> {
-  scrollToArea;
-
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     if (!this.props.user) history.push(ROUTES.CHATS);
   }
