@@ -258,6 +258,7 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
         },
         async () => {
           await this.connectToNode();
+          history.push(ROUTES.PROFILE);
         },
       );
     }
