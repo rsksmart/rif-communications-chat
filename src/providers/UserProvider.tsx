@@ -6,7 +6,10 @@ import * as RifCommunications from 'libs/RIFcomms';
 import User from 'models/User';
 import { PeerId } from 'peer-id';
 import { create, PeerInfo } from 'peer-info';
-import Contact, { IContactParams, createContactFromID } from 'models/Contact';
+import Contact, {
+  IContactParams,
+  createContactFromPublicKey,
+} from 'models/Contact';
 import Message, { MESSAGE_SENDER } from 'models/Message';
 import { sendMsg } from 'libs/RIFcomms';
 import { addUserName } from '../services/UserService';
@@ -23,6 +26,8 @@ export interface IUserProvider {
     readonly clientNode?: libp2p;
     contacts: Contact[];
     sentMsgs: number;
+    reconnectionInterval: number;
+    timer: any;
   };
   actions: {
     createUser: () => Promise<void>;
@@ -54,7 +59,9 @@ const { Provider, Consumer } = createContext<IUserProvider>({
   state: {
     clientNode: undefined,
     contacts: [],
+    reconnectionInterval: 10000,
     sentMsgs: 0,
+    timer: undefined,
     user: undefined,
   },
 });
@@ -63,6 +70,8 @@ interface IUserProviderProps {}
 interface IUserProviderState {
   contacts: Contact[];
   sentMsgs: number;
+  reconnectionInterval: number;
+  timer: any;
   user?: User;
   clientNode?: libp2p;
 }
@@ -73,6 +82,8 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
 
     this.state = {
       contacts: [],
+      reconnectionInterval: 10000,
+      timer: undefined,
       sentMsgs: 0,
     };
 
@@ -113,6 +124,8 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
     const { contacts } = this.state;
     const { clientNode } = this.state;
     const { sentMsgs } = this.state;
+    const { reconnectionInterval } = this.state;
+    const { timer } = this.state;
     const { addContact, getContact, addMessage } = this;
     const { exportUser, importUser } = this;
 
@@ -134,6 +147,8 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
             contacts,
             sentMsgs,
             user,
+            reconnectionInterval,
+            timer,
           },
         }}
       >
@@ -168,11 +183,11 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
       c =>
         c.peerInfo &&
         c.peerInfo.id &&
-        c.peerInfo.id._idB58String === kadMsgObj.sender,
+        c.peerInfo.id.publicKey === kadMsgObj.sender,
     );
 
     if (!contact) {
-      contact = await createContactFromID(kadMsgObj.sender);
+      contact = await createContactFromPublicKey(kadMsgObj.sender);
 
       contacts = [...contacts, contact].sort((a, b) => {
         if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
@@ -202,11 +217,29 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
         message.content,
         this.state.sentMsgs,
         true,
-      );
+      ).catch(error => {
+        console.log('Unable to dial contact, try to reconnect to bootnode');
+        //Option number 1, try to reconnect if sending fails
+        this.connectToNode().catch(connErr => {
+          console.log('Unable to reconnect to node');
+        });
+      });
 
       this.setState({
         sentMsgs: this.state.sentMsgs + 1,
       });
+    }
+  }
+
+  private async reconnectToNode() {
+    const bootNodeAddr: string = process.env.REACT_APP_BOOTNODE_ADDR
+      ? process.env.REACT_APP_BOOTNODE_ADDR
+      : '/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw';
+    if (this.state.clientNode.peerBook.has(bootNodeAddr)) {
+      const pInfo: PeerInfo = this.state.clientNode.peerBook.get(bootNodeAddr);
+      if (!pInfo.isConnected()) {
+        await this.connectToNode();
+      }
     }
   }
 
@@ -258,6 +291,16 @@ class UserProvider extends Component<IUserProviderProps, IUserProviderState> {
         },
         async () => {
           await this.connectToNode();
+
+          //Set timer to reconnect to bootnode if not connected
+          /*const timerInstance = setInterval(
+            () => async () => {
+              await this.reconnectToNode();
+            },
+            this.state.reconnectionInterval,
+          );
+          this.setState({ timer: timerInstance });*/
+
           history.push(ROUTES.PROFILE);
         },
       );

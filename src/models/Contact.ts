@@ -33,13 +33,9 @@ export default class Contact implements IUserInfo {
   }
 }
 
-export const createContactFromID = async (id: string) => {
-  const pid = createFromB58String(id);
-  const publicKey = crypto.keys
-    .marshalPublicKey(pid.pubKey, 'secp256k1')
-    .toString('base64');
-
+export const createContactFromPublicKey = async (publicKey: string) => {
   const [rnsName] = await getName(publicKey);
+
   return new Contact({
     publicKey,
     rnsName: rnsName.substring(0, rnsName.length - 4),
