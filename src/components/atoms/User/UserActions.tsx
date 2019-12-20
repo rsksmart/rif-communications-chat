@@ -5,6 +5,10 @@ export enum USER_ACTIONS {
   SAY_HELLO = 'sayHeloToUser',
 }
 
+export interface Actions {
+  type: USER_ACTIONS;
+}
+
 export default class UserActions {
   state: IUseState;
   constructor(state) {

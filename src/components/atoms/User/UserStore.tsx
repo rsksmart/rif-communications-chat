@@ -1,16 +1,16 @@
 import React, { useReducer, Dispatch } from 'react';
 
-import { IUserInfo } from 'types';
+import User from './User';
 import userReducer from './UserReducer';
-import { USER_ACTIONS } from './UserActions';
+import { Actions } from './UserActions';
 
 export interface IUseState {
-  user: IUserInfo | undefined;
+  user: User | undefined;
 }
 
 interface IContextProps {
   state: IUseState;
-  dispatch: Dispatch<{ type: USER_ACTIONS }>;
+  dispatch: Dispatch<Actions>;
 }
 
 export const initialState: IUseState = { user: undefined };
