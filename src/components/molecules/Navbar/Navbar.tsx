@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Navbar as BSNavbar } from 'react-bootstrap';
 
-import Nav from 'components/atoms/Nav';
-import LinkContainer from 'components/atoms/LinkContainer';
-import NavLink from 'components/atoms/NavLink';
-import NavBrand from 'components/atoms/NavBrand';
+import Nav from 'components/atoms/navigation/Nav';
+import LinkContainer from 'components/atoms/navigation/LinkContainer';
+import NavLink from 'components/atoms/navigation/NavLink';
+import NavBrand from 'components/atoms/navigation/NavBrand';
 import { ROUTES } from 'routes';
 import UserStore from 'components/atoms/User/UserStore';
 
