@@ -19,16 +19,6 @@ export const initialState: IUseState = {
   contacts: [],
 };
 
-// const getInitialState = () => {
-//   if (!initialState) {
-//     const user: IUserInfo = JSON.parse(
-//       localStorage.getItem('keystore') || '{}',
-//     );
-//     initialState = { user };
-//   }
-//   return initialState;
-// };
-
 const UserStore = React.createContext({} as IUserStoreProps);
 
 export const UserStoreProvider = ({ children }) => {
