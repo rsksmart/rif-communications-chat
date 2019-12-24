@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from 'components/molecules/Navbar';
 
 const Header = () => {
-  return <Navbar></Navbar>;
+  return <Navbar />;
 };
 
 export default Header;

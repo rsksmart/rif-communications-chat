@@ -11,7 +11,7 @@ export interface Actions {
 
 export default class UserActions {
   state: IUseState;
-  constructor(state) {
+  constructor(state: IUseState) {
     this.state = state;
   }
 
@@ -19,4 +19,10 @@ export default class UserActions {
     const { user } = this.state;
     if (user) return `Hello ${user.rnsName}`;
   };
+
+  //   public static getContact = () => (rnsName: string, state: IUserContext) => {
+  //     const { contacts } = state;
+  //     const contact = contacts.find(c => c.rnsName === rnsName);
+  //     return contact;
+  //   };
 }

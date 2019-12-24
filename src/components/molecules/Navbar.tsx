@@ -6,7 +6,7 @@ import LinkContainer from 'components/atoms/navigation/LinkContainer';
 import NavLink from 'components/atoms/navigation/NavLink';
 import NavBrand from 'components/atoms/navigation/NavBrand';
 import { ROUTES } from 'routes';
-import UserStore from 'components/atoms/User/UserStore';
+import UserStore from 'store/User/UserStore';
 
 const Navbar = () => {
   const { state } = useContext(UserStore);
