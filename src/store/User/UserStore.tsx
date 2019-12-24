@@ -4,17 +4,17 @@ import { User, Contact } from 'models/';
 import userReducer from './userReducer';
 import { Actions } from './userActions';
 
-export interface IUseState {
+export interface IUserState {
   user: User | undefined;
   contacts: Contact[];
 }
 
 interface IUserStoreProps {
-  state: IUseState;
+  state: IUserState;
   dispatch: Dispatch<Actions>;
 }
 
-export const initialState: IUseState = {
+export const initialState: IUserState = {
   user: undefined,
   contacts: [],
 };

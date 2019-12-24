@@ -1,6 +1,6 @@
 import UserStore, {
   UserStoreProvider,
-  IUseState,
+  IUserState,
   initialState,
 } from './UserStore';
 
