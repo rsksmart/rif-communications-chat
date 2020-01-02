@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { HTMLAttributes, FC } from 'react';
 
-const SmallText = (children: React.ReactNode, ...props: any[]) => {
+export interface SmallTextProps extends HTMLAttributes<HTMLElement> {}
+
+const SmallText: FC<SmallTextProps> = ({ children, ...props }) => {
   return <small {...props}>{children}</small>;
 };
 

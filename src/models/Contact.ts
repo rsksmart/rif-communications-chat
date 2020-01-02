@@ -1,9 +1,7 @@
-import crypto from 'libp2p-crypto';
 import { createPeerIdFromPublicKey, createPeerInfo } from 'libs/RIFcomms';
 import Message from 'models/Message';
 import Multiaddr from 'multiaddr';
-import { PeerInfo, create } from 'peer-info';
-import { createFromB58String } from 'peer-id';
+import { PeerInfo } from 'peer-info';
 import { IUserInfo } from 'types';
 // import { getName } from 'services/UserService';
 

@@ -1,8 +1,15 @@
-import React from 'react';
-import { ListGroup as BSListGroup } from 'react-bootstrap';
+import React, { FC } from 'react';
+import {
+  ListGroup as BSListGroup,
+  ListGroupProps as BSListGroupProps,
+} from 'react-bootstrap';
 
-const List = (children, ...props) => {
-  return <BSListGroup {...props}>{children}</BSListGroup>;
+export interface ListProps extends BSListGroupProps {
+  className: string;
+}
+
+const List: FC<ListProps> = ({ children, ...rest }) => {
+  return <BSListGroup {...rest}>{children}</BSListGroup>;
 };
 
 export default List;

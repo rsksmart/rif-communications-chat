@@ -1,12 +1,7 @@
-import UserStore, {
-  UserStoreProvider,
-  IUserState,
-  initialState,
-} from './UserStore';
+import UserStore, { UserStoreProvider, initialState } from './UserStore';
 
 export default {
   UserStore,
   UserStoreProvider,
-  IUseState,
   initialState,
 };

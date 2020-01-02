@@ -1,25 +1,15 @@
-import React, { useContext } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useContext, FC } from 'react';
 
 import UserStore from 'store/User/UserStore';
-import PageTemplate from 'components/templates/PageTemplate';
-import { ROUTES } from 'routes';
-import ContactList from 'components/organisms/ContactList';
+import ChatsPageTemplate from 'components/templates/ChatsPageTemplate';
 
-interface ChatsPageProps {}
+export interface ChatsPageProps {}
 
-const ChatsPage = (props: ChatsPageProps) => {
+const ChatsPage: FC<ChatsPageProps> = () => {
   const { state } = useContext(UserStore);
   const { user, contacts } = state;
 
-  return (
-    <>
-      {!user ? <Redirect to={ROUTES.LOGIN} /> : null}
-      <PageTemplate className="chats" style={{ textAlign: 'center' }}>
-        {contacts.length && <ContactList contacts={contacts} />}
-      </PageTemplate>
-    </>
-  );
+  return <ChatsPageTemplate contacts={contacts} user={user} />;
 };
 
 export default ChatsPage;

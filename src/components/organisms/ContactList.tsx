@@ -1,35 +1,38 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useHistory } from 'react-router';
 
-import List from 'components/atoms/List';
+import List, { ListProps } from 'components/atoms/List';
 import { Contact } from 'models';
 import ListItem from 'components/atoms/ListItem';
 import { ROUTES } from 'routes';
+import SmallText from 'components/atoms/SmallText';
+import Heading from 'components/atoms/Heading';
 
-interface ContactListProps {
+export interface ContactListProps extends ListProps {
   contacts: Contact[];
 }
 
-const ContactList = (props: ContactListProps) => {
-  const { contacts } = props;
+const ContactList: FC<ContactListProps> = ({ contacts, ...rest }) => {
   const history = useHistory();
 
   return (
-    <List>
-      {contacts.map((contact: Contact) => {
-        const { rnsName, publicKey, chat } = contact;
-        const nChats = chat.length;
+    <List {...rest}>
+      {!!contacts.length &&
+        contacts.map((contact: Contact) => {
+          const { rnsName, publicKey, chat } = contact;
+          const nChats = chat.length;
+          const lastChatContent = !!nChats && chat[nChats - 1].content;
 
-        return (
-          <ListItem
-            key={publicKey}
-            onClick={() => history.push(ROUTES.CHAT(rnsName))}
-          >
-            <h5>{rnsName ? `${rnsName}.rsk` : ''}</h5>
-            <small>{nChats && chat[nChats - 1].content}</small>
-          </ListItem>
-        );
-      })}
+          return (
+            <ListItem
+              key={publicKey}
+              onClick={() => history.push(ROUTES.CHAT(rnsName))}
+            >
+              <Heading level={5}>{rnsName ? `${rnsName}.rsk` : ''}</Heading>
+              <SmallText>{lastChatContent}</SmallText>
+            </ListItem>
+          );
+        })}
     </List>
   );
 };
