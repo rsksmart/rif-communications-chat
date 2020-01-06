@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { FC, HTMLAttributes } from 'react';
 
-const Heading = ({ level, children, ...props }) =>
-  React.createElement(`h${level}`, props, children);
+export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
+  level: number;
+}
+
+const Heading: FC<HeadingProps> = ({ level, children, ...rest }) =>
+  React.createElement(`h${level}`, rest, children);
 
 export default Heading;

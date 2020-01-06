@@ -10,8 +10,7 @@ export interface NameInputProps {
   tld: string;
 }
 
-const NameInput: FC<NameInputProps> = props => {
-  const { tld, ...rest } = props;
+const NameInput: FC<NameInputProps> = ({ tld, ...rest }) => {
   return (
     <InputGroup className="mb-3">
       <FormControl

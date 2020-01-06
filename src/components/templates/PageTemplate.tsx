@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { FC, HTMLAttributes } from 'react';
 
-const PageTemplate = ({ className, children, ...props }) => {
+export interface PageTemplateProps extends HTMLAttributes<HTMLElement> {}
+
+const PageTemplate: FC<PageTemplateProps> = ({
+  className,
+  children,
+  ...props
+}) => {
   return (
     <div className={`${className}-page`} {...props}>
       {children}

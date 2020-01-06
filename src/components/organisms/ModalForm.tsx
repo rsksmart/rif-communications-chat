@@ -1,27 +1,24 @@
 import React, { FC } from 'react';
-import { useFormik, FormikConfig } from 'formik';
 
 import Button from 'components/atoms/buttons/Button';
-import ModalDialogue from 'components/molecules/ModalDialogue';
+import ModalDialogue from 'components/molecules/ModalForm';
 import { Form } from 'components/atoms/forms';
-import { ModalProps } from 'react-bootstrap';
+import { ModalProps } from 'components/atoms/modal/Modal';
 
 export interface ModalFormProps {
-  formikProps: FormikConfig<Object>;
+  formik: any;
   modalProps: ModalProps;
   submitBtnLabel: string;
   title: string;
 }
 
 const ModalForm: FC<ModalFormProps> = ({
-  formikProps,
+  formik,
   children,
   submitBtnLabel,
   title,
   modalProps,
 }) => {
-  const formik = useFormik(formikProps);
-
   return (
     <ModalDialogue
       title={title}
@@ -36,8 +33,12 @@ const ModalForm: FC<ModalFormProps> = ({
         </Button>
       }
       {...modalProps}
+      wrapper={Form}
+      wrapperProps={{
+        onSubmit: () => formik.handleSubmit(),
+      }}
     >
-      <Form onSubmit={formik.handleSubmit}>{children}</Form>
+      {children}
     </ModalDialogue>
   );
 };
