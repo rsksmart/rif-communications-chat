@@ -4,7 +4,7 @@ import { ROUTES } from 'routes';
 
 import ButtonCircleXL from 'components/atoms/buttons/ButtonCircleXL';
 import ContactList from 'components/organisms/ContactList';
-import NewContactModal from 'components/pages/NewContactModal';
+import AddContactModal from 'components/pages/AddContactModal';
 import PageTemplate from './PageTemplate';
 import PlusIcon from 'components/atoms/icons/PlusIcon';
 
@@ -34,7 +34,7 @@ const ChatsPageTemplate = ({ contacts, user }) => {
         >
           <PlusIcon />
         </ButtonCircleXL>
-        <NewContactModal show={showsNewContact} onHide={hideNewContactModal} />
+        <AddContactModal show={showsNewContact} onHide={hideNewContactModal} />
         <ContactList contacts={contacts} className={'contact-list'} />
       </PageTemplate>
     </>

@@ -6,8 +6,10 @@ import ChatsPageTemplate from 'components/templates/ChatsPageTemplate';
 export interface ChatsPageProps {}
 
 const ChatsPage: FC<ChatsPageProps> = () => {
-  const { state } = useContext(UserStore);
-  const { user, contacts } = state;
+  const {
+    state: { UserState },
+  } = useContext(UserStore);
+  const { user, contacts } = UserState;
 
   return <ChatsPageTemplate contacts={contacts} user={user} />;
 };

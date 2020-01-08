@@ -28,7 +28,7 @@ export const UserStoreProvider = ({ children }) => {
   const { useMiddleware } = Middleware.getInstance();
 
   const [state, dispatch] = useMiddleware(
-    'UserStore',
+    'UserState',
     userReducer,
     initialState,
   );

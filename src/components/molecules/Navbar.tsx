@@ -15,7 +15,9 @@ export interface NavbarProps extends BSNavbarProps {}
 
 const Navbar: FC<NavbarProps> = () => {
   const {
-    state: { user },
+    state: {
+      UserState: { user },
+    },
   } = useContext(UserStore);
 
   return (

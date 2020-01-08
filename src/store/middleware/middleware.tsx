@@ -53,7 +53,7 @@ export default class Middleware {
 
     const [combinedState, combinedDispatch] = this.useCombinedReducers({
       [storeName]: [state, dispatch],
-      AppStore: [appState, action => appDispatch(action)],
+      AppState: [appState, action => appDispatch(action)],
     });
 
     const withMiddleware = dispatch => {
