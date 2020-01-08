@@ -32,12 +32,6 @@ export const addUser = (
 ) => {
   const { rnsName, publicKey } = new_user;
   addUserName(rnsName, publicKey)
-    .then(user => {
-      debugger;
-      dispatch({ type: action.type, payload: user });
-    })
-    .catch(err => {
-      debugger;
-      dispatch({ type: APP_ACTIONS.SET_ERROR, payload: err });
-    });
+    .then(user => dispatch({ type: action.type, payload: user }))
+    .catch(err => dispatch({ type: APP_ACTIONS.SET_ERROR, payload: err }));
 };

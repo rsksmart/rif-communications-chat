@@ -2,7 +2,10 @@ import { useReducer, useRef, useMemo, useEffect } from 'react';
 import { USER_ACTIONS, addUser } from 'store/User/userActions';
 import appReducer from 'store/App/appReducer';
 
-const LOGGING_ENABLED = true || process.env.LOGGING || false;
+const LOGGING_ENABLED =
+  (!!process.env.LOGGING &&
+    process.env.LOGGING.trim().toLocaleLowerCase() === 'true') ||
+  false;
 
 export default class Middleware {
   private static instance: Middleware;
@@ -55,8 +58,6 @@ export default class Middleware {
 
     const withMiddleware = dispatch => {
       return action => {
-        console.log('TCL: Middleware -> useMiddleware -> action', action);
-
         // dispatchMessage({ type: MESSAGING_ACTIONS.SET_IS_LOADING });
         LOGGING_ENABLED && console.log('Action Type:', action.type);
         if (action.type === USER_ACTIONS.ADD_USER) {
