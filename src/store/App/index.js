@@ -1,7 +1,7 @@
-import UserStore, { UserStoreProvider, initialState } from './UserStore';
+import AppStore, { AppStoreProvider, initialState } from './AppStore';
 
 export default {
-  UserStore,
-  UserStoreProvider,
+  AppStore,
+  AppStoreProvider,
   initialState,
 };

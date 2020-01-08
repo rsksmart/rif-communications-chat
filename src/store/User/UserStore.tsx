@@ -1,11 +1,9 @@
-import React, { Dispatch, useContext, useReducer } from 'react';
+import React, { Dispatch } from 'react';
 
 import { User, Contact } from 'models/';
 import userReducer from './userReducer';
 import { Action } from './userActions';
 import Middleware from 'store/middleware/middleware';
-import AppStore from 'store/App/AppStore';
-import appReducer from 'store/App/appReducer';
 
 export interface IUserState {
   user: User | undefined;
@@ -29,8 +27,11 @@ const UserStore = React.createContext({} as IUserStoreProps | any);
 export const UserStoreProvider = ({ children }) => {
   const { useMiddleware } = Middleware.getInstance();
 
-  const [state, dispatch] = useMiddleware(userReducer, initialState);
-  // const [state, dispatch] = useMiddleware(userReducer, initialState);
+  const [state, dispatch] = useMiddleware(
+    'UserStore',
+    userReducer,
+    initialState,
+  );
 
   const value = { state, dispatch };
   return <UserStore.Provider value={value}>{children}</UserStore.Provider>;

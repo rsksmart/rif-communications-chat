@@ -1,15 +1,8 @@
-import {
-  useReducer,
-  useRef,
-  useMemo,
-  useEffect,
-  Dispatch,
-  useContext,
-} from 'react';
+import { useReducer, useRef, useMemo, useEffect } from 'react';
 import { USER_ACTIONS, addUser } from 'store/User/userActions';
-import { Action, APP_ACTIONS } from 'store/App/appActions';
-import AppStore from 'store/App/AppStore';
 import appReducer from 'store/App/appReducer';
+
+const LOGGING_ENABLED = true || process.env.LOGGING || false;
 
 export default class Middleware {
   private static instance: Middleware;
@@ -22,35 +15,6 @@ export default class Middleware {
     }
     return Middleware.instance;
   }
-
-  // useReducerWithLogger = (reducer, initialState) => {
-  //   let prevState = useRef(initialState);
-  //   const [state, dispatch] = useReducer(reducer, initialState);
-
-  //   const withLogger = dispatch => {
-  //     return action => {
-  //       console.groupCollapsed('Action Type:', action.type);
-  //       return dispatch(action);
-  //     };
-  //   };
-
-  //   const dispatchWithLogger = useMemo(() => {
-  //     return withLogger(dispatch);
-  //   }, [dispatch]);
-
-  //   useEffect(() => {
-  //     if (state !== initialState) {
-  //       console.log('Prev state:', prevState.current);
-  //       console.log('Next state:', state);
-  //       console.groupEnd();
-  //     } else {
-  //       console.log('No change:', state);
-  //     }
-  //     prevState.current = state;
-  //   }, [initialState, state]);
-
-  //   return [state, dispatchWithLogger];
-  // };
 
   // From: https://github.com/the-road-to-learn-react/use-combined-reducers/blob/master/src/index.js
   useCombinedReducers = combinedReducers => {
@@ -76,21 +40,7 @@ export default class Middleware {
     return [state, dispatch];
   };
 
-  // useCombinedReducers = reducers => {
-  //   const state = Object.keys(reducers).reduce(
-  //     (acc, key) => ({
-  //       ...acc,
-  //       [key]: reducers[key][0],
-  //     }),
-  //     {},
-  //   );
-  //   const dispatch = Object.keys(reducers).map(key => {
-  //     return reducers[key][1];
-  //   });
-  //   return [state, dispatch];
-  // };
-
-  useMiddleware = (reducer, initialState) => {
+  useMiddleware = (storeName, reducer, initialState) => {
     let prevState = useRef(initialState);
     const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -99,8 +49,8 @@ export default class Middleware {
     });
 
     const [combinedState, combinedDispatch] = this.useCombinedReducers({
-      innerReducer: [state, dispatch],
-      appReducer: [appState, action => appDispatch(action)],
+      [storeName]: [state, dispatch],
+      AppStore: [appState, action => appDispatch(action)],
     });
 
     const withMiddleware = dispatch => {
@@ -108,7 +58,7 @@ export default class Middleware {
         console.log('TCL: Middleware -> useMiddleware -> action', action);
 
         // dispatchMessage({ type: MESSAGING_ACTIONS.SET_IS_LOADING });
-        console.log('Action Type:', action.type);
+        LOGGING_ENABLED && console.log('Action Type:', action.type);
         if (action.type === USER_ACTIONS.ADD_USER) {
           // const { new_user } = initialState;
           // if (new_user) addUser(initialState, dispatch, action);
@@ -128,11 +78,13 @@ export default class Middleware {
     }, [combinedDispatch]);
 
     useEffect(() => {
-      if (combinedState !== initialState) {
-        console.log('Prev state:', prevState.current);
-        console.log('Next state:', combinedState);
-      } else {
-        console.log('No change:', combinedState);
+      if (LOGGING_ENABLED) {
+        if (combinedState !== initialState) {
+          console.log('Prev state:', prevState.current);
+          console.log('Next state:', combinedState);
+        } else {
+          console.log('No change:', combinedState);
+        }
       }
       prevState.current = combinedState;
     }, [initialState, combinedState]);
