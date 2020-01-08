@@ -17,7 +17,7 @@ const ContactList: FC<ContactListProps> = ({ contacts, ...rest }) => {
 
   return (
     <List {...rest}>
-      {!!contacts.length &&
+      {!!(contacts && contacts.length) &&
         contacts.map((contact: Contact) => {
           const { rnsName, publicKey, chat } = contact;
           const nChats = chat.length;
