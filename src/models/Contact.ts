@@ -1,4 +1,4 @@
-import { createPeerIdFromPublicKey, createPeerInfo } from 'libs/RIFcomms';
+import { createPeerIdFromPublicKey, createPeerInfo } from 'api/RIFcomms';
 import Message from 'models/Message';
 import Multiaddr from 'multiaddr';
 import { PeerInfo } from 'peer-info';

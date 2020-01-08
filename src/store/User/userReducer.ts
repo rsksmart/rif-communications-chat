@@ -1,11 +1,20 @@
 import { initialState } from './UserStore';
-import UserActions, { USER_ACTIONS } from './userActions';
+import { USER_ACTIONS, sayHeloToUser } from './userActions';
 
 const userReducer = (state = initialState, action: { type: USER_ACTIONS }) => {
-  const actions = new UserActions(state);
   switch (action.type) {
+    case USER_ACTIONS.ADD_USER:
+      state = {
+        ...state,
+        user: {
+          rnsName: 'EXISTING ONE',
+          pi: 'EXISTING ONE',
+          publicKey: 'EXISTING ONE',
+        },
+      };
+      break;
     default:
-      actions.sayHeloToUser();
+      sayHeloToUser(initialState);
       return state;
   }
 };

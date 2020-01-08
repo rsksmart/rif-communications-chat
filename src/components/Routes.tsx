@@ -5,6 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 // import Chat from 'views/Chat';
 import ChatsPage from 'components/pages/ChatsPage';
 import { ROUTES } from 'routes';
+import LoginPage from 'components/pages/LoginPage';
 // import Profile from 'views/Profile';
 // import Example from 'views/Example';
 // import NotFound from 'views/NotFound';
@@ -13,6 +14,7 @@ import { ROUTES } from 'routes';
 export default () => (
   <Switch>
     <Route exact path={ROUTES.CHATS} component={ChatsPage} />
+    <Route exact path={ROUTES.LOGIN} component={LoginPage} />
     {/* <Route exact path={ROUTES.EXAMPLE} component={Example} />
     <Route exact path={ROUTES.PROFILE} component={Profile} />
     <Route path={ROUTES.CHAT()} component={Chat} />
