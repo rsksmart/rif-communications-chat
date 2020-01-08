@@ -2,9 +2,9 @@ import { useReducer, useRef, useMemo, useEffect } from 'react';
 import { USER_ACTIONS, addUser } from 'store/User/userActions';
 import appReducer from 'store/App/appReducer';
 
-const LOGGING_ENABLED =
-  (!!process.env.LOGGING &&
-    process.env.LOGGING.trim().toLocaleLowerCase() === 'true') ||
+const LOGGING_ENABLED: boolean =
+  (!!process.env.REACT_APP_LOGGING &&
+    process.env.REACT_APP_LOGGING === 'true') ||
   false;
 
 export default class Middleware {

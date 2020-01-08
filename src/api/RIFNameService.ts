@@ -44,9 +44,6 @@ export const addUserName = async (
         throw Error(await response.json());
       })
       .then(body => resolve(body))
-      .catch(err => {
-        console.error(err);
-        reject(err);
-      });
+      .catch(err => reject(err));
   });
 };
