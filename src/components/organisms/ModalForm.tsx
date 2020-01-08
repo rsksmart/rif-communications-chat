@@ -28,6 +28,10 @@ const ModalForm: FC<ModalFormProps> = ({
           type="submit"
           className="ml-auto justify-content-end"
           disabled={!formik.isValid}
+          onClick={event => {
+            // event.preventDefault();
+            return false;
+          }}
         >
           {submitBtnLabel}
         </Button>

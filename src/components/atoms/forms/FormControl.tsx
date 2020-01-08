@@ -1,21 +1,19 @@
 import React, { FC, FormHTMLAttributes } from 'react';
 import {
-  FormControl as BSFormControl,
+  Form as BSForm,
   FormControlProps as BSFormControlProps,
 } from 'react-bootstrap';
 
 export interface FormControlProps extends BSFormControlProps {
   autoFocus?: boolean;
   required?: boolean;
+  as?: any;
+  rows?: any;
 }
 
 const FormControl: FC<FormControlProps &
-  FormHTMLAttributes<HTMLInputElement>> = ({
-  autoFocus,
-  required,
-  ...rest
-}) => {
-  return <BSFormControl autoFocus={autoFocus} required={required} {...rest} />;
+  FormHTMLAttributes<HTMLInputElement>> = ({ ...rest }) => {
+  return <BSForm.Control {...rest} />;
 };
 
 export default FormControl;

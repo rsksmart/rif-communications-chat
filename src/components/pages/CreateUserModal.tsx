@@ -11,10 +11,13 @@ import {
 } from 'components/atoms/forms';
 import { fetchUserByName } from 'api/RIFNameService';
 import { useFormik } from 'formik';
+import AppStore from 'store/App/AppStore';
+import { USER_ACTIONS } from 'store/User/userActions';
 
-export interface NewContactModalProps {
+export interface CreateUserModalProps {
   show: boolean;
   onHide: () => void;
+  onSubmit: () => void;
 }
 
 interface FormValues {
@@ -24,18 +27,25 @@ interface FormValues {
 
 interface FormErrors extends FormValues {}
 
-const NewContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
-  const userStore = useContext(UserStore);
+const CreateUserModal = ({ show, onHide, onSubmit }) => {
+  const {
+    state: { UserState, AppState },
+    dispatch,
+  } = useContext(UserStore);
   const [publicKey, setPublicKey] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+
+  // const { isLoading } = appState;
 
   let errors: FormErrors = {};
   const formikProps = {
     initialErrors: {},
     initialValues: {},
-    onSubmit: () => {
+    onSubmit: e => {
       debugger;
+      onSubmit(e);
+      onHide();
     },
+    // TODO: this can be DRY-ed more (extract all validations)
     validate: async ({ rnsName }: FormValues) => {
       if (!rnsName) {
         errors.rnsName = 'Required';
@@ -43,15 +53,7 @@ const NewContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
         errors.rnsName =
           'Min 3 alphanumeric characters plus optional ".", "_" and "-" only.';
       } else {
-        try {
-          setIsLoading(true);
-          const contactPK = await fetchUserByName(rnsName);
-          setPublicKey(contactPK);
-        } catch (e) {
-          errors.rnsName = 'User could not be found.';
-        } finally {
-          setIsLoading(false);
-        }
+        dispatch(USER_ACTIONS.CHECK_RNS);
       }
       return errors;
     },
@@ -60,7 +62,7 @@ const NewContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
   const formik = useFormik(formikProps);
 
   const modalTemplateProps: ModalFormTemplateProps = {
-    className: 'new-contact',
+    className: 'create-user',
     modalFormProps: {
       formik,
       //TODO: prop-drilling here. use context?
@@ -68,45 +70,49 @@ const NewContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
         show,
         onHide,
       },
-      submitBtnLabel: 'Add contact',
-      title: 'Create new Contact',
+      submitBtnLabel: 'Get',
+      title: 'Get your RNS pseudonym now!',
     },
   };
 
+  const {
+    handleChange,
+    handleBlur,
+    values: { rnsName },
+  } = formik;
   return (
     <ModalFormTemplate {...modalTemplateProps}>
-      <InputGroup>
+      Writing long-strings is not fun, make it easy for your friends and choose
+      your RNS pseudonym. They will be able to chat with you more easily.
+      <InputGroup className="mb-3" style={{ marginTop: '1em' }}>
         <FormControl
-          placeholder="Your friend's name"
-          aria-label="Your friend's name"
+          placeholder="Your name"
+          aria-label="Your name"
           aria-describedby="basic-addon2"
           name="rnsName"
           onChange={event => {
             let { value } = event.target;
+
             event.target.value = value.toLowerCase();
-            errors.rnsName = '';
-            setPublicKey('');
-            formik.handleChange(event);
+            handleChange(event);
           }}
-          onBlur={formik.handleBlur}
-          defaultValue={formik.values.rnsName}
+          onBlur={handleBlur}
+          defaultValue={rnsName}
           autoComplete="off"
           autoFocus
           required
         />
+        {/* TODO: this can be DRY-ed more (see other modal pages)  */}
         <InputGroupAppend>
           <InputGroupText id="basic-addon2">.rsk</InputGroupText>
         </InputGroupAppend>
         {errors.rnsName && (
           <small style={{ color: 'red' }}>{errors.rnsName}</small>
         )}
-        {/* {!errors.rnsName && publicKey && (
-          <PublicKey publicKey={publicKey} paddingLeft="0em" />
-        )} */}
-        {isLoading && <small>Fetching user...</small>}
+        {/* {isLoading && <small>Waiting for server...</small>} */}
       </InputGroup>
     </ModalFormTemplate>
   );
 };
 
-export default NewContactModal;
+export default CreateUserModal;

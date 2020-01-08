@@ -1,16 +1,12 @@
 import { initialState } from './UserStore';
-import { USER_ACTIONS, sayHeloToUser } from './userActions';
+import { USER_ACTIONS, sayHeloToUser, Action } from './userActions';
 
-const userReducer = (state = initialState, action: { type: USER_ACTIONS }) => {
+const userReducer = (state = initialState, action: Action) => {
   switch (action.type) {
-    case USER_ACTIONS.ADD_USER:
+    case USER_ACTIONS.CREATE_RNS:
       state = {
         ...state,
-        user: {
-          rnsName: 'EXISTING ONE',
-          pi: 'EXISTING ONE',
-          publicKey: 'EXISTING ONE',
-        },
+        user: action.payload,
       };
       break;
     default:

@@ -2,16 +2,18 @@
 import { IUserState } from './UserStore';
 import { addUserName } from 'api/RIFNameService';
 import { APP_ACTIONS } from 'store/App/appActions';
+import { User } from 'models';
 
 export enum USER_ACTIONS {
-  SAY_HELLO = 'sayHeloToUser',
-  ADD_USER = 'addUserName',
-  ERROR = 'handleError',
+  SAY_HELLO = 'SAY_HELLO',
+  CREATE_RNS = 'CREATE_RNS',
+  ERROR = 'ERROR',
+  CHECK_RNS = 'CHECK_RNS',
 }
 
 export interface Action {
   type: USER_ACTIONS;
-  payload?: any;
+  payload?: User;
 }
 
 export const sayHeloToUser = (initialState: IUserState | any) => {

@@ -60,7 +60,7 @@ export default class Middleware {
       return action => {
         // dispatchMessage({ type: MESSAGING_ACTIONS.SET_IS_LOADING });
         LOGGING_ENABLED && console.log('Action Type:', action.type);
-        if (action.type === USER_ACTIONS.ADD_USER) {
+        if (action.type === USER_ACTIONS.CREATE_RNS) {
           // const { new_user } = initialState;
           // if (new_user) addUser(initialState, dispatch, action);
           addUser(
