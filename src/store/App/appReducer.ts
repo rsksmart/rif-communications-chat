@@ -29,5 +29,6 @@ const appReducer = (state = initialState, action: Action) => {
         return state;
     }
   }
+  return state;
 };
 export default appReducer;

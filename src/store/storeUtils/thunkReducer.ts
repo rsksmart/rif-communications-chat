@@ -6,7 +6,7 @@ import {
 } from 'store/User/userActions';
 import { IAction } from './IAction';
 
-const { CONNECT_TO_NODE, CREATE_RNS, CHECK_RNS } = USER_ACTIONS;
+const { ADD_USER, CHECK_RNS, CONNECT_TO_NODE, CREATE_RNS } = USER_ACTIONS;
 
 // FIXME: Thunk reducer should also process only those actions that require it.
 const thunkReducer = async (state, dispatch, action: IAction) => {
@@ -18,20 +18,24 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
       case CONNECT_TO_NODE:
         await connectToNode(state);
       case CREATE_RNS:
-        createRns(payload, state, dispatch);
-        // const { new_user } = initialState;
-        // if (new_user) addUser(initialState, dispatch, action);
-        addUser(
-          { rnsName: 'fancyname', publicKey: '324453' },
-          dispatch,
-          action,
-        );
+        const { rnsName } = payload;
+        await createRns(rnsName, state, dispatch);
+        state = {
+          ...state,
+          user: { rnsName },
+        };
+        return dispatch(USER_ACTIONS.ADD_USER);
+      case ADD_USER:
+        const { user } = state;
+        await addUser(user, dispatch, action);
+
       case CHECK_RNS:
         if (payload && payload.user && payload.user.rnsName) {
         }
       default:
-        return dispatch(action);
+      // return dispatch(action);
     }
   }
+  return state;
 };
 export default thunkReducer;

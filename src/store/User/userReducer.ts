@@ -11,13 +11,10 @@ const userReducer = (state = initialState, action: IUserAction) => {
   if (type) {
     switch (type) {
       case SET_CLIENT_NODE:
-        if (payload && payload.clientNode && payload.user) {
-          state = {
-            ...state,
-            clientNode: payload.clientNode,
-            user: payload.user,
-          };
-        }
+        state = {
+          ...state,
+          ...payload,
+        };
         return state;
       case CREATE_RNS:
         if (payload && payload.user) {
@@ -32,5 +29,6 @@ const userReducer = (state = initialState, action: IUserAction) => {
         return state;
     }
   }
+  return state;
 };
 export default userReducer;

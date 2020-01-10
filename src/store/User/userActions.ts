@@ -28,6 +28,7 @@ export enum USER_ACTIONS {
   CREATE_USER_NODE = 'CREATE_USER_NODE',
   SET_CLIENT_NODE = 'SET_CLIENT_NODE',
   CONNECT_TO_NODE = 'CONNECT_TO_NODE',
+  ADD_USER = 'ADD_USER',
 }
 
 export interface IUserAction extends IAction {
@@ -67,24 +68,16 @@ const createUser = async (rnsName: string, state, dispatch) => {
   const node: libp2p | undefined = await createNode(user);
 
   if (node) {
+    const payload = {
+      clientNode: node,
+      user,
+    };
+    debugger;
     dispatch({
       type: USER_ACTIONS.SET_CLIENT_NODE,
-      payload: {
-        clientNode: node,
-        user,
-      },
+      payload,
     });
-
-    // useEffect(() => {
-    //   if (
-    //     !state.isConnected &&
-    //     state.clientNode &&
-    //     state.user &&
-    //     state.keystore
-    //   ) {
-    //     dispatch({ type: USER_ACTIONS.CONNECT_TO_NODE });
-    //   }
-    // }, [state, dispatch]);
+    dispatch({ type: USER_ACTIONS.CONNECT_TO_NODE });
   }
 };
 
