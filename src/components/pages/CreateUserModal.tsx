@@ -2,7 +2,7 @@ import React, { FC, useContext, useState } from 'react';
 import ModalFormTemplate, {
   ModalFormTemplateProps,
 } from 'components/templates/ModalFormTemplate';
-import UserStore from 'store/User/UserStore';
+import UserStore, { IUserState, initialState } from 'store/User/UserStore';
 import {
   InputGroup,
   FormControl,
@@ -17,7 +17,6 @@ import { USER_ACTIONS } from 'store/User/userActions';
 export interface CreateUserModalProps {
   show: boolean;
   onHide: () => void;
-  onSubmit: () => void;
 }
 
 interface FormValues {
@@ -27,7 +26,7 @@ interface FormValues {
 
 interface FormErrors extends FormValues {}
 
-const CreateUserModal = ({ show, onHide, onSubmit }) => {
+const CreateUserModal = ({ show, onHide }) => {
   const {
     state: { UserState, AppState },
     dispatch,
@@ -40,9 +39,15 @@ const CreateUserModal = ({ show, onHide, onSubmit }) => {
   const formikProps = {
     initialErrors: {},
     initialValues: {},
-    onSubmit: e => {
-      debugger;
-      onSubmit(e);
+    onSubmit: ({ rnsName }: FormValues) => {
+      const payload: IUserState = {
+        ...initialState,
+        user: { rnsName, pi: null, publicKey: null },
+      };
+      dispatch({
+        type: USER_ACTIONS.CREATE_RNS,
+        payload,
+      });
       onHide();
     },
     // TODO: this can be DRY-ed more (extract all validations)
@@ -53,7 +58,7 @@ const CreateUserModal = ({ show, onHide, onSubmit }) => {
         errors.rnsName =
           'Min 3 alphanumeric characters plus optional ".", "_" and "-" only.';
       } else {
-        dispatch(USER_ACTIONS.CHECK_RNS);
+        dispatch({ type: USER_ACTIONS.CHECK_RNS, payload: { name: rnsName } });
       }
       return errors;
     },

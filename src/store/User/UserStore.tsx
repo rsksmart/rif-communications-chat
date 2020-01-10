@@ -1,24 +1,25 @@
 import React, { Dispatch } from 'react';
+import libp2p from 'libp2p';
 
 import { User, Contact } from 'models/';
 import userReducer from './userReducer';
-import { Action } from './userActions';
-import Middleware from 'store/middleware/middleware';
+import { IUserAction } from './userActions';
+import Middleware from 'store/storeUtils/middleware';
 
 export interface IUserState {
   user: User | undefined;
-  new_user: User | undefined;
+  clientNode?: libp2p;
   contacts: Contact[];
+  isConnected?: boolean;
 }
 
 interface IUserStoreProps {
   state: IUserState;
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<IUserAction>;
 }
 
 export const initialState: IUserState = {
   user: undefined,
-  new_user: undefined,
   contacts: [],
 };
 

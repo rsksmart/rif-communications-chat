@@ -1,6 +1,7 @@
 import { useReducer, useRef, useMemo, useEffect } from 'react';
 import { USER_ACTIONS, addUser } from 'store/User/userActions';
 import appReducer from 'store/App/appReducer';
+import thunkReducer from './thunkReducer';
 
 const LOGGING_ENABLED: boolean =
   (!!process.env.REACT_APP_LOGGING &&
@@ -60,17 +61,8 @@ export default class Middleware {
       return action => {
         // dispatchMessage({ type: MESSAGING_ACTIONS.SET_IS_LOADING });
         LOGGING_ENABLED && console.log('Action Type:', action.type);
-        if (action.type === USER_ACTIONS.CREATE_RNS) {
-          // const { new_user } = initialState;
-          // if (new_user) addUser(initialState, dispatch, action);
-          addUser(
-            { rnsName: 'fancyname', publicKey: '324453' },
-            dispatch,
-            action,
-          );
-        } else {
-          return dispatch(action);
-        }
+        LOGGING_ENABLED && console.log('Action Payload:', action.payload);
+        thunkReducer(state, dispatch, action);
       };
     };
 

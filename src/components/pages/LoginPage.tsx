@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useReducer } from 'react';
 import { Logo } from 'rifui';
 import PageTemplate from 'components/templates/PageTemplate';
 import CreateUserModal from 'components/pages/CreateUserModal';
@@ -6,13 +6,13 @@ import UserStore from 'store/User/UserStore';
 import Button from 'components/atoms/buttons/Button';
 import ImportUserModal from './ImportUserModal';
 import { USER_ACTIONS } from 'store/User/userActions';
+import userReducer from 'store/User/userReducer';
 
 const LoginPage = () => {
   const userStore = useContext(UserStore);
-  const {
-    state: { user },
-    dispatch,
-  } = userStore;
+  const { state } = userStore;
+
+  const { user } = state;
 
   const [displayCreateUser, setDisplayCreateUser] = useState(false);
   const [displayImportUser, setDisplayImportUser] = useState(false);
@@ -22,12 +22,8 @@ const LoginPage = () => {
   const showImportUserModal = () => setDisplayImportUser(true);
   const hideImportUserModal = () => setDisplayImportUser(false);
 
-  const createUser = rnsName => {
-    debugger;
-    dispatch(USER_ACTIONS.CREATE_RNS);
-  };
-
   return (
+    // TODO: Extract template
     <PageTemplate
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
       className="login"
@@ -54,7 +50,6 @@ const LoginPage = () => {
         <CreateUserModal
           show={displayCreateUser}
           onHide={hideCreateUserModal}
-          onSubmit={createUser}
         />
         <span>or</span>
         <Button
