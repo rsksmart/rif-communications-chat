@@ -7,9 +7,9 @@ export interface FormProps
 
 const Form: FC<FormProps> = ({ children, className, ...props }) => {
   return (
-    <form className={`${className}-form`} {...props}>
+    <BSForm className={`${className}-form`} {...props}>
       {children}
-    </form>
+    </BSForm>
   );
 };
 

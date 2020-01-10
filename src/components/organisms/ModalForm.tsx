@@ -20,30 +20,25 @@ const ModalForm: FC<ModalFormProps> = ({
   modalProps,
 }) => {
   return (
-    <ModalDialogue
-      title={title}
-      footer={
-        <Button
-          variant="primary"
-          type="submit"
-          className="ml-auto justify-content-end"
-          disabled={!formik.isValid}
-          onClick={event => {
-            // event.preventDefault();
-            return false;
-          }}
-        >
-          {submitBtnLabel}
-        </Button>
-      }
-      {...modalProps}
-      wrapper={Form}
-      wrapperProps={{
-        onSubmit: () => formik.handleSubmit(),
-      }}
-    >
-      {children}
-    </ModalDialogue>
+    <Form>
+      <ModalDialogue
+        title={title}
+        footer={
+          <Button
+            variant="primary"
+            type="button"
+            className="ml-auto justify-content-end"
+            disabled={!formik.isValid}
+            onClick={formik.submitForm}
+          >
+            {submitBtnLabel}
+          </Button>
+        }
+        {...modalProps}
+      >
+        {children}
+      </ModalDialogue>
+    </Form>
   );
 };
 
