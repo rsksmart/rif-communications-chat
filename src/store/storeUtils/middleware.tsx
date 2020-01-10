@@ -1,12 +1,9 @@
 import { useReducer, useRef, useMemo, useEffect } from 'react';
-import { USER_ACTIONS, addUser } from 'store/User/userActions';
 import appReducer from 'store/App/appReducer';
 import thunkReducer from './thunkReducer';
 
 const LOGGING_ENABLED: boolean =
-  (!!process.env.REACT_APP_LOGGING &&
-    process.env.REACT_APP_LOGGING === 'true') ||
-  false;
+  !!process.env.REACT_APP_LOGGING && process.env.REACT_APP_LOGGING === 'true';
 
 export default class Middleware {
   private static instance: Middleware;
@@ -44,7 +41,7 @@ export default class Middleware {
     return [state, dispatch];
   };
 
-  useMiddleware = (storeName, reducer, initialState) => {
+  useMiddleware = (stateName, reducer, initialState) => {
     let prevState = useRef(initialState);
     const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -53,7 +50,7 @@ export default class Middleware {
     });
 
     const [combinedState, combinedDispatch] = this.useCombinedReducers({
-      [storeName]: [state, dispatch],
+      [stateName]: [state, dispatch],
       AppState: [appState, action => appDispatch(action)],
     });
 

@@ -7,6 +7,7 @@ export interface IAppMessage {
   isError?: boolean;
   isLoading?: boolean;
   message?: string;
+  formError?: any;
 }
 
 interface IAppState {

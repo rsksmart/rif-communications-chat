@@ -9,9 +9,7 @@ import {
   InputGroupAppend,
   InputGroupText,
 } from 'components/atoms/forms';
-import { fetchUserByName } from 'api/RIFNameService';
 import { useFormik } from 'formik';
-import AppStore from 'store/App/AppStore';
 import { USER_ACTIONS } from 'store/User/userActions';
 
 export interface CreateUserModalProps {
@@ -26,16 +24,16 @@ interface FormValues {
 
 interface FormErrors extends FormValues {}
 
-const CreateUserModal = ({ show, onHide }) => {
+const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
   const {
     state: { UserState, AppState },
     dispatch,
   } = useContext(UserStore);
-  const [publicKey, setPublicKey] = useState('');
+
+  const formErrors: FormErrors = {};
 
   // const { isLoading } = appState;
 
-  let errors: FormErrors = {};
   const formikProps = {
     initialErrors: {},
     initialValues: {},
@@ -53,14 +51,22 @@ const CreateUserModal = ({ show, onHide }) => {
     // TODO: this can be DRY-ed more (extract all validations)
     validate: async ({ rnsName }: FormValues) => {
       if (!rnsName) {
-        errors.rnsName = 'Required';
+        formErrors.rnsName = 'Required';
       } else if (!RegExp(/^([\w\d.\-_]+){3,20}$/).test(rnsName)) {
-        errors.rnsName =
+        formErrors.rnsName =
           'Min 3 alphanumeric characters plus optional ".", "_" and "-" only.';
       } else {
-        dispatch({ type: USER_ACTIONS.CHECK_RNS, payload: { name: rnsName } });
+        dispatch({
+          type: USER_ACTIONS.CHECK_RNS,
+          payload: {
+            rnsName,
+            errorsCb: (rnsExists: boolean) => {
+              rnsExists && setErrors({ rnsName: 'Already registered.' });
+            },
+          },
+        });
       }
-      return errors;
+      return formErrors;
     },
   };
 
@@ -84,6 +90,8 @@ const CreateUserModal = ({ show, onHide }) => {
     handleChange,
     handleBlur,
     values: { rnsName },
+    errors,
+    setErrors,
   } = formik;
   return (
     <ModalFormTemplate {...modalTemplateProps}>

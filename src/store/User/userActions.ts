@@ -16,9 +16,15 @@ import {
 } from 'api/RIFcomms';
 import { IAction } from 'store/storeUtils/IAction';
 
+// TODO: Extract services !!!
 const BOOTNODE_ADDRESS: string = process.env.REACT_APP_BOOTNODE_ADDR
   ? process.env.REACT_APP_BOOTNODE_ADDR
   : '/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw';
+const TLD = '.rsk';
+const BASE_ADD: string = process.env.REACT_APP_RNS_SERVER
+  ? process.env.REACT_APP_RNS_SERVER
+  : 'http://64.225.35.211:3010';
+const API_ADD = BASE_ADD + '/api';
 
 export enum USER_ACTIONS {
   SAY_HELLO = 'SAY_HELLO',
@@ -46,22 +52,16 @@ export const getContact = () => (rnsName: string, state: IUserState) => {
   return contact;
 };
 
-export const addUser = (
-  new_user: { rnsName; publicKey },
-  dispatch: any,
-  action: any,
-) => {
-  const { rnsName, publicKey } = new_user;
-  addUserName(rnsName, publicKey)
-    .then(user => dispatch({ type: action.type, payload: user }))
-    .catch(err => dispatch({ type: APP_ACTIONS.SET_ERROR, payload: err }));
+export const addUser = (user: User, dispatch: any, action: any) => {
+  const { rnsName, publicKey } = user;
+  if (rnsName && publicKey) {
+    addUserName(rnsName, publicKey)
+      .then(user => dispatch({ type: action.type, payload: user }))
+      .catch(err => dispatch({ type: APP_ACTIONS.SET_ERROR, payload: err }));
+  }
 };
 
-const createUser = async (rnsName: string, state, dispatch) => {
-  // await setupUser(RifCommunications.createKey);
-
-  // const { user, node } = await createPeer(pidCreatFunc, keystore);
-
+export const createUser = async (rnsName, dispatch) => {
   const peerId: PeerId = await createKey();
   const peerInfo: PeerInfo = await createPeerInfo(peerId);
   const user = new User({ pi: peerInfo, rnsName });
@@ -72,7 +72,6 @@ const createUser = async (rnsName: string, state, dispatch) => {
       clientNode: node,
       user,
     };
-    debugger;
     dispatch({
       type: USER_ACTIONS.SET_CLIENT_NODE,
       payload,
@@ -113,12 +112,16 @@ const processKadMsg = (kadMsgObj: any) => {
   // this.setState({ contacts });
 };
 
-export const connectToNode = async state => {
-  if (state.clientNode) {
-    await apiConnectToNode(state.clientNode, BOOTNODE_ADDRESS);
+export const connectToNode = async clientNode => {
+  if (clientNode) {
+    await apiConnectToNode(clientNode, BOOTNODE_ADDRESS);
   }
 };
 
-export const createRns = async (rnsName, state, dispatch) => {
-  await createUser(rnsName, state, dispatch);
+export const checkRns = async rnsName => {
+  return new Promise(resolve => {
+    fetch(`${API_ADD}/domain?domain=${rnsName + TLD}`)
+      .then(res => resolve(res.status === 200))
+      .catch(err => resolve(false));
+  });
 };

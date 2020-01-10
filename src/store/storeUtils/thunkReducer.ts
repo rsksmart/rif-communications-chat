@@ -2,7 +2,8 @@ import {
   USER_ACTIONS,
   addUser,
   connectToNode,
-  createRns,
+  createUser,
+  checkRns,
 } from 'store/User/userActions';
 import { IAction } from './IAction';
 
@@ -16,10 +17,11 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
   if (type) {
     switch (type) {
       case CONNECT_TO_NODE:
-        await connectToNode(state);
+        const { clientName } = state;
+        await connectToNode(clientName);
       case CREATE_RNS:
         const { rnsName } = payload;
-        await createRns(rnsName, state, dispatch);
+        await createUser(rnsName, dispatch);
         state = {
           ...state,
           user: { rnsName },
@@ -28,14 +30,14 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
       case ADD_USER:
         const { user } = state;
         await addUser(user, dispatch, action);
-
       case CHECK_RNS:
-        if (payload && payload.user && payload.user.rnsName) {
-        }
+        checkRns(payload.rnsName).then(isExistingRns => {
+          payload.errorsCb(isExistingRns);
+        });
       default:
-      // return dispatch(action);
+        return dispatch(action);
     }
   }
-  return state;
+  return dispatch(action);
 };
 export default thunkReducer;
