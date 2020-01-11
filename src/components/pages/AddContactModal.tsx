@@ -1,8 +1,7 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import ModalFormTemplate, {
   ModalFormTemplateProps,
 } from 'components/templates/ModalFormTemplate';
-import UserStore from 'store/User/UserStore';
 import {
   InputGroup,
   FormControl,
@@ -25,8 +24,8 @@ interface FormValues {
 interface FormErrors extends FormValues {}
 
 const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
-  const { state, dispatch } = useContext(UserStore);
-  const [publicKey, setPublicKey] = useState('');
+  // const { state, dispatch } = useContext(UserStore);
+  const [, setPublicKey] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   let errors: FormErrors = {};

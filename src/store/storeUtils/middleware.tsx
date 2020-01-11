@@ -41,7 +41,7 @@ export default class Middleware {
     return [state, dispatch];
   };
 
-  useMiddleware = (stateName, reducer, initialState) => {
+  useMiddleware = (stateName: string, reducer, initialState) => {
     let prevState = useRef(initialState);
     const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -54,18 +54,18 @@ export default class Middleware {
       AppState: [appState, action => appDispatch(action)],
     });
 
-    const withMiddleware = dispatch => {
-      return action => {
-        // dispatchMessage({ type: MESSAGING_ACTIONS.SET_IS_LOADING });
-        LOGGING_ENABLED && console.log('Action Type:', action.type);
-        LOGGING_ENABLED && console.log('Action Payload:', action.payload);
-        thunkReducer(state, dispatch, action);
-      };
-    };
-
     const dispatchWithMiddleware = useMemo(() => {
+      const withMiddleware = dispatch => {
+        return action => {
+          // dispatchMessage({ type: MESSAGING_ACTIONS.SET_IS_LOADING });
+          LOGGING_ENABLED && console.log('Action Type:', action.type);
+          LOGGING_ENABLED && console.log('Action Payload:', action.payload);
+          thunkReducer(state, dispatch, action);
+        };
+      };
+
       return withMiddleware(combinedDispatch);
-    }, [combinedDispatch]);
+    }, [combinedDispatch, state]);
 
     useEffect(() => {
       if (LOGGING_ENABLED) {

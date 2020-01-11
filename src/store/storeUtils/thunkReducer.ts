@@ -17,23 +17,22 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
   if (type) {
     switch (type) {
       case CONNECT_TO_NODE:
-        const { clientName } = state;
-        await connectToNode(clientName);
+        const { clientNode } = state;
+        await connectToNode(clientNode);
+        break;
       case CREATE_RNS:
         const { rnsName } = payload;
-        await createUser(rnsName, dispatch);
-        state = {
-          ...state,
-          user: { rnsName },
-        };
-        return dispatch(USER_ACTIONS.ADD_USER);
+        await createUser(rnsName, dispatch, action);
+        break;
       case ADD_USER:
         const { user } = state;
         await addUser(user, dispatch, action);
+        break;
       case CHECK_RNS:
         checkRns(payload.rnsName).then(isExistingRns => {
           payload.errorsCb(isExistingRns);
         });
+        break;
       default:
         return dispatch(action);
     }

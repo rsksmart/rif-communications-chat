@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useContext } from 'react';
 import ModalFormTemplate, {
   ModalFormTemplateProps,
 } from 'components/templates/ModalFormTemplate';
@@ -11,6 +11,8 @@ import {
 } from 'components/atoms/forms';
 import { useFormik } from 'formik';
 import { USER_ACTIONS } from 'store/User/userActions';
+import { ROUTES } from 'routes';
+import { useHistory } from 'react-router-dom';
 
 export interface CreateUserModalProps {
   show: boolean;
@@ -26,9 +28,11 @@ interface FormErrors extends FormValues {}
 
 const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
   const {
-    state: { UserState, AppState },
+    // state: { UserState, AppState },
     dispatch,
   } = useContext(UserStore);
+
+  const history = useHistory();
 
   const formErrors: FormErrors = {};
 
@@ -46,6 +50,7 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
         type: USER_ACTIONS.CREATE_RNS,
         payload,
       });
+      history.push(ROUTES.PROFILE);
       onHide();
     },
     // TODO: this can be DRY-ed more (extract all validations)

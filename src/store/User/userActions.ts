@@ -61,7 +61,7 @@ export const addUser = (user: User, dispatch: any, action: any) => {
   }
 };
 
-export const createUser = async (rnsName, dispatch) => {
+export const createUser = async (rnsName, dispatch, action) => {
   const peerId: PeerId = await createKey();
   const peerInfo: PeerInfo = await createPeerInfo(peerId);
   const user = new User({ pi: peerInfo, rnsName });
@@ -76,8 +76,9 @@ export const createUser = async (rnsName, dispatch) => {
       type: USER_ACTIONS.SET_CLIENT_NODE,
       payload,
     });
-    dispatch({ type: USER_ACTIONS.CONNECT_TO_NODE });
+    await connectToNode(node);
   }
+  addUser(user, dispatch, action);
 };
 
 const createNode = async (user: User) => {
