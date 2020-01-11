@@ -8,7 +8,7 @@ import { ROUTES } from 'routes';
 import LoginPage from 'components/pages/LoginPage';
 // import Profile from 'views/Profile';
 // import Example from 'views/Example';
-// import NotFound from 'views/NotFound';
+import NotFound from 'components/pages/NotFound';
 // import Clear from 'views/Clear';
 
 export default () => (
@@ -19,7 +19,7 @@ export default () => (
     <Route exact path={ROUTES.PROFILE} component={Profile} />
     <Route path={ROUTES.CHAT()} component={Chat} />
     <Route path={ROUTES.CLEAR} component={Clear} />
-
-    <Route component={NotFound} /> */}
+ */}
+    <Route component={NotFound} />
   </Switch>
 );
