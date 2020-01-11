@@ -9,9 +9,9 @@ const ChatsPage: FC<ChatsPageProps> = () => {
   const {
     state: { UserState },
   } = useContext(UserStore);
-  const { user, contacts } = UserState;
+  const { contacts } = UserState;
 
-  return <ChatsPageTemplate contacts={contacts} user={user} />;
+  return <ChatsPageTemplate contacts={contacts} />;
 };
 
 export default ChatsPage;

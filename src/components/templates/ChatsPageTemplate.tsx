@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router';
-import { ROUTES } from 'routes';
 
 import ButtonCircleXL from 'components/atoms/buttons/ButtonCircleXL';
 import ContactList from 'components/organisms/ContactList';
 import AddContactModal from 'components/pages/AddContactModal';
-import PageTemplate from './PageTemplate';
 import PlusIcon from 'components/atoms/icons/PlusIcon';
+import { UserPageTemplate } from './UserPageTemplate';
 
-const ChatsPageTemplate = ({ contacts, user }) => {
+const ChatsPageTemplate = ({ contacts }) => {
   const [showsNewContact, setShowsNewContact] = useState(false);
 
   const showNewContactModal = () => setShowsNewContact(true);
@@ -24,9 +22,7 @@ const ChatsPageTemplate = ({ contacts, user }) => {
         }
         `}
       </style>
-
-      {!user ? <Redirect to={ROUTES.LOGIN} /> : null}
-      <PageTemplate style={{ textAlign: 'center' }} className="chats">
+      <UserPageTemplate style={{ textAlign: 'center' }} className="chats">
         <ButtonCircleXL
           className="new-contact-btn"
           variant="primary"
@@ -36,7 +32,7 @@ const ChatsPageTemplate = ({ contacts, user }) => {
         </ButtonCircleXL>
         <AddContactModal show={showsNewContact} onHide={hideNewContactModal} />
         <ContactList contacts={contacts} className={'contact-list'} />
-      </PageTemplate>
+      </UserPageTemplate>
     </>
   );
 };

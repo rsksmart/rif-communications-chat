@@ -7,7 +7,9 @@ export interface LoginPageProps {}
 
 const LoginPage: FC<LoginPageProps> = () => {
   const {
-    state: { user },
+    state: {
+      UserState: { user },
+    },
   } = useContext(UserStore);
   return <LoginPageTemplate user={user} />;
 };
