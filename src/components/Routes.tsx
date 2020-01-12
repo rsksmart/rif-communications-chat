@@ -11,7 +11,7 @@ import LoginPage from 'components/pages/LoginPage';
 import NotFound from 'components/pages/NotFound';
 // import Clear from 'views/Clear';
 
-export default () => (
+const Routes = () => (
   <Switch>
     <Route exact path={ROUTES.CHATS} component={ChatsPage} />
     <Route exact path={ROUTES.LOGIN} component={LoginPage} />
@@ -23,3 +23,5 @@ export default () => (
     <Route component={NotFound} />
   </Switch>
 );
+
+export default Routes;

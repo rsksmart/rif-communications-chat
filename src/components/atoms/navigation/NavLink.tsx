@@ -1,15 +1,15 @@
-import React from 'react';
-import { Nav as BSNav } from 'react-bootstrap';
+import React, { FC } from 'react';
+import BSNavLink, {
+  NavLinkProps as BSNavLinkProps,
+} from 'react-bootstrap/NavLink';
 
-interface NavLinkProps {
+interface NavLinkProps extends BSNavLinkProps {
   text: string;
-  hidden?: boolean;
+  style?: Object;
 }
 
-const NavLink = (props: NavLinkProps) => (
-  <BSNav.Link style={{ opacity: props.hidden ? 0 : 1 }}>
-    {props.text}
-  </BSNav.Link>
+const NavLink: FC<NavLinkProps> = ({ text, ...rest }) => (
+  <BSNavLink {...rest}>{text}</BSNavLink>
 );
 
 export default NavLink;

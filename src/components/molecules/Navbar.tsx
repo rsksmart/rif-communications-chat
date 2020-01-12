@@ -39,7 +39,7 @@ const Navbar: FC<NavbarProps> = () => {
         {
           //FIXME: adding a hidden navlink just to fill space does not feel like the best practice solution
         }
-        {!user && <NavLink text="Profile" hidden={true} />}
+        {!user && <NavLink text="Profile" style={{ opacity: 0 }} />}
       </Nav>
     </BSNavbar>
   );
