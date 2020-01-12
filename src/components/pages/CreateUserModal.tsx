@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import ModalFormTemplate, {
   ModalFormTemplateProps,
 } from 'components/templates/ModalFormTemplate';
@@ -28,11 +28,19 @@ interface FormErrors extends FormValues {}
 
 const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
   const {
-    // state: { UserState, AppState },
+    state: {
+      UserState: { user },
+    },
     dispatch,
   } = useContext(UserStore);
 
   const history = useHistory();
+
+  useEffect(() => {
+    if (user) {
+      history.push(ROUTES.PROFILE);
+    }
+  });
 
   const formErrors: FormErrors = {};
 
@@ -50,8 +58,6 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
         type: USER_ACTIONS.CREATE_RNS,
         payload,
       });
-      history.push(ROUTES.PROFILE);
-      onHide();
     },
     // TODO: this can be DRY-ed more (extract all validations)
     validate: async ({ rnsName }: FormValues) => {
