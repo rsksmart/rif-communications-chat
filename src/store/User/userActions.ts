@@ -13,7 +13,7 @@ import {
   createPeerInfo,
   createNode as apiCreateNode,
   connectToNode as apiConnectToNode,
-} from 'api/RIFcomms';
+} from 'rif-communications';
 import { IAction } from 'store/storeUtils/IAction';
 
 // TODO: Extract services !!!
