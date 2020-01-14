@@ -8,9 +8,8 @@
     "@fortawesome/react-fontawesome": "^0.1.7",
     "bootstrap": "^4.3.1",
     "eccrypto": "rootstock/eccrypto#master",
-    "formik": "^2.0.6",
+    "formik": "^2.1.2",
     "js-libp2p-crypto": "0.2.0",
-    "rif-communications": "rsksmart/rif-communications-js#firstModules",
     "moment": "^2.24.0",
     "multiaddr": "6.1.1",
     "multihashes": "0.4.15",
@@ -22,7 +21,8 @@
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
-    "typescript": "3.6.4"
+    "rif-communications": "rsksmart/rif-communications-js#firstModules",
+    "typescript": "^3.7.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -57,7 +57,7 @@
     "eslint": "^6.7.2",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.17.0",
