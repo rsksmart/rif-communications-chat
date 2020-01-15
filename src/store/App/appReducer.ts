@@ -1,11 +1,11 @@
 import { initialState, IAppMessage } from './AppStore';
 import { APP_ACTIONS } from './appActions';
-import { Action } from 'store/App/appActions';
+import { AppAction } from 'store/App/appActions';
 
 const { SET_IS_LOADING, SET_ERROR } = APP_ACTIONS;
 
 // FIXME: Reducer should to be able to tell whether the action is meant for it
-const appReducer = (state = initialState, action: Action) => {
+const appReducer = (state = initialState, action: AppAction) => {
   console.log('TCL: appReducer -> action', action);
   const { type, payload } = action;
 

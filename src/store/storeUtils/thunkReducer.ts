@@ -3,13 +3,21 @@ import {
   addUser,
   connectToNode,
   createUser,
+  setupUser,
   checkRns,
 } from 'store/User/userActions';
 import { IAction } from './IAction';
 
-const { ADD_USER, CHECK_RNS, CONNECT_TO_NODE, CREATE_RNS } = USER_ACTIONS;
+const {
+  ADD_USER,
+  CHECK_RNS,
+  CONNECT_TO_NODE,
+  CREATE_USER,
+  SETUP_USER,
+} = USER_ACTIONS;
 
 // FIXME: Thunk reducer should also process only those actions that require it.
+// TODO: Perhaps it should be named better as it isn't really a react reducer. More of a pre-reducer function (thunk).
 const thunkReducer = async (state, dispatch, action: IAction) => {
   console.log('TCL: thunkReducer -> action', action);
   const { type, payload } = action;
@@ -20,9 +28,11 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
         const { clientNode } = state;
         await connectToNode(clientNode);
         break;
-      case CREATE_RNS:
-        const { rnsName } = payload;
-        await createUser(rnsName, dispatch, action);
+      case CREATE_USER:
+        await createUser(payload.rnsName, dispatch, action);
+        break;
+      case SETUP_USER:
+        await setupUser(payload.keystore, dispatch);
         break;
       case ADD_USER:
         const { user } = state;

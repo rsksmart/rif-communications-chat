@@ -3,7 +3,7 @@ import libp2p from 'libp2p';
 
 import { User, Contact } from 'models/';
 import userReducer from './userReducer';
-import { IUserAction } from './userActions';
+import { UserAction } from './userActions';
 import Middleware from 'store/storeUtils/middleware';
 
 export interface IUserState {
@@ -15,7 +15,7 @@ export interface IUserState {
 
 interface IUserStoreProps {
   state: IUserState;
-  dispatch: Dispatch<IUserAction>;
+  dispatch: Dispatch<UserAction>;
 }
 
 export const initialState: IUserState = {

@@ -13,8 +13,10 @@ import {
   createPeerInfo,
   createNode as apiCreateNode,
   connectToNode as apiConnectToNode,
+  createPeerIdFromJSON,
 } from 'rif-communications';
 import { IAction } from 'store/storeUtils/IAction';
+import LocalStorage from 'api/LocalStorage';
 
 // TODO: Extract services !!!
 const BOOTNODE_ADDRESS: string = process.env.REACT_APP_BOOTNODE_ADDR
@@ -28,16 +30,19 @@ const API_ADD = BASE_ADD + '/api';
 
 export enum USER_ACTIONS {
   SAY_HELLO = 'SAY_HELLO',
-  CREATE_RNS = 'CREATE_RNS',
+  SETUP_USER = 'SETUP_USER',
   ERROR = 'ERROR',
   CHECK_RNS = 'CHECK_RNS',
   CREATE_USER_NODE = 'CREATE_USER_NODE',
   SET_CLIENT_NODE = 'SET_CLIENT_NODE',
   CONNECT_TO_NODE = 'CONNECT_TO_NODE',
   ADD_USER = 'ADD_USER',
+  CREATE_USER = 'CREATE_USER',
 }
 
-export interface IUserAction extends IAction {
+const localStorage = LocalStorage.getInstance();
+
+export interface UserAction extends IAction {
   type: USER_ACTIONS;
 }
 
@@ -62,11 +67,22 @@ export const addUser = (user: User, dispatch: any, action: any) => {
 };
 
 export const createUser = async (rnsName, dispatch, action) => {
-  const peerId: PeerId = await createKey();
-  const peerInfo: PeerInfo = await createPeerInfo(peerId);
-  const user = new User({ pi: peerInfo, rnsName });
-  const node: libp2p | undefined = await createNode(user);
+  const peer = await createKey();
+  localStorage.setItem('keystore', JSON.stringify(peer));
+  const user = await connectUser(peer, rnsName, dispatch);
+  addUser(user, dispatch, action);
+};
 
+export const setupUser = async (keystore, dispatch) => {
+  const rnsName = localStorage.getItem('rnsName');
+  const peer: PeerId = await createPeerIdFromJSON(keystore);
+  await connectUser(peer, rnsName, dispatch);
+};
+
+const connectUser = async (peer: PeerId, rnsName: string, dispatch: any) => {
+  const peerInfo: PeerInfo = await createPeerInfo(peer);
+  const user = new User({ pi: peerInfo, rnsName });
+  const node: libp2p = await createNode(user);
   if (node) {
     const payload = {
       clientNode: node,
@@ -78,7 +94,7 @@ export const createUser = async (rnsName, dispatch, action) => {
     });
     await connectToNode(node);
   }
-  addUser(user, dispatch, action);
+  return user;
 };
 
 const createNode = async (user: User) => {

@@ -1,6 +1,6 @@
 import React, { Dispatch, useReducer } from 'react';
 
-import { Action } from './appActions';
+import { AppAction } from './appActions';
 import appReducer from './appReducer';
 
 export interface IAppMessage {
@@ -18,7 +18,7 @@ interface IAppStoreProps {
   state: {
     message: IAppState;
   };
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<AppAction>;
 }
 
 export const initialState: IAppState = {

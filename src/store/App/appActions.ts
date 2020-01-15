@@ -7,6 +7,6 @@ export enum APP_ACTIONS {
   UNSET = 'UNSET',
 }
 
-export interface Action extends IAction {
+export interface AppAction extends IAction {
   type: APP_ACTIONS;
 }

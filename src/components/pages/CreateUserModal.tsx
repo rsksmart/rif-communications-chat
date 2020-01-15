@@ -2,7 +2,7 @@ import React, { FC, useContext, useEffect } from 'react';
 import ModalFormTemplate, {
   ModalFormTemplateProps,
 } from 'components/templates/ModalFormTemplate';
-import UserStore, { IUserState, initialState } from 'store/User/UserStore';
+import UserStore from 'store/User/UserStore';
 import {
   InputGroup,
   FormControl,
@@ -13,6 +13,7 @@ import { useFormik } from 'formik';
 import { USER_ACTIONS } from 'store/User/userActions';
 import { ROUTES } from 'routes';
 import { useHistory } from 'react-router-dom';
+import { User } from 'models';
 
 export interface CreateUserModalProps {
   show: boolean;
@@ -35,12 +36,11 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
   } = useContext(UserStore);
 
   const history = useHistory();
-
   useEffect(() => {
     if (user) {
       history.push(ROUTES.PROFILE);
     }
-  });
+  }, [user, history]);
 
   const formErrors: FormErrors = {};
 
@@ -50,12 +50,9 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
     initialErrors: {},
     initialValues: {},
     onSubmit: ({ rnsName }: FormValues) => {
-      const payload: IUserState = {
-        ...initialState,
-        user: { rnsName, pi: null, publicKey: null },
-      };
+      const payload: User = { rnsName, pi: null, publicKey: null };
       dispatch({
-        type: USER_ACTIONS.CREATE_RNS,
+        type: USER_ACTIONS.CREATE_USER,
         payload,
       });
     },
