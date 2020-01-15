@@ -5,7 +5,6 @@ import LoginPageTemplate from 'components/templates/LoginPageTemplate';
 import { USER_ACTIONS } from 'store/User/userActions';
 import LocalStorage from 'api/LocalStorage';
 import { useHistory } from 'react-router';
-import { ROUTES } from 'routes';
 
 export interface LoginPageProps {}
 

@@ -21,7 +21,7 @@ const userReducer = (state = initialState, action: UserAction) => {
         const { user } = state;
         const rnsName = user && user.rnsName;
         localStorage.setItem('rnsName', rnsName || '');
-        return state;
+        break;
       case SETUP_USER:
         if (payload && payload.user) {
           state = {
@@ -29,12 +29,12 @@ const userReducer = (state = initialState, action: UserAction) => {
             user: payload.user,
           };
         }
-        return state;
+        break;
       case LOGOUT:
         state = initialState;
+        break;
       default:
         sayHeloToUser(initialState);
-        return state;
     }
   }
   return state;

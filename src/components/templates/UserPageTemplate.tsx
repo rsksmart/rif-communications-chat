@@ -1,5 +1,5 @@
 import React, { FC, useContext, useEffect } from 'react';
-import { Redirect, useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 
 import PageTemplate, { PageTemplateProps } from './PageTemplate';
 import { ROUTES } from 'routes';

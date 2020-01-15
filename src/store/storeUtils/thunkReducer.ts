@@ -48,6 +48,7 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
         break;
       case LOGOUT:
         localStorage.clear();
+        break;
       default:
         return dispatch(action);
     }
