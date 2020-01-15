@@ -10,7 +10,7 @@ import { ModalProps } from 'components/atoms/modal/Modal';
 
 export interface ModalDialogueProps extends ModalProps {
   title: string;
-  footer: React.ReactElement;
+  footer?: React.ReactElement;
 }
 
 const ModalDialogue: FC<ModalDialogueProps> = ({
@@ -20,7 +20,7 @@ const ModalDialogue: FC<ModalDialogueProps> = ({
   ...props
 }) => {
   return (
-    <Modal show={true} {...props}>
+    <Modal {...props}>
       <ModalHeader closeButton>
         <ModalTitle>{title}</ModalTitle>
       </ModalHeader>

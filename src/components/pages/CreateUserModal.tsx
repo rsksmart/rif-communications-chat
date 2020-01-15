@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useContext } from 'react';
 import ModalFormTemplate, {
   ModalFormTemplateProps,
 } from 'components/templates/ModalFormTemplate';
@@ -11,8 +11,6 @@ import {
 } from 'components/atoms/forms';
 import { useFormik } from 'formik';
 import { USER_ACTIONS } from 'store/User/userActions';
-import { ROUTES } from 'routes';
-import { useHistory } from 'react-router-dom';
 import { User } from 'models';
 
 export interface CreateUserModalProps {
@@ -28,19 +26,7 @@ interface FormValues {
 interface FormErrors extends FormValues {}
 
 const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
-  const {
-    state: {
-      UserState: { user },
-    },
-    dispatch,
-  } = useContext(UserStore);
-
-  const history = useHistory();
-  useEffect(() => {
-    if (user) {
-      history.push(ROUTES.PROFILE);
-    }
-  }, [user, history]);
+  const { dispatch } = useContext(UserStore);
 
   const formErrors: FormErrors = {};
 

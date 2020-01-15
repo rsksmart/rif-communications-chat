@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 import Button from 'components/atoms/buttons/Button';
-import ModalDialogue from 'components/molecules/ModalForm';
+import ModalDialogue from 'components/molecules/ModalDialogue';
 import { Form } from 'components/atoms/forms';
 import { ModalProps } from 'components/atoms/modal/Modal';
 

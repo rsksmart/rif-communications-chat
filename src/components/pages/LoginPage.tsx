@@ -4,6 +4,8 @@ import UserStore from 'store/User/UserStore';
 import LoginPageTemplate from 'components/templates/LoginPageTemplate';
 import { USER_ACTIONS } from 'store/User/userActions';
 import LocalStorage from 'api/LocalStorage';
+import { useHistory } from 'react-router';
+import { ROUTES } from 'routes';
 
 export interface LoginPageProps {}
 
@@ -17,6 +19,8 @@ const LoginPage: FC<LoginPageProps> = () => {
     dispatch,
   } = useContext(UserStore);
 
+  const history = useHistory();
+
   useEffect(() => {
     const keystore = localStorage.getItem('keystore');
     const rnsName = user && user.rnsName;
@@ -29,7 +33,10 @@ const LoginPage: FC<LoginPageProps> = () => {
         },
       });
     }
-  }, [user, dispatch]);
+    if (rnsName && keystore) {
+      history.goBack();
+    }
+  }, [user, dispatch, history]);
 
   return <LoginPageTemplate user={user} />;
 };
