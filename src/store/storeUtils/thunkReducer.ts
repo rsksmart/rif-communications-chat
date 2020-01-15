@@ -7,6 +7,8 @@ import {
   checkRns,
 } from 'store/User/userActions';
 import { IAction } from './IAction';
+import LocalStorage from 'api/LocalStorage';
+const localStorage = LocalStorage.getInstance();
 
 const {
   ADD_USER,
@@ -14,6 +16,7 @@ const {
   CONNECT_TO_NODE,
   CREATE_USER,
   SETUP_USER,
+  LOGOUT,
 } = USER_ACTIONS;
 
 // FIXME: Thunk reducer should also process only those actions that require it.
@@ -43,6 +46,8 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
           payload.errorsCb(isExistingRns);
         });
         break;
+      case LOGOUT:
+        localStorage.clear();
       default:
         return dispatch(action);
     }

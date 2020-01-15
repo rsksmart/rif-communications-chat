@@ -17,7 +17,7 @@ const ExportUserModal: FC<ExportUserModalProps> = modalProps => {
   const [profile, setProfile] = useState('');
 
   const contacts = !!user && user.contacts;
-  const rnsName = localStorage.getItem('rns');
+  const rnsName = !!user && user.rnsName;
   const keystore = localStorage.getItem('keystore');
 
   useEffect(() => {

@@ -12,7 +12,5 @@ export const ProfilePage = () => {
   // TODO: Extract contacts from user into separate model
   const contacts = user && user.contacts;
 
-  return (
-    <>{!!user && <ProfilePageTemplate user={user} contacts={contacts} />}</>
-  );
+  return <ProfilePageTemplate user={user} contacts={contacts} />;
 };

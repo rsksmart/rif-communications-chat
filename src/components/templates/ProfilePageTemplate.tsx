@@ -7,6 +7,7 @@ import ButtonCircle from 'components/atoms/buttons/ButtonCircle';
 import PencilIcon from 'components/atoms/icons/PencilIcon';
 import ExportUserModal from 'components/pages/ExportUserModal';
 import Button from 'react-bootstrap/Button';
+import LogoutModal from 'components/pages/LogoutModal';
 
 export interface ProfilePageTemplateProps {
   user: User;
@@ -14,22 +15,29 @@ export interface ProfilePageTemplateProps {
 }
 
 export const ProfilePageTemplate: FC<ProfilePageTemplateProps> = ({ user }) => {
-  const [displayCreateUser, setDisplayCreateUser] = useState(false);
-  const [displayExportUser, setDisplayExportUser] = useState(false);
+  const [isCreateUserVisible, setIsCreateUserVisible] = useState(false);
+  const [isExportUserVisible, setIsExportUserVisible] = useState(false);
+  const [isLogoutVisible, setIsLogoutVisible] = useState(false);
 
-  const showCreateUserModal = () => setDisplayCreateUser(true);
-  const hideCreateUserModal = () => setDisplayCreateUser(false);
-  const showExportUserModal = () => setDisplayExportUser(true);
-  const hideExportUserModal = () => setDisplayExportUser(false);
+  const showCreateUserModal = () => setIsCreateUserVisible(true);
+  const hideCreateUserModal = () => setIsCreateUserVisible(false);
+  const showExportUserModal = () => setIsExportUserVisible(true);
+  const hideExportUserModal = () => setIsExportUserVisible(false);
+  const showLogoutModal = () => setIsLogoutVisible(true);
+  const hideLogoutModal = () => setIsLogoutVisible(false);
 
-  const { rnsName, publicKey } = user;
+  const rnsName = !!user && user.rnsName;
+  const publicKey = !!user && user.publicKey;
 
   const renderChangeNameModal = () => (
     <>
       <ButtonCircle className="change-name" onClick={showCreateUserModal}>
         <PencilIcon />
       </ButtonCircle>
-      <CreateUserModal show={displayCreateUser} onHide={hideCreateUserModal} />
+      <CreateUserModal
+        show={isCreateUserVisible}
+        onHide={hideCreateUserModal}
+      />
     </>
   );
 
@@ -41,18 +49,34 @@ export const ProfilePageTemplate: FC<ProfilePageTemplateProps> = ({ user }) => {
           publicKey={publicKey}
           nameChanger={renderChangeNameModal}
         >
-          <Button
-            variant="dark"
-            size="sm"
-            style={{ margin: '0.25em' }}
-            onClick={showExportUserModal}
+          <div
+            style={{
+              display: 'inline-flex',
+              flexDirection: 'row',
+            }}
           >
-            Export
-          </Button>
-          <ExportUserModal
-            show={displayExportUser}
-            onHide={hideExportUserModal}
-          />
+            <Button
+              variant="dark"
+              size="sm"
+              style={{ margin: '0.25em' }}
+              onClick={showExportUserModal}
+            >
+              Export
+            </Button>
+            <ExportUserModal
+              show={isExportUserVisible}
+              onHide={hideExportUserModal}
+            />
+            <Button
+              variant="danger"
+              size="sm"
+              style={{ margin: '0.25em' }}
+              onClick={showLogoutModal}
+            >
+              Logout
+            </Button>
+            <LogoutModal show={isLogoutVisible} onHide={hideLogoutModal} />
+          </div>
         </ContactDetails>
         <h2 style={{ marginTop: '2em' }}>{/* Contacts: <ContactModal /> */}</h2>
       </div>

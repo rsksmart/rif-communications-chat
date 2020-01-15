@@ -1,5 +1,5 @@
-import React, { FC, useContext } from 'react';
-import { Redirect } from 'react-router';
+import React, { FC, useContext, useEffect } from 'react';
+import { Redirect, useHistory } from 'react-router';
 
 import PageTemplate, { PageTemplateProps } from './PageTemplate';
 import { ROUTES } from 'routes';
@@ -14,11 +14,18 @@ export const UserPageTemplate: FC<UserPageTemplateProps> = ({
   const {
     state: { UserState },
   } = useContext(UserStore);
+  const history = useHistory();
+
   const { user } = UserState;
+
+  useEffect(() => {
+    if (!user) {
+      history.replace(ROUTES.LOGIN);
+    }
+  }, [user, history]);
 
   return (
     <>
-      {!user ? <Redirect to={ROUTES.LOGIN} /> : null}
       <PageTemplate {...props}>{children}</PageTemplate>
     </>
   );

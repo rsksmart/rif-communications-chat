@@ -28,4 +28,8 @@ export default class LocalStorage {
     } catch {}
     return item || value;
   }
+
+  public clear(): void {
+    localStorage.clear();
+  }
 }

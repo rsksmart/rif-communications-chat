@@ -38,6 +38,7 @@ export enum USER_ACTIONS {
   CONNECT_TO_NODE = 'CONNECT_TO_NODE',
   ADD_USER = 'ADD_USER',
   CREATE_USER = 'CREATE_USER',
+  LOGOUT = 'LOGOUT',
 }
 
 const localStorage = LocalStorage.getInstance();

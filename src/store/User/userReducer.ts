@@ -2,7 +2,7 @@ import { initialState } from './UserStore';
 import { USER_ACTIONS, sayHeloToUser, UserAction } from './userActions';
 import LocalStorage from 'api/LocalStorage';
 
-const { SETUP_USER: CREATE_RNS, SET_CLIENT_NODE } = USER_ACTIONS;
+const { SETUP_USER, SET_CLIENT_NODE, LOGOUT } = USER_ACTIONS;
 
 const localStorage = LocalStorage.getInstance();
 
@@ -22,7 +22,7 @@ const userReducer = (state = initialState, action: UserAction) => {
         const rnsName = user && user.rnsName;
         localStorage.setItem('rnsName', rnsName || '');
         return state;
-      case CREATE_RNS:
+      case SETUP_USER:
         if (payload && payload.user) {
           state = {
             ...state,
@@ -30,6 +30,8 @@ const userReducer = (state = initialState, action: UserAction) => {
           };
         }
         return state;
+      case LOGOUT:
+        state = initialState;
       default:
         sayHeloToUser(initialState);
         return state;
