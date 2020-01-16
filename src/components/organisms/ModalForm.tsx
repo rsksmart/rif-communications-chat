@@ -1,9 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 
 import Button from 'components/atoms/buttons/Button';
 import ModalDialogue from 'components/molecules/ModalDialogue';
 import { Form } from 'components/atoms/forms';
 import { ModalProps } from 'components/atoms/modal/Modal';
+import UserStore from 'store/User/UserStore';
 
 export interface ModalFormProps {
   formik: any;
@@ -19,20 +20,30 @@ const ModalForm: FC<ModalFormProps> = ({
   title,
   modalProps,
 }) => {
+  const {
+    state: {
+      AppState: {
+        message: { isLoading },
+      },
+    },
+  } = useContext(UserStore);
+
   return (
     <Form>
       <ModalDialogue
         title={title}
         footer={
-          <Button
-            variant="primary"
-            type="button"
-            className="ml-auto justify-content-end"
-            disabled={!formik.isValid}
-            onClick={formik.submitForm}
-          >
-            {submitBtnLabel}
-          </Button>
+          <>
+            <Button
+              variant="primary"
+              type="button"
+              className="ml-auto justify-content-end"
+              disabled={isLoading || !formik.isValid}
+              onClick={formik.submitForm}
+            >
+              {submitBtnLabel}
+            </Button>
+          </>
         }
         {...modalProps}
       >

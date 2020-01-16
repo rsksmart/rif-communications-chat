@@ -3,16 +3,19 @@ import SmallText from 'components/atoms/SmallText';
 
 export interface PublicKeyProps {
   publicKey: string;
-  paddingLeftOverrides?: string;
+  style?: Object;
 }
 
-const PublicKey: FC<PublicKeyProps> = ({ publicKey, paddingLeftOverrides }) => (
+const PublicKey: FC<PublicKeyProps> = ({ publicKey, style }) => (
   <div
     className="overflow-auto"
     style={{
-      maxWidth: '100%',
-      paddingLeft: paddingLeftOverrides || '1em',
-      paddingRight: '1em',
+      ...{
+        maxWidth: '100%',
+        paddingLeft: '1em',
+        paddingRight: '1em',
+      },
+      ...style,
     }}
   >
     <SmallText>{publicKey}</SmallText>

@@ -8,16 +8,24 @@ import PencilIcon from 'components/atoms/icons/PencilIcon';
 import ExportUserModal from 'components/pages/ExportUserModal';
 import Button from 'react-bootstrap/Button';
 import LogoutModal from 'components/pages/LogoutModal';
+import Heading from 'components/atoms/Heading';
+import ContactList from 'components/organisms/ContactList';
+import PlusIcon from 'components/atoms/icons/PlusIcon';
+import AddContactModal from 'components/pages/AddContactModal';
 
 export interface ProfilePageTemplateProps {
   user: User;
   contacts: Contact[];
 }
 
-export const ProfilePageTemplate: FC<ProfilePageTemplateProps> = ({ user }) => {
+export const ProfilePageTemplate: FC<ProfilePageTemplateProps> = ({
+  user,
+  contacts,
+}) => {
   const [isCreateUserVisible, setIsCreateUserVisible] = useState(false);
   const [isExportUserVisible, setIsExportUserVisible] = useState(false);
   const [isLogoutVisible, setIsLogoutVisible] = useState(false);
+  const [isAddContactVisible, setIsAddContactVisible] = useState(false);
 
   const showCreateUserModal = () => setIsCreateUserVisible(true);
   const hideCreateUserModal = () => setIsCreateUserVisible(false);
@@ -25,6 +33,8 @@ export const ProfilePageTemplate: FC<ProfilePageTemplateProps> = ({ user }) => {
   const hideExportUserModal = () => setIsExportUserVisible(false);
   const showLogoutModal = () => setIsLogoutVisible(true);
   const hideLogoutModal = () => setIsLogoutVisible(false);
+  const showAddContactModal = () => setIsAddContactVisible(true);
+  const hideAddContactModal = () => setIsAddContactVisible(false);
 
   const rnsName = !!user && user.rnsName;
   const publicKey = !!user && user.publicKey;
@@ -78,7 +88,23 @@ export const ProfilePageTemplate: FC<ProfilePageTemplateProps> = ({ user }) => {
             <LogoutModal show={isLogoutVisible} onHide={hideLogoutModal} />
           </div>
         </ContactDetails>
-        <h2 style={{ marginTop: '2em' }}>{/* Contacts: <ContactModal /> */}</h2>
+        <Heading level={2} style={{ marginTop: '2em' }}>
+          Contacts:{' '}
+          <ButtonCircle
+            className="new-contact-btn"
+            variant="primary"
+            onClick={showAddContactModal}
+          >
+            <PlusIcon />
+          </ButtonCircle>
+          <AddContactModal
+            show={isAddContactVisible}
+            onHide={hideAddContactModal}
+          />
+          <ContactList contacts={contacts} className={'contact-list'} />
+        </Heading>
+
+        <ContactList contacts={contacts} className={'contact-list'} />
       </div>
     </UserPageTemplate>
   );

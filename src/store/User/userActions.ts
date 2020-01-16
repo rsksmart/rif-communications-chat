@@ -5,7 +5,7 @@ import { PeerInfo } from 'peer-info';
 import publicIp from 'public-ip';
 
 import { IUserState } from './UserStore';
-import { addUserName } from 'api/RIFNameService';
+import { addUserName, fetchUserByName } from 'api/RIFNameService';
 import { APP_ACTIONS } from 'store/App/appActions';
 import { User } from 'models';
 import {
@@ -22,11 +22,6 @@ import LocalStorage from 'api/LocalStorage';
 const BOOTNODE_ADDRESS: string = process.env.REACT_APP_BOOTNODE_ADDR
   ? process.env.REACT_APP_BOOTNODE_ADDR
   : '/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw';
-const TLD = '.rsk';
-const BASE_ADD: string = process.env.REACT_APP_RNS_SERVER
-  ? process.env.REACT_APP_RNS_SERVER
-  : 'http://64.225.35.211:3010';
-const API_ADD = BASE_ADD + '/api';
 
 export enum USER_ACTIONS {
   SAY_HELLO = 'SAY_HELLO',
@@ -39,6 +34,8 @@ export enum USER_ACTIONS {
   ADD_USER = 'ADD_USER',
   CREATE_USER = 'CREATE_USER',
   LOGOUT = 'LOGOUT',
+  FETCH_RNS = 'FETCH_RNS',
+  ADD_CONTACT = 'ADD_CONTACT',
 }
 
 const localStorage = LocalStorage.getInstance();
@@ -136,10 +133,14 @@ export const connectToNode = async clientNode => {
   }
 };
 
-export const checkRns = async rnsName => {
+export const checkUserExists = rnsName => {
   return new Promise(resolve => {
-    fetch(`${API_ADD}/domain?domain=${rnsName + TLD}`)
-      .then(res => resolve(res.status === 200))
-      .catch(err => resolve(false));
+    fetchUserByName(rnsName)
+      .then(publicKey => resolve(!!publicKey))
+      .catch(() => resolve(false));
   });
+};
+
+export const getUserPubKey = rnsName => {
+  return fetchUserByName(rnsName);
 };

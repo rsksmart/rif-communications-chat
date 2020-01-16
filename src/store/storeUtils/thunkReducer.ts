@@ -4,10 +4,12 @@ import {
   connectToNode,
   createUser,
   setupUser,
-  checkRns,
+  checkUserExists,
 } from 'store/User/userActions';
 import { IAction } from './IAction';
 import LocalStorage from 'api/LocalStorage';
+import { fetchUserByName } from 'api/RIFNameService';
+import { APP_ACTIONS } from 'store/App/appActions';
 const localStorage = LocalStorage.getInstance();
 
 const {
@@ -17,6 +19,7 @@ const {
   CREATE_USER,
   SETUP_USER,
   LOGOUT,
+  FETCH_RNS,
 } = USER_ACTIONS;
 
 // FIXME: Thunk reducer should also process only those actions that require it.
@@ -28,8 +31,16 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
   if (type) {
     switch (type) {
       case CONNECT_TO_NODE:
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: { isLoading: true, message: 'Connecting to node...' },
+        });
         const { clientNode } = state;
         await connectToNode(clientNode);
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: { isLoading: false },
+        });
         break;
       case CREATE_USER:
         await createUser(payload.rnsName, dispatch, action);
@@ -38,12 +49,40 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
         await setupUser(payload.keystore, dispatch);
         break;
       case ADD_USER:
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: { isLoading: true, message: 'Adding user...' },
+        });
         const { user } = state;
         await addUser(user, dispatch, action);
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: { isLoading: false },
+        });
         break;
       case CHECK_RNS:
-        checkRns(payload.rnsName).then(isExistingRns => {
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: { isLoading: true, message: 'Chcking RNS name...' },
+        });
+        checkUserExists(payload.rnsName).then(isExistingRns => {
           payload.errorsCb(isExistingRns);
+        });
+        break;
+      case FETCH_RNS:
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: { isLoading: true, message: 'Fetching public key...' },
+        });
+        await fetchUserByName(payload.rnsName)
+          .then(publicKey => {
+            payload.setPublicKey(publicKey);
+          })
+          .catch(() => payload.setPublicKey());
+
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: { isLoading: false },
         });
         break;
       case LOGOUT:

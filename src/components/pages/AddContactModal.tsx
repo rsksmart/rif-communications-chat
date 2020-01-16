@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useContext } from 'react';
 import ModalFormTemplate, {
   ModalFormTemplateProps,
 } from 'components/templates/ModalFormTemplate';
@@ -8,8 +8,14 @@ import {
   InputGroupAppend,
   InputGroupText,
 } from 'components/atoms/forms';
-import { fetchUserByName } from 'api/RIFNameService';
 import { useFormik } from 'formik';
+import UserStore from 'store/User/UserStore';
+import { USER_ACTIONS } from 'store/User/userActions';
+import PublicKey from 'components/molecules/PublicKey';
+import { Contact } from 'models';
+import { useHistory } from 'react-router';
+import { ROUTES } from 'routes';
+import { FormInfoBar } from 'components/molecules/FormInfoBar';
 
 export interface NewContactModalProps {
   show: boolean;
@@ -24,36 +30,50 @@ interface FormValues {
 interface FormErrors extends FormValues {}
 
 const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
-  // const { state, dispatch } = useContext(UserStore);
-  const [, setPublicKey] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { dispatch } = useContext(UserStore);
+  const [contactKey, setContactKey] = useState('');
+  const history = useHistory();
 
-  let errors: FormErrors = {};
+  let formErrors: FormErrors = {};
   const formikProps = {
     initialErrors: {},
     initialValues: {},
-    onSubmit: () => {
-      debugger;
+    onSubmit: ({ rnsName }: FormValues, actions) => {
+      const contact = new Contact({
+        rnsName,
+        publicKey: contactKey,
+        multiaddr: '',
+      });
+      dispatch({
+        type: USER_ACTIONS.ADD_CONTACT,
+        payload: { contact },
+      });
+      actions.resetForm();
+      actions.setErrors({});
+      onHide();
+
+      history.push(ROUTES.CHAT(contact.rnsName));
     },
     // TODO: this can be DRY-ed more (extract all validations)
     validate: async ({ rnsName }: FormValues) => {
       if (!rnsName) {
-        errors.rnsName = 'Required';
+        formErrors.rnsName = 'Required';
       } else if (!RegExp(/^([\w\d.\-_]+){3,20}$/).test(rnsName)) {
-        errors.rnsName =
+        formErrors.rnsName =
           'Min 3 alphanumeric characters plus optional ".", "_" and "-" only.';
       } else {
-        try {
-          setIsLoading(true);
-          const contactPK = await fetchUserByName(rnsName);
-          setPublicKey(contactPK);
-        } catch (e) {
-          errors.rnsName = 'User could not be found.';
-        } finally {
-          setIsLoading(false);
-        }
+        dispatch({
+          type: USER_ACTIONS.FETCH_RNS,
+          payload: {
+            rnsName,
+            setPublicKey: (publicKey: string | undefined) => {
+              publicKey && setContactKey(publicKey);
+              !publicKey && setErrors({ rnsName: 'User does not exist.' });
+            },
+          },
+        });
       }
-      return errors;
+      return formErrors;
     },
   };
 
@@ -73,9 +93,16 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
     },
   };
 
+  const {
+    handleChange,
+    setErrors,
+    handleBlur,
+    values: { rnsName },
+    errors,
+  } = formik;
   return (
     <ModalFormTemplate {...modalTemplateProps}>
-      <InputGroup>
+      <InputGroup className="mb-3" style={{ marginTop: '1em' }}>
         <FormControl
           placeholder="Your friend's name"
           aria-label="Your friend's name"
@@ -83,13 +110,12 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
           name="rnsName"
           onChange={event => {
             let { value } = event.target;
+
             event.target.value = value.toLowerCase();
-            errors.rnsName = '';
-            setPublicKey('');
-            formik.handleChange(event);
+            handleChange(event);
           }}
-          onBlur={formik.handleBlur}
-          defaultValue={formik.values.rnsName}
+          onBlur={handleBlur}
+          defaultValue={rnsName}
           autoComplete="off"
           autoFocus
           required
@@ -98,14 +124,12 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
         <InputGroupAppend>
           <InputGroupText id="basic-addon2">.rsk</InputGroupText>
         </InputGroupAppend>
-        {errors.rnsName && (
-          <small style={{ color: 'red' }}>{errors.rnsName}</small>
-        )}
-        {/* {!errors.rnsName && publicKey && (
-          <PublicKey publicKey={publicKey} paddingLeft="0em" />
-        )} */}
-        {isLoading && <small>Fetching user...</small>}
       </InputGroup>
+      <FormInfoBar error={errors.rnsName}>
+        {!errors.rnsName && contactKey && (
+          <PublicKey publicKey={contactKey} style={{ paddingLeft: '0em' }} />
+        )}
+      </FormInfoBar>
     </ModalFormTemplate>
   );
 };

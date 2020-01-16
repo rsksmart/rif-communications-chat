@@ -30,7 +30,6 @@ const LoginPageTemplate: FC<LoginPageTemplateProps> = ({ user }) => {
       className="login"
     >
       <Logo />
-      {!!user && user.rnsName}
       <span
         style={{
           display: 'flex',

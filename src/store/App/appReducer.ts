@@ -12,7 +12,14 @@ const appReducer = (state = initialState, action: AppAction) => {
   if (type) {
     switch (type) {
       case SET_IS_LOADING:
-        alert('WE ARE LOADING');
+        const { isLoading, message } = payload;
+        state = {
+          ...state,
+          message: {
+            isLoading,
+            message,
+          },
+        };
         break;
       case SET_ERROR:
         const appMessage: IAppMessage = {

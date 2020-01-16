@@ -12,6 +12,7 @@ import {
 import { useFormik } from 'formik';
 import { USER_ACTIONS } from 'store/User/userActions';
 import { User } from 'models';
+import { FormInfoBar } from 'components/molecules/FormInfoBar';
 
 export interface CreateUserModalProps {
   show: boolean;
@@ -29,8 +30,6 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
   const { dispatch } = useContext(UserStore);
 
   const formErrors: FormErrors = {};
-
-  // const { isLoading } = appState;
 
   const formikProps = {
     initialErrors: {},
@@ -113,11 +112,8 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
         <InputGroupAppend>
           <InputGroupText id="basic-addon2">.rsk</InputGroupText>
         </InputGroupAppend>
-        {errors.rnsName && (
-          <small style={{ color: 'red' }}>{errors.rnsName}</small>
-        )}
-        {/* {isLoading && <small>Waiting for server...</small>} */}
       </InputGroup>
+      <FormInfoBar error={errors.rnsName} />
     </ModalFormTemplate>
   );
 };
