@@ -7,7 +7,7 @@ import publicIp from 'public-ip';
 import { IUserState } from './UserStore';
 import { addUserName, fetchUserByName } from 'api/RIFNameService';
 import { APP_ACTIONS } from 'store/App/appActions';
-import { User } from 'models';
+import { User, Contact } from 'models';
 import {
   createKey,
   createPeerInfo,
@@ -24,7 +24,6 @@ const BOOTNODE_ADDRESS: string = process.env.REACT_APP_BOOTNODE_ADDR
   : '/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw';
 
 export enum USER_ACTIONS {
-  SAY_HELLO = 'SAY_HELLO',
   SETUP_USER = 'SETUP_USER',
   ERROR = 'ERROR',
   CHECK_RNS = 'CHECK_RNS',
@@ -38,16 +37,11 @@ export enum USER_ACTIONS {
   ADD_CONTACT = 'ADD_CONTACT',
 }
 
-const localStorage = LocalStorage.getInstance();
+const persistence = LocalStorage.getInstance();
 
 export interface UserAction extends IAction {
   type: USER_ACTIONS;
 }
-
-export const sayHeloToUser = (initialState: IUserState | any) => {
-  const { user } = initialState;
-  if (user) return `Hello ${user.rnsName}`;
-};
 
 export const getContact = () => (rnsName: string, state: IUserState) => {
   const { contacts } = state;
@@ -66,13 +60,13 @@ export const addUser = (user: User, dispatch: any, action: any) => {
 
 export const createUser = async (rnsName, dispatch, action) => {
   const peer = await createKey();
-  localStorage.setItem('keystore', JSON.stringify(peer));
+  persistence.setItem('keystore', JSON.stringify(peer));
   const user = await connectUser(peer, rnsName, dispatch);
   addUser(user, dispatch, action);
 };
 
 export const setupUser = async (keystore, dispatch) => {
-  const rnsName = localStorage.getItem('rnsName');
+  const rnsName = persistence.getItem('rnsName');
   const peer: PeerId = await createPeerIdFromJSON(keystore);
   await connectUser(peer, rnsName, dispatch);
 };
@@ -143,4 +137,21 @@ export const checkUserExists = rnsName => {
 
 export const getUserPubKey = rnsName => {
   return fetchUserByName(rnsName);
+};
+
+export const addContact = (state, contact: Contact) => {
+  if (!state.contacts.find(c => c.publicKey === contact.publicKey)) {
+    // TODO: perhaps more efficient insert would be better than sort?
+    const contacts = [...state.contacts, contact].sort((a, b) => {
+      if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
+      else if (!a.rnsName) return -1;
+      else if (!b.rnsName) return 1; // FIXME: never reached as !(A&&!B) -> [[!A,!B], [!A,B], [A,B]]
+      return a.rnsName < b.rnsName ? -1 : 1;
+    });
+    persistence.setItem('contacts', contacts);
+    return {
+      ...state,
+      contacts,
+    };
+  }
 };

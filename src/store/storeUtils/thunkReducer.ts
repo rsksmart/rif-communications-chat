@@ -27,6 +27,8 @@ const {
 const thunkReducer = async (state, dispatch, action: IAction) => {
   console.log('TCL: thunkReducer -> action', action);
   const { type, payload } = action;
+  const { clientNode } = state;
+  const { user } = state;
 
   if (type) {
     switch (type) {
@@ -35,7 +37,6 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
           type: APP_ACTIONS.SET_IS_LOADING,
           payload: { isLoading: true, message: 'Connecting to node...' },
         });
-        const { clientNode } = state;
         await connectToNode(clientNode);
         dispatch({
           type: APP_ACTIONS.SET_IS_LOADING,
@@ -53,7 +54,6 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
           type: APP_ACTIONS.SET_IS_LOADING,
           payload: { isLoading: true, message: 'Adding user...' },
         });
-        const { user } = state;
         await addUser(user, dispatch, action);
         dispatch({
           type: APP_ACTIONS.SET_IS_LOADING,
@@ -67,6 +67,10 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
         });
         checkUserExists(payload.rnsName).then(isExistingRns => {
           payload.errorsCb(isExistingRns);
+        });
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: { isLoading: false },
         });
         break;
       case FETCH_RNS:

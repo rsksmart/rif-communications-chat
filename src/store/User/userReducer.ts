@@ -1,42 +1,44 @@
-import { initialState } from './UserStore';
-import { USER_ACTIONS, sayHeloToUser, UserAction } from './userActions';
+import { initialState, IUserState } from './UserStore';
+import { USER_ACTIONS, UserAction, addContact } from './userActions';
 import LocalStorage from 'api/LocalStorage';
 
-const { SETUP_USER, SET_CLIENT_NODE, LOGOUT } = USER_ACTIONS;
+const { SETUP_USER, SET_CLIENT_NODE, LOGOUT, ADD_CONTACT } = USER_ACTIONS;
 
-const localStorage = LocalStorage.getInstance();
+const persistence = LocalStorage.getInstance();
 
 // FIXME: Reducer should to be able to tell whether the action is meant for it
 const userReducer = (state = initialState, action: UserAction) => {
   console.log('TCL: userReducer -> action', action);
   const { type, payload } = action;
+  let newState: IUserState = { ...state };
 
   if (type) {
     switch (type) {
       case SET_CLIENT_NODE:
-        state = {
-          ...state,
+        newState = {
           ...payload,
         };
-        const { user } = state;
+        const { user } = newState;
         const rnsName = user && user.rnsName;
-        localStorage.setItem('rnsName', rnsName || '');
+        persistence.setItem('rnsName', rnsName || '');
         break;
       case SETUP_USER:
-        if (payload && payload.user) {
-          state = {
-            ...state,
-            user: payload.user,
-          };
-        }
+        newState = {
+          user: {
+            ...payload.user,
+          },
+          contacts: persistence.getItem('contacts') || [],
+        };
+        break;
+      case ADD_CONTACT:
+        newState = addContact(state, payload.contact);
         break;
       case LOGOUT:
-        state = initialState;
+        newState = initialState;
         break;
       default:
-        sayHeloToUser(initialState);
     }
   }
-  return state;
+  return newState;
 };
 export default userReducer;
