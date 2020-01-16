@@ -9,7 +9,7 @@ const ButtonCircle: FC<ButtonCircleProps> = ({
   ...rest
 }) => {
   return (
-    <Button className={`btn-circle ${className}`} {...rest}>
+    <Button className={`btn-circle ${className || ''}`} {...rest}>
       {children}
     </Button>
   );

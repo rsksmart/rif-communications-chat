@@ -17,7 +17,7 @@ const {
   CHECK_RNS,
   CONNECT_TO_NODE,
   CREATE_USER,
-  SETUP_USER,
+  RESTORE_USER,
   LOGOUT,
   FETCH_RNS,
 } = USER_ACTIONS;
@@ -46,7 +46,7 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
       case CREATE_USER:
         await createUser(payload.rnsName, dispatch, action);
         break;
-      case SETUP_USER:
+      case RESTORE_USER:
         await setupUser(payload.keystore, dispatch);
         break;
       case ADD_USER:

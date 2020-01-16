@@ -7,12 +7,12 @@ import {
 export interface ButtonProps
   extends BSButtonProps,
     HTMLAttributes<HTMLButtonElement> {
-  className: string;
+  className?: string;
 }
 
 const Button: FC<ButtonProps> = ({ children, className, ...rest }) => {
   return (
-    <BSButton className={`btn ${className}`} {...rest}>
+    <BSButton className={`btn ${className || ''}`} {...rest}>
       {children}
     </BSButton>
   );

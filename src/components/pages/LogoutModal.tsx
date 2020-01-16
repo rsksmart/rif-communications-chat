@@ -45,12 +45,12 @@ const LogoutModal: FC<LogoutModalProps> = modalProps => {
   return (
     <PageTemplate>
       <Modal title="Logout" footer={renderFooter()} {...modalProps}>
-        This action will delete all of your user data on this device. Make sure
-        you exported your profile. To log back in you will need to import this
-        or create new RNS name.
-        <br />
-        <br />
-        Would you like to continue?
+        <p>
+          This action will delete all of your user data on this device. Make
+          sure you exported your profile. To log back in you will need to import
+          this or create new RNS name.
+        </p>
+        <p>Would you like to continue?</p>
       </Modal>
     </PageTemplate>
   );

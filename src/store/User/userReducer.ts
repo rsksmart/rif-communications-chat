@@ -2,7 +2,7 @@ import { initialState, IUserState } from './UserStore';
 import { USER_ACTIONS, UserAction, addContact } from './userActions';
 import LocalStorage from 'api/LocalStorage';
 
-const { SETUP_USER, SET_CLIENT_NODE, LOGOUT, ADD_CONTACT } = USER_ACTIONS;
+const { RESTORE_USER, SET_CLIENT_NODE, LOGOUT, ADD_CONTACT } = USER_ACTIONS;
 
 const persistence = LocalStorage.getInstance();
 
@@ -10,20 +10,21 @@ const persistence = LocalStorage.getInstance();
 const userReducer = (state = initialState, action: UserAction) => {
   console.log('TCL: userReducer -> action', action);
   const { type, payload } = action;
-  let newState: IUserState = { ...state };
 
   if (type) {
     switch (type) {
       case SET_CLIENT_NODE:
-        newState = {
+        state = {
+          ...state,
           ...payload,
         };
-        const { user } = newState;
+        const { user } = state;
         const rnsName = user && user.rnsName;
         persistence.setItem('rnsName', rnsName || '');
         break;
-      case SETUP_USER:
-        newState = {
+      case RESTORE_USER:
+        state = {
+          ...state,
           user: {
             ...payload.user,
           },
@@ -31,14 +32,14 @@ const userReducer = (state = initialState, action: UserAction) => {
         };
         break;
       case ADD_CONTACT:
-        newState = addContact(state, payload.contact);
+        state = addContact(state, payload.contact);
         break;
       case LOGOUT:
-        newState = initialState;
+        state = initialState;
         break;
       default:
     }
   }
-  return newState;
+  return state;
 };
 export default userReducer;

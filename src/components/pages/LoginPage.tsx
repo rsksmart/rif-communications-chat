@@ -26,7 +26,7 @@ const LoginPage: FC<LoginPageProps> = () => {
 
     if (!rnsName && keystore) {
       dispatch({
-        type: USER_ACTIONS.SETUP_USER,
+        type: USER_ACTIONS.RESTORE_USER,
         payload: {
           keystore,
         },

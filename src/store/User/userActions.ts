@@ -24,7 +24,7 @@ const BOOTNODE_ADDRESS: string = process.env.REACT_APP_BOOTNODE_ADDR
   : '/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw';
 
 export enum USER_ACTIONS {
-  SETUP_USER = 'SETUP_USER',
+  RESTORE_USER = 'RESTORE_USER',
   ERROR = 'ERROR',
   CHECK_RNS = 'CHECK_RNS',
   CREATE_USER_NODE = 'CREATE_USER_NODE',
@@ -140,6 +140,7 @@ export const getUserPubKey = rnsName => {
 };
 
 export const addContact = (state, contact: Contact) => {
+  debugger;
   if (!state.contacts.find(c => c.publicKey === contact.publicKey)) {
     // TODO: perhaps more efficient insert would be better than sort?
     const contacts = [...state.contacts, contact].sort((a, b) => {

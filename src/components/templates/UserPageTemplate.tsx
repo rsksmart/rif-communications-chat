@@ -20,7 +20,7 @@ export const UserPageTemplate: FC<UserPageTemplateProps> = ({
 
   useEffect(() => {
     if (!user) {
-      history.replace(ROUTES.LOGIN);
+      history.push(ROUTES.LOGIN);
     }
   }, [user, history]);
 
