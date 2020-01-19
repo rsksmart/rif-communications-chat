@@ -1,18 +1,36 @@
 export interface ILogger {
-  debug(message: string, data?: any[]): void;
-  error(message: string, data?: any[]): void;
-  info(message: string, data?: any[]): void;
-  warn(message: string, data?: any[]): void;
+  debug(message: string, ...rest: any): void;
+  error(message: string, ...rest: any): void;
+  info(message: string, ...rest: any): void;
+  warn(message: string, ...rest: any): void;
 }
-const DEBUG_ENABLED: boolean =
-  !!process.env.REACT_APP_DEBUG && process.env.REACT_APP_DEBUG === 'true';
+
+enum LOG_LEVELS {
+  DEBUG = 'debug',
+  ERROR = 'error',
+  INFO = 'info',
+  WARN = 'warn',
+}
+
+enum VERBOSITY_LEVELS {
+  'error' = 0,
+  'warn' = 1,
+  'info' = 2,
+  'debug' = 3,
+}
+
+const DEFAULT_LOG_LEVEL = LOG_LEVELS.ERROR;
+
+const envLogLevel: string | undefined =
+  process.env.REACT_APP_LOG_LEVEL &&
+  process.env.REACT_APP_LOG_LEVEL.toUpperCase();
 
 class Logger implements ILogger {
   private static instance: Logger;
-  private debugEnabled: boolean;
+  private logLevel: LOG_LEVELS;
 
   private constructor() {
-    this.debugEnabled = DEBUG_ENABLED;
+    this.logLevel = LOG_LEVELS[envLogLevel || DEFAULT_LOG_LEVEL];
   }
 
   public static getInstance(): Logger {
@@ -30,29 +48,32 @@ class Logger implements ILogger {
 
   private getReadableNow = (): string => this.getReadableTime(this.now());
 
-  private log = (
-    msgType: 'debug' | 'info' | 'warn' | 'error',
-    msg: any,
-    ...data: any
-  ): void => {
+  private log = (msgType: LOG_LEVELS, msg: string, ...rest: any): void => {
     const logger = console[msgType];
     const time = this.getReadableNow();
-    // const message = `${time}# ${msg}; ${data ? data : ''}`;
-    logger(msg, ...data);
+    const message = `${time}# ${msg}`;
+    logger(message, ...rest);
   };
 
-  public debug(message: any, ...data: any): void {
-    if (this.debugEnabled) this.log('debug', message, ...data);
-  }
-  public error(message: string, data?: any[]): void {
-    this.log('error', message, data);
-  }
-  public info(message: string, data?: any[]): void {
-    this.log('info', message, data);
-  }
-  public warn(message: string, data?: any[]): void {
-    this.log('warn', message, data);
-  }
+  private isLogLevelEnabled = (logLevel: LOG_LEVELS): boolean =>
+    VERBOSITY_LEVELS[this.logLevel] >= VERBOSITY_LEVELS[logLevel];
+
+  public debug = (message: any, ...rest: any): void => {
+    if (this.isLogLevelEnabled(LOG_LEVELS.DEBUG))
+      this.log(LOG_LEVELS.DEBUG, message, ...rest);
+  };
+  public error = (message: string, ...rest: any): void => {
+    if (this.isLogLevelEnabled(LOG_LEVELS.ERROR))
+      this.log(LOG_LEVELS.ERROR, message, ...rest);
+  };
+  public info = (message: string, ...rest: any): void => {
+    if (this.isLogLevelEnabled(LOG_LEVELS.INFO))
+      this.log(LOG_LEVELS.INFO, message, ...rest);
+  };
+  public warn = (message: string, ...rest: any): void => {
+    if (this.isLogLevelEnabled(LOG_LEVELS.WARN))
+      this.log(LOG_LEVELS.WARN, message, ...rest);
+  };
 }
 
 export default Logger;
