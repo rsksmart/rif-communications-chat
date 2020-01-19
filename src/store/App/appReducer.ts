@@ -1,12 +1,14 @@
 import { initialState, IAppMessage } from './AppStore';
 import { APP_ACTIONS } from './appActions';
 import { AppAction } from 'store/App/appActions';
+import Logger from 'utils/Logger';
 
 const { SET_IS_LOADING, SET_ERROR } = APP_ACTIONS;
+const logger = Logger.getInstance();
 
 // FIXME: Reducer should to be able to tell whether the action is meant for it
 const appReducer = (state = initialState, action: AppAction) => {
-  console.log('TCL: appReducer -> action', action);
+  logger.debug('appReducer -> action', action);
   const { type, payload } = action;
 
   if (type) {

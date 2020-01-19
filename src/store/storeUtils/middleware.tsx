@@ -1,9 +1,9 @@
 import { useReducer, useRef, useMemo, useEffect } from 'react';
 import appReducer from 'store/App/appReducer';
 import thunkReducer from './thunkReducer';
+import Logger from 'utils/Logger';
 
-const LOGGING_ENABLED: boolean =
-  !!process.env.REACT_APP_LOGGING && process.env.REACT_APP_LOGGING === 'true';
+const logger = Logger.getInstance();
 
 export default class Middleware {
   private static instance: Middleware;
@@ -58,8 +58,8 @@ export default class Middleware {
       const withMiddleware = dispatch => {
         return action => {
           // dispatchMessage({ type: MESSAGING_ACTIONS.SET_IS_LOADING });
-          LOGGING_ENABLED && console.log('Action Type:', action.type);
-          LOGGING_ENABLED && console.log('Action Payload:', action.payload);
+          logger.debug('Action Type:', action.type);
+          logger.debug('Action Payload:', action.payload);
           thunkReducer(state, dispatch, action);
         };
       };
@@ -68,13 +68,11 @@ export default class Middleware {
     }, [combinedDispatch, state]);
 
     useEffect(() => {
-      if (LOGGING_ENABLED) {
-        if (combinedState !== initialState) {
-          console.log('Prev state:', prevState.current);
-          console.log('Next state:', combinedState);
-        } else {
-          console.log('No change:', combinedState);
-        }
+      if (combinedState !== initialState) {
+        logger.debug('Prev state:', prevState.current);
+        logger.debug('Next state:', combinedState);
+      } else {
+        logger.debug('No change:', combinedState);
       }
       prevState.current = combinedState;
     }, [initialState, combinedState]);

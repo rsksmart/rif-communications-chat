@@ -10,7 +10,6 @@ export default class LocalStorage {
 
     return LocalStorage.instance;
   }
-
   public setItem(key: string, item: string | object): void {
     try {
       const value = typeof item === 'object' ? JSON.stringify(item) : item;

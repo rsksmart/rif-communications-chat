@@ -8,23 +8,21 @@ import LoginPage from 'components/pages/LoginPage';
 import NotFound from 'components/pages/NotFound';
 import { ProfilePage } from './pages/ProfilePage';
 import ChatPage from './pages/ChatPage';
+import Logger from 'utils/Logger';
 
-const LOGGING_ENABLED: boolean =
-  !!process.env.REACT_APP_LOGGING && process.env.REACT_APP_LOGGING === 'true';
+const logger = Logger.getInstance();
 
 const Routes = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (LOGGING_ENABLED) {
       const unlisten = history.listen((location, action) => {
-        console.log('TCL: Routes -> location', location);
-        console.log('TCL: Routes -> action', action);
+      logger.debug('Routes -> location', location);
+      logger.debug('Routes -> action', action);
       });
       return () => {
         unlisten();
       };
-    }
   }, [history]);
 
   return (

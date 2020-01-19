@@ -3,7 +3,7 @@ import React, { useContext, FC, useEffect } from 'react';
 import UserStore from 'store/User/UserStore';
 import LoginPageTemplate from 'components/templates/LoginPageTemplate';
 import { USER_ACTIONS } from 'store/User/userActions';
-import LocalStorage from 'api/LocalStorage';
+import LocalStorage from 'utils/LocalStorage';
 import { useHistory } from 'react-router';
 
 export interface LoginPageProps {}

@@ -7,10 +7,13 @@ import {
   checkUserExists,
 } from 'store/User/userActions';
 import { IAction } from './IAction';
-import LocalStorage from 'api/LocalStorage';
+import LocalStorage from 'utils/LocalStorage';
 import { fetchUserByName } from 'api/RIFNameService';
 import { APP_ACTIONS } from 'store/App/appActions';
+import Logger from 'utils/Logger';
+
 const localStorage = LocalStorage.getInstance();
+const logger = Logger.getInstance();
 
 const {
   ADD_USER,
@@ -25,7 +28,7 @@ const {
 // FIXME: Thunk reducer should also process only those actions that require it.
 // TODO: Perhaps it should be named better as it isn't really a react reducer. More of a pre-reducer function (thunk).
 const thunkReducer = async (state, dispatch, action: IAction) => {
-  console.log('TCL: thunkReducer -> action', action);
+  logger.debug('thunkReducer -> action', action);
   const { type, payload } = action;
   const { clientNode } = state;
   const { user } = state;

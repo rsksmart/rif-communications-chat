@@ -16,7 +16,7 @@ import {
   createPeerIdFromJSON,
 } from 'rif-communications';
 import { IAction } from 'store/storeUtils/IAction';
-import LocalStorage from 'api/LocalStorage';
+import LocalStorage from 'utils/LocalStorage';
 
 // TODO: Extract services !!!
 const BOOTNODE_ADDRESS: string = process.env.REACT_APP_BOOTNODE_ADDR
