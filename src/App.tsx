@@ -5,8 +5,10 @@ import { UserStoreProvider } from 'store/User/UserStore';
 import Routes from 'components/Routes';
 import Header from 'components/organisms/Header';
 import { AppStoreProvider } from 'store/App/AppStore';
+import Logger from 'utils/Logger';
+const logger = Logger.getInstance();
 
-console.log(process.env.REACT_APP_RNS_SERVER);
+logger.info('App -> RNS_SERVER:', process.env.REACT_APP_RNS_SERVER);
 
 const App = () => {
   return (

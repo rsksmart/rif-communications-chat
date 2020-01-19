@@ -3,6 +3,6 @@ export const ROUTES = {
   PROFILE: '/profile',
   EXAMPLE: '/example',
   LOGIN: '/login',
-  CHAT: (rnsName?: string) => `/chat/${rnsName ? rnsName : ':rnsName'}`,
+  CHAT: '/chat/:rnsName',
   CLEAR: '/clear',
 };

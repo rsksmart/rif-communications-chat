@@ -51,8 +51,6 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
       actions.resetForm();
       actions.setErrors({});
       onHide();
-
-      history.push(ROUTES.CHAT(contact.rnsName));
     },
     // TODO: this can be DRY-ed more (extract all validations)
     validate: async ({ rnsName }: FormValues) => {

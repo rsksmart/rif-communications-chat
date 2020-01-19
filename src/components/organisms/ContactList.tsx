@@ -26,7 +26,7 @@ const ContactList: FC<ContactListProps> = ({ contacts, ...rest }) => {
           return (
             <ListItem
               key={publicKey}
-              onClick={() => history.push(ROUTES.CHAT(rnsName))}
+              onClick={() => history.push(`/chat/${rnsName}`)}
             >
               <Heading level={5}>{rnsName ? `${rnsName}.rsk` : ''}</Heading>
               <SmallText>{lastChatContent}</SmallText>

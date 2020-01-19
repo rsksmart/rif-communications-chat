@@ -35,7 +35,10 @@ const userReducer = (state = initialState, action: UserAction) => {
         };
         break;
       case ADD_CONTACT:
-        state = addContact(state, payload.contact);
+        state = {
+          ...state,
+          contacts: addContact(state, payload.contact),
+        };
         break;
       case LOGOUT:
         state = initialState;

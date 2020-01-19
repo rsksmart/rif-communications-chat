@@ -17,6 +17,7 @@ import {
 } from 'rif-communications';
 import { IAction } from 'store/storeUtils/IAction';
 import LocalStorage from 'utils/LocalStorage';
+import Logger from 'utils/Logger';
 
 // TODO: Extract services !!!
 const BOOTNODE_ADDRESS: string = process.env.REACT_APP_BOOTNODE_ADDR
@@ -38,6 +39,7 @@ export enum USER_ACTIONS {
 }
 
 const persistence = LocalStorage.getInstance();
+const logger = Logger.getInstance();
 
 export interface UserAction extends IAction {
   type: USER_ACTIONS;
@@ -139,20 +141,19 @@ export const getUserPubKey = rnsName => {
   return fetchUserByName(rnsName);
 };
 
-export const addContact = (state, contact: Contact) => {
-  debugger;
-  if (!state.contacts.find(c => c.publicKey === contact.publicKey)) {
+export const addContact = (state, contact: Contact): Contact[] => {
+  const { contacts } = state;
+  let newContacts: Contact[] = [...contacts];
+  if (!state.contacts.find((c: Contact) => c.publicKey === contact.publicKey)) {
     // TODO: perhaps more efficient insert would be better than sort?
-    const contacts = [...state.contacts, contact].sort((a, b) => {
+    newContacts.push(contact);
+    newContacts.sort((a, b) => {
       if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
       else if (!a.rnsName) return -1;
       else if (!b.rnsName) return 1; // FIXME: never reached as !(A&&!B) -> [[!A,!B], [!A,B], [A,B]]
       return a.rnsName < b.rnsName ? -1 : 1;
     });
-    persistence.setItem('contacts', contacts);
-    return {
-      ...state,
-      contacts,
-    };
+    persistence.setItem('contacts', newContacts);
   }
+  return newContacts;
 };

@@ -34,7 +34,6 @@ const appReducer = (state = initialState, action: AppAction) => {
         };
         break;
       default:
-        console.log('UNKNOWN APP REDUCER FIRED!');
         return state;
     }
   }

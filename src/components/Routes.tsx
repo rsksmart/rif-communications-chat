@@ -16,20 +16,20 @@ const Routes = () => {
   const history = useHistory();
 
   useEffect(() => {
-      const unlisten = history.listen((location, action) => {
+    const unlisten = history.listen((location, action) => {
       logger.debug('Routes -> location', location);
       logger.debug('Routes -> action', action);
-      });
-      return () => {
-        unlisten();
-      };
+    });
+    return () => {
+      unlisten();
+    };
   }, [history]);
 
   return (
     <Switch>
       <Route exact path={ROUTES.CHATS} component={ChatsPage} />
       <Route exact path={ROUTES.LOGIN} component={LoginPage} />
-      <Route path={ROUTES.CHAT()} component={ChatPage} />
+      <Route path={ROUTES.CHAT} component={ChatPage} />
       {/* <Route exact path={ROUTES.EXAMPLE} component={Example} />
         <Route path={ROUTES.CLEAR} component={Clear} />
         */}

@@ -1,80 +1,24 @@
-import React from 'react';
+import ChatPageTemplate from 'components/templates/ChatPageTemplate';
 import { Contact } from 'models';
-import { Form, FormControl } from 'components/atoms/forms';
-import ButtonCircle from 'components/atoms/buttons/ButtonCircle';
-import PaperPlaneIcon from 'components/atoms/icons/PaperPlaneIcon';
-import { useFormik } from 'formik';
-import ChatDisplay from 'components/organisms/ChatDisplay';
+import React, { useContext } from 'react';
+import { useParams } from 'react-router-dom';
+import UserStore from 'store/User/UserStore';
+import Logger from 'utils/Logger';
 
-export interface ChatPageProps {
-  contact: Contact;
-}
+const logger = Logger.getInstance();
 
-interface FormValues {
-  content?: string;
-}
-const ChatPage = ({ contact }: ChatPageProps) => {
-  const formikProps = {
-    initialValues: {},
-    initialErrors: {},
-    onSubmit: ({ content }: FormValues, actions) => {
-      //   addMessage(new Message({ content }), contact);
-      //   actions.resetForm();
-    },
-  };
-
-  const formik = useFormik(formikProps);
+const ChatPage = () => {
+  const { rnsName } = useParams();
 
   const {
-    submitForm,
-    handleChange,
-    handleBlur,
-    values: { content },
-  } = formik;
-  return (
-    <>
-      <div>
-        {contact.rnsName ? `${contact.rnsName}.rsk` : contact.publicKey}
-      </div>
-      <hr />
-      <ChatDisplay chat={contact.chat} />
+    state: { UserState },
+  } = useContext(UserStore);
+  const contacts = UserState.contacts;
+  const contact = contacts.find((c: Contact) => {
+    return c.rnsName === rnsName;
+  });
 
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          backgroundColor: '#EEE',
-          padding: '8px',
-          paddingRight: '40px',
-          width: '100%',
-        }}
-      >
-        <Form>
-          <FormControl
-            name="content"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={content}
-            autoComplete="off"
-            autoFocus
-            style={{ width: '100%' }}
-          />
-          <ButtonCircle
-            type="submit"
-            onClick={submitForm}
-            disabled={!content}
-            style={{
-              position: 'fixed',
-              bottom: '10px',
-              right: '.5em',
-            }}
-          >
-            <PaperPlaneIcon />
-          </ButtonCircle>
-        </Form>
-      </div>
-    </>
-  );
+  return <ChatPageTemplate contact={contact} className="chats" />;
 };
 
 export default ChatPage;
