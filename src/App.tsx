@@ -14,6 +14,7 @@ const App: React.FC = () => {
     <UserProvider.Provider>
       <Router history={history}>
         <div
+          data-testid="wrapper"
           style={{
             minHeight: "100vh",
             display: "flex",
