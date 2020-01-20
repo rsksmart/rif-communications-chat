@@ -1,23 +1,23 @@
 // import Contact from './Contact';
+import { addUserName, fetchUserByName } from 'api/RIFNameService';
 import libp2p from 'libp2p';
+import { Contact, Message, User } from 'models';
+import { MESSAGE_SENDER } from 'models/Message';
 import { PeerId } from 'peer-id';
 import { PeerInfo } from 'peer-info';
 import publicIp from 'public-ip';
-
-import { IUserState } from './UserStore';
-import { addUserName, fetchUserByName } from 'api/RIFNameService';
-import { APP_ACTIONS } from 'store/App/appActions';
-import { User, Contact } from 'models';
 import {
-  createKey,
-  createPeerInfo,
-  createNode as apiCreateNode,
   connectToNode as apiConnectToNode,
+  createKey,
+  createNode as apiCreateNode,
   createPeerIdFromJSON,
+  createPeerInfo,
+  sendMsg,
 } from 'rif-communications';
+import { APP_ACTIONS } from 'store/App/appActions';
 import { IAction } from 'store/storeUtils/IAction';
 import LocalStorage from 'utils/LocalStorage';
-import Logger from 'utils/Logger';
+import { IUserState } from './UserStore';
 
 // TODO: Extract services !!!
 const BOOTNODE_ADDRESS: string = process.env.REACT_APP_BOOTNODE_ADDR
@@ -36,10 +36,10 @@ export enum USER_ACTIONS {
   LOGOUT = 'LOGOUT',
   FETCH_RNS = 'FETCH_RNS',
   ADD_CONTACT = 'ADD_CONTACT',
+  SEND_MESSAGE = 'SEND_MESSAGE',
 }
 
 const persistence = LocalStorage.getInstance();
-const logger = Logger.getInstance();
 
 export interface UserAction extends IAction {
   type: USER_ACTIONS;
@@ -101,7 +101,7 @@ const createNode = async (user: User) => {
 };
 
 const processKadMsg = (kadMsgObj: any) => {
-  // let { contacts } = this.state;
+  // let { contacts } = state;
   // let contact = contacts.find(
   //   contact => contact.peerInfo?.id?.publicKey === kadMsgObj.sender,
   // );
@@ -119,8 +119,8 @@ const processKadMsg = (kadMsgObj: any) => {
   //   content: kadMsgObj.msg,
   //   sender: MESSAGE_SENDER.THEM,
   // });
-  // this.addMessage(msg, contact);
-  // this.setState({ contacts });
+  // addMessage(msg, contact);
+  // setState({ contacts });
 };
 
 export const connectToNode = async clientNode => {
@@ -156,4 +156,27 @@ export const addContact = (state, contact: Contact): Contact[] => {
     persistence.setItem('contacts', newContacts);
   }
   return newContacts;
+};
+
+export const addMessage = async (
+  state: IUserState,
+  message: Message,
+  contact: Contact,
+) => {
+  const { clientNode } = state;
+  if (message.sender === MESSAGE_SENDER.ME && contact.peerInfo) {
+    await sendMsg(
+      clientNode,
+      contact.peerInfo,
+      message.content,
+      state.sentMsgs,
+      true,
+    ).catch(error => {
+      console.log('Unable to dial contact, try to reconnect to bootnode');
+      //Option number 1, try to reconnect if sending fails
+      connectToNode(clientNode).catch(connErr => {
+        console.log('Unable to reconnect to node');
+      });
+    });
+  }
 };

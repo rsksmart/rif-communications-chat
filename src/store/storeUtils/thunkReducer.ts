@@ -5,6 +5,7 @@ import {
   createUser,
   setupUser,
   checkUserExists,
+  addMessage,
 } from 'store/User/userActions';
 import { IAction } from './IAction';
 import LocalStorage from 'utils/LocalStorage';
@@ -12,7 +13,7 @@ import { fetchUserByName } from 'api/RIFNameService';
 import { APP_ACTIONS } from 'store/App/appActions';
 import Logger from 'utils/Logger';
 
-const localStorage = LocalStorage.getInstance();
+const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();
 
 const {
@@ -23,6 +24,7 @@ const {
   RESTORE_USER,
   LOGOUT,
   FETCH_RNS,
+  SEND_MESSAGE,
 } = USER_ACTIONS;
 
 // FIXME: Thunk reducer should also process only those actions that require it.
@@ -92,8 +94,12 @@ const thunkReducer = async (state, dispatch, action: IAction) => {
           payload: { isLoading: false },
         });
         break;
+      case SEND_MESSAGE:
+        const { message, contact } = payload;
+        addMessage(state, message, contact);
+        break;
       case LOGOUT:
-        localStorage.clear();
+        persistence.clear();
         break;
       default:
         return dispatch(action);

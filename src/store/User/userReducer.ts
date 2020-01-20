@@ -1,9 +1,15 @@
-import { initialState } from './UserStore';
-import { USER_ACTIONS, UserAction, addContact } from './userActions';
 import LocalStorage from 'utils/LocalStorage';
 import Logger from 'utils/Logger';
+import { addContact, UserAction, USER_ACTIONS } from './userActions';
+import { initialState } from './UserStore';
 
-const { RESTORE_USER, SET_CLIENT_NODE, LOGOUT, ADD_CONTACT } = USER_ACTIONS;
+const {
+  RESTORE_USER,
+  SET_CLIENT_NODE,
+  LOGOUT,
+  ADD_CONTACT,
+  SEND_MESSAGE,
+} = USER_ACTIONS;
 
 const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();
@@ -39,6 +45,14 @@ const userReducer = (state = initialState, action: UserAction) => {
           ...state,
           contacts: addContact(state, payload.contact),
         };
+        break;
+      case SEND_MESSAGE:
+        payload.contact.chat.push(payload.message);
+        state = {
+          ...state,
+          sentMsgs: state.sentMsgs + 1,
+        };
+        persistence.setItem('contacts', state.contacts);
         break;
       case LOGOUT:
         state = initialState;

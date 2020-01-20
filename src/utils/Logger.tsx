@@ -51,7 +51,7 @@ class Logger implements ILogger {
   private log = (msgType: LOG_LEVELS, msg: string, ...rest: any): void => {
     const logger = console[msgType];
     const time = this.getReadableNow();
-    const message = `${time}# ${msg}`;
+    const message = `${time} ${msg}`;
     logger(message, ...rest);
   };
 
