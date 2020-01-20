@@ -47,3 +47,19 @@ export const addUserName = async (
       .catch(err => reject(err));
   });
 };
+
+export const getName = async (pubKey: string): Promise<string[]> => {
+  return new Promise((resolve, reject) => {
+    fetch(`${API_ADD}/lookup?publicKey=${pubKey}`)
+      .then(response => {
+        if (response.status === 404) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then(body => {
+        resolve(body);
+      })
+      .catch(err => reject(err));
+  });
+};

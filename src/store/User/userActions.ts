@@ -2,6 +2,7 @@
 import { addUserName, fetchUserByName } from 'api/RIFNameService';
 import libp2p from 'libp2p';
 import { Contact, Message, User } from 'models';
+import { createContactFromPublicKey } from 'models/Contact';
 import { MESSAGE_SENDER } from 'models/Message';
 import { PeerId } from 'peer-id';
 import { PeerInfo } from 'peer-info';
@@ -37,6 +38,7 @@ export enum USER_ACTIONS {
   FETCH_RNS = 'FETCH_RNS',
   ADD_CONTACT = 'ADD_CONTACT',
   SEND_MESSAGE = 'SEND_MESSAGE',
+  RECEIVE_MESSAGE = 'RECEIVE_MESSAGE',
 }
 
 const persistence = LocalStorage.getInstance();
@@ -76,7 +78,7 @@ export const setupUser = async (keystore, dispatch) => {
 const connectUser = async (peer: PeerId, rnsName: string, dispatch: any) => {
   const peerInfo: PeerInfo = await createPeerInfo(peer);
   const user = new User({ pi: peerInfo, rnsName });
-  const node: libp2p = await createNode(user);
+  const node: libp2p = await createNode(user, dispatch);
   if (node) {
     const payload = {
       clientNode: node,
@@ -91,36 +93,35 @@ const connectUser = async (peer: PeerId, rnsName: string, dispatch: any) => {
   return user;
 };
 
-const createNode = async (user: User) => {
+const createNode = async (user: User, dispatch) => {
   try {
-    return apiCreateNode(user.pi, await publicIp.v4(), 80, processKadMsg);
+    return apiCreateNode(
+      user.pi,
+      await publicIp.v4(),
+      80,
+      processKadMsg(dispatch),
+    );
   } catch (e) {
     // At least start with localhost if public IP can not be obtained
-    return apiCreateNode(user.pi, '127.0.0.1', 80, processKadMsg);
+    return apiCreateNode(user.pi, '127.0.0.1', 80, processKadMsg(dispatch));
   }
 };
 
-const processKadMsg = (kadMsgObj: any) => {
-  // let { contacts } = state;
-  // let contact = contacts.find(
-  //   contact => contact.peerInfo?.id?.publicKey === kadMsgObj.sender,
-  // );
-  // if (!contact) {
-  //   contact = await createContactFromPublicKey(kadMsgObj.sender);
-  //   contacts = [...contacts, contact].sort((a, b) => {
-  //     if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
-  //     else if (!a.rnsName) return -1;
-  //     else if (!b.rnsName) return 1;
-  //     return a.rnsName < b.rnsName ? -1 : 1;
-  //   });
-  //   localStorage.setItem('contacts', JSON.stringify(contacts));
-  // }
-  // const msg = new Message({
-  //   content: kadMsgObj.msg,
-  //   sender: MESSAGE_SENDER.THEM,
-  // });
-  // addMessage(msg, contact);
-  // setState({ contacts });
+const processKadMsg = dispatch => async (kadMsgObj: any) => {
+  const message = new Message({
+    content: kadMsgObj.msg,
+    sender: MESSAGE_SENDER.THEM,
+    timestamp: Date.now(),
+  });
+  const contact = await createContactFromPublicKey(kadMsgObj.sender);
+
+  dispatch({
+    type: USER_ACTIONS.RECEIVE_MESSAGE,
+    payload: {
+      message,
+      contact,
+    },
+  });
 };
 
 export const connectToNode = async clientNode => {
@@ -141,6 +142,7 @@ export const getUserPubKey = rnsName => {
   return fetchUserByName(rnsName);
 };
 
+// TODO: state should not be here
 export const addContact = (state, contact: Contact): Contact[] => {
   const { contacts } = state;
   let newContacts: Contact[] = [...contacts];
@@ -157,6 +159,7 @@ export const addContact = (state, contact: Contact): Contact[] => {
   }
   return newContacts;
 };
+// TODO: state should not be here
 
 export const addMessage = async (
   state: IUserState,

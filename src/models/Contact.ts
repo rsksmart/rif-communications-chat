@@ -4,6 +4,7 @@ import Message from 'models/Message';
 import Multiaddr from 'multiaddr';
 import { PeerInfo } from 'peer-info';
 import { IUserInfo } from 'types';
+import { getName } from 'api/RIFNameService';
 // import { getName } from 'services/UserService';
 
 export interface IContactParams {
@@ -32,11 +33,11 @@ export default class Contact implements IUserInfo {
   }
 }
 
-// export const createContactFromPublicKey = async (publicKey: string) => {
-//   const [rnsName] = await getName(publicKey);
+export const createContactFromPublicKey = async (publicKey: string) => {
+  const [rnsName] = await getName(publicKey);
 
-//   return new Contact({
-//     publicKey,
-//     rnsName: rnsName.substring(0, rnsName.length - 4),
-//   });
-// };
+  return new Contact({
+    publicKey,
+    rnsName: rnsName.substring(0, rnsName.indexOf('.rsk')),
+  });
+};
