@@ -76,6 +76,7 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
   const {
     submitForm,
     handleChange,
+    handleSubmit,
     handleBlur,
     values: { content },
   } = formik;
@@ -102,11 +103,10 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
           width: '100%',
         }}
       >
-        <Form>
-          {/* FIXME: Disable automatic url append on enter (for the bellow input field)  */}
+        <Form onSubmit={handleSubmit}>
           <FormControl
-            placeholder="Your message here"
-            aria-label="Your message here"
+            placeholder="Your message goes here"
+            aria-label="Your message goes here"
             aria-describedby="basic-addon2"
             name="content"
             onChange={handleChange}
