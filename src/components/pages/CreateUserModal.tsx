@@ -1,22 +1,22 @@
-import React, { FC, useContext } from 'react';
-import ModalFormTemplate, {
-  ModalFormTemplateProps,
-} from 'components/templates/ModalFormTemplate';
-import UserStore from 'store/User/UserStore';
 import {
-  InputGroup,
   FormControl,
+  InputGroup,
   InputGroupAppend,
   InputGroupText,
 } from 'components/atoms/forms';
-import { useFormik } from 'formik';
-import { USER_ACTIONS, checkUserExists } from 'store/User/userActions';
-import { User, Contact, Message } from 'models';
 import { FormInfoBar } from 'components/molecules/FormInfoBar';
-import { createUser } from 'store/User/userController';
-import { APP_ACTIONS } from 'store/App/appActions';
+import ModalFormTemplate, {
+  ModalFormTemplateProps,
+} from 'components/templates/ModalFormTemplate';
+import { useFormik } from 'formik';
+import { Contact, Message } from 'models';
+import React, { FC, useContext } from 'react';
 import { useHistory } from 'react-router';
 import { ROUTES } from 'routes';
+import { APP_ACTIONS } from 'store/App/appActions';
+import { checkUserExists, USER_ACTIONS } from 'store/User/userActions';
+import { createUser } from 'store/User/userController';
+import UserStore from 'store/User/UserStore';
 
 export interface CreateUserModalProps {
   show: boolean;

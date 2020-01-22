@@ -1,9 +1,8 @@
-import React, { FC, useContext, useState, useEffect } from 'react';
 import { FormControl } from 'components/atoms/forms';
-import PageTemplate from 'components/templates/PageTemplate';
-import Modal from 'components/molecules/ModalDialogue';
-import UserStore from 'store/User/UserStore';
 import { ModalProps } from 'components/atoms/modal/Modal';
+import Modal from 'components/molecules/ModalDialogue';
+import PageTemplate from 'components/templates/PageTemplate';
+import React, { FC } from 'react';
 import LocalStorage from 'utils/LocalStorage';
 
 const persistence = LocalStorage.getInstance();
@@ -11,33 +10,19 @@ const persistence = LocalStorage.getInstance();
 export interface ExportUserModalProps extends ModalProps {}
 
 const ExportUserModal: FC<ExportUserModalProps> = modalProps => {
-  const {
-    state: {
-      UserState: { user },
-    },
-  } = useContext(UserStore);
-
-  const [profile, setProfile] = useState('');
-
-  const contacts = !!user && user.contacts;
-  const rnsName = !!user && user.rnsName;
+  const contacts = persistence.getItem('contacts');
+  const rnsName = persistence.getItem('rnsName');
   const keystore = persistence.getItem('keystore');
 
-  useEffect(() => {
-    try {
-      const profile = JSON.stringify(
-        {
-          rnsName,
-          keystore,
-          contacts,
-        },
-        undefined,
-        2,
-      );
-
-      setProfile(profile);
-    } catch (err) {}
-  }, [contacts, rnsName, keystore, setProfile]);
+  const profile = JSON.stringify(
+    {
+      rnsName,
+      keystore,
+      contacts,
+    },
+    undefined,
+    2,
+  );
 
   return (
     <PageTemplate>

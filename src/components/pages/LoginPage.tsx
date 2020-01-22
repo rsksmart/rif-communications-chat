@@ -8,6 +8,7 @@ import { USER_ACTIONS } from 'store/User/userActions';
 import { setupUser } from 'store/User/userController';
 import UserStore from 'store/User/UserStore';
 import LocalStorage from 'utils/LocalStorage';
+import { PeerId } from 'peer-id';
 
 // import Logger from 'utils/Logger';
 
@@ -29,36 +30,8 @@ const LoginPage: FC<LoginPageProps> = () => {
     const rnsName = user && user.rnsName;
 
     if (!isLoading && !rnsName && keystore) {
-      (async () => {
-        try {
-          const payload = await setupUser(
-            keystore,
-            (msg: { contact: Contact; message: Message }) => {
-              dispatch({
-                type: USER_ACTIONS.RECEIVE_MESSAGE,
-                payload: msg,
-              });
-            },
-          );
-          dispatch({ type: USER_ACTIONS.SET_CLIENT, payload });
-          const storedContacts = persistence.getItem('contacts');
-          const contacts = storedContacts
-            ? await Promise.all(
-                storedContacts.map((contact: IContactParams) =>
-                  Contact.new(contact),
-                ),
-              )
-            : [];
-          dispatch({
-            type: USER_ACTIONS.SET_CONTACTS,
-            payload: {
-              contacts,
-            },
-          });
-        } catch (err) {
-          return { type: APP_ACTIONS.SET_ERROR, payload: err };
-        }
-      })();
+      const contacts = persistence.getItem('contacts');
+      recoverUser({ keystore, contacts }, dispatch);
     }
     if (rnsName && keystore) {
       history.goBack();
@@ -69,3 +42,37 @@ const LoginPage: FC<LoginPageProps> = () => {
 };
 
 export default LoginPage;
+
+// TODO: not sure where to put this
+export interface IUserRecData {
+  keystore: PeerId;
+  contacts: Contact[];
+}
+export const recoverUser = async (userRecData: IUserRecData, dispatch: any) => {
+  const { keystore, contacts } = userRecData;
+  try {
+    const payload = await setupUser(
+      keystore,
+      (msg: { contact: Contact; message: Message }) => {
+        dispatch({
+          type: USER_ACTIONS.RECEIVE_MESSAGE,
+          payload: msg,
+        });
+      },
+    );
+    dispatch({ type: USER_ACTIONS.SET_CLIENT, payload });
+    const newContacts = contacts
+      ? await Promise.all(
+          contacts.map((contact: IContactParams) => Contact.new(contact)),
+        )
+      : [];
+    dispatch({
+      type: USER_ACTIONS.SET_CONTACTS,
+      payload: {
+        contacts: newContacts,
+      },
+    });
+  } catch (err) {
+    return { type: APP_ACTIONS.SET_ERROR, payload: err };
+  }
+};

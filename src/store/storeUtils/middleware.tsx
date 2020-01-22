@@ -63,7 +63,7 @@ export default class Middleware {
       };
 
       return withMiddleware(combinedDispatch);
-    }, [combinedDispatch, state]);
+    }, [combinedDispatch]);
 
     useEffect(() => {
       if (combinedState !== initialState) {
