@@ -4,6 +4,9 @@ import PageTemplate from 'components/templates/PageTemplate';
 import Modal from 'components/molecules/ModalDialogue';
 import UserStore from 'store/User/UserStore';
 import { ModalProps } from 'components/atoms/modal/Modal';
+import LocalStorage from 'utils/LocalStorage';
+
+const persistence = LocalStorage.getInstance();
 
 export interface ExportUserModalProps extends ModalProps {}
 
@@ -18,7 +21,7 @@ const ExportUserModal: FC<ExportUserModalProps> = modalProps => {
 
   const contacts = !!user && user.contacts;
   const rnsName = !!user && user.rnsName;
-  const keystore = localStorage.getItem('keystore');
+  const keystore = persistence.getItem('keystore');
 
   useEffect(() => {
     try {
