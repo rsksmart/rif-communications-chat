@@ -9,6 +9,11 @@ import React, { FC, useContext } from 'react';
 import { USER_ACTIONS } from 'store/User/userActions';
 import UserStore from 'store/User/UserStore';
 import { UserPageTemplate, UserPageTemplateProps } from './UserPageTemplate';
+import { sendMsg } from 'rif-communications';
+import { connectToKdmNode } from 'store/User/userController';
+import Logger from 'utils/Logger';
+
+const logger = Logger.getInstance();
 
 export interface ChatPageTemplateProps extends UserPageTemplateProps {
   contact: Contact;
@@ -23,23 +28,46 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
   children,
   ...rest
 }) => {
-  const { dispatch } = useContext(UserStore);
+  const {
+    state: {
+      UserState: { clientNode, sentMsgs },
+    },
+    dispatch,
+  } = useContext(UserStore);
 
   const formikProps = {
     initialValues: {
       content: '',
     },
     initialErrors: {},
-    onSubmit: ({ content }: FormValues, actions) => {
-      !!content &&
-        dispatch({
-          type: USER_ACTIONS.SEND_MESSAGE,
-          payload: {
-            contact,
-            message: new Message({ content, timestamp: Date.now() }),
-          },
-        });
-      actions.resetForm();
+    onSubmit: async ({ content }: FormValues, actions) => {
+      if (content) {
+        const { peerInfo } = contact;
+        try {
+          await sendMsg(clientNode, peerInfo, content, sentMsgs, true);
+
+          dispatch({
+            type: USER_ACTIONS.SEND_MESSAGE,
+            payload: {
+              contact,
+              message: new Message({
+                content,
+                timestamp: Date.now(),
+              }),
+            },
+          });
+          actions.resetForm();
+        } catch (err) {
+          logger.error(
+            'Unable to dial contact, try to reconnect to bootnode:',
+            err,
+          );
+          //Option number 1, try to reconnect if sending fails
+          connectToKdmNode(clientNode).catch(connErr => {
+            logger.error('Unable to reconnect to node');
+          });
+        }
+      }
     },
   };
 

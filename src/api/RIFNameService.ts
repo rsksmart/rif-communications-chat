@@ -4,12 +4,14 @@ const BASE_ADD: string = process.env.REACT_APP_RNS_SERVER
   : 'http://64.225.35.211:3010';
 const API_ADD = BASE_ADD + '/api';
 
-export const fetchUserByName = async (rnsName: string): Promise<string> => {
+export const fetchUserByName = async (
+  rnsName: string,
+): Promise<string | false> => {
   return new Promise((resolve, reject) => {
     fetch(`${API_ADD}/domain?domain=${rnsName + TLD}`)
       .then(response => {
         if (response.status === 404) {
-          throw new Error(response.statusText);
+          resolve(false);
         }
         return response.json();
       })
@@ -20,7 +22,7 @@ export const fetchUserByName = async (rnsName: string): Promise<string> => {
   });
 };
 
-export const addUserName = async (
+export const createRNS = async (
   rnsName: string,
   publicKey: string,
 ): Promise<{ domain: string; publicKey: string }> => {
@@ -48,12 +50,12 @@ export const addUserName = async (
   });
 };
 
-export const getName = async (pubKey: string): Promise<string[]> => {
+export const getDomainByPubKey = async (pubKey: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     fetch(`${API_ADD}/lookup?publicKey=${pubKey}`)
       .then(response => {
         if (response.status === 404) {
-          throw new Error(response.statusText);
+          resolve();
         }
         return response.json();
       })

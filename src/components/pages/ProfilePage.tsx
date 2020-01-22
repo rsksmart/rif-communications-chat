@@ -7,10 +7,7 @@ export const ProfilePage = () => {
   const {
     state: { UserState },
   } = useContext(UserStore);
-  const { user } = UserState;
-
-  // TODO: Extract contacts from user into separate model
-  const contacts = user && user.contacts;
+  const { contacts, user } = UserState;
 
   return <ProfilePageTemplate user={user} contacts={contacts} />;
 };

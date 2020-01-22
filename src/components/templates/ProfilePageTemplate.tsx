@@ -101,7 +101,7 @@ export const ProfilePageTemplate: FC<ProfilePageTemplateProps> = ({
             show={isAddContactVisible}
             onHide={hideAddContactModal}
           />
-          <ContactList contacts={contacts} className={'contact-list'} />
+          {/* <ContactList contacts={contacts} className={'contact-list'} /> */}
         </Heading>
 
         <ContactList contacts={contacts} className={'contact-list'} />

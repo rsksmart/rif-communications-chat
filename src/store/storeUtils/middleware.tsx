@@ -1,6 +1,5 @@
 import { useReducer, useRef, useMemo, useEffect } from 'react';
 import appReducer from 'store/App/appReducer';
-import thunkReducer from './thunkReducer';
 import Logger from 'utils/Logger';
 
 const logger = Logger.getInstance();
@@ -57,10 +56,9 @@ export default class Middleware {
     const dispatchWithMiddleware = useMemo(() => {
       const withMiddleware = dispatch => {
         return action => {
-          // dispatchMessage({ type: MESSAGING_ACTIONS.SET_IS_LOADING });
           logger.debug('Action Type:', action.type);
           logger.debug('Action Payload:', action.payload);
-          thunkReducer(state, dispatch, action);
+          dispatch(action);
         };
       };
 

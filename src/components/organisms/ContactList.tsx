@@ -1,12 +1,10 @@
+import Heading from 'components/atoms/Heading';
+import List, { ListProps } from 'components/atoms/List';
+import ListItem from 'components/atoms/ListItem';
+import SmallText from 'components/atoms/SmallText';
+import { Contact } from 'models';
 import React, { FC } from 'react';
 import { useHistory } from 'react-router';
-
-import List, { ListProps } from 'components/atoms/List';
-import { Contact } from 'models';
-import ListItem from 'components/atoms/ListItem';
-import { ROUTES } from 'routes';
-import SmallText from 'components/atoms/SmallText';
-import Heading from 'components/atoms/Heading';
 
 export interface ContactListProps extends ListProps {
   contacts: Contact[];
@@ -14,13 +12,12 @@ export interface ContactListProps extends ListProps {
 
 const ContactList: FC<ContactListProps> = ({ contacts, ...rest }) => {
   const history = useHistory();
-
   return (
     <List {...rest}>
-      {!!(contacts && contacts.length) &&
+      {!!contacts &&
         contacts.map((contact: Contact) => {
           const { rnsName, publicKey, chat } = contact;
-          const nChats = chat.length;
+          const nChats = !!chat && chat.length;
           const lastChatContent = !!nChats && chat[nChats - 1].content;
 
           return (

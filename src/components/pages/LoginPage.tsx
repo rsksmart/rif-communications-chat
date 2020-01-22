@@ -1,41 +1,69 @@
-import React, { useContext, FC, useEffect } from 'react';
-
-import UserStore from 'store/User/UserStore';
 import LoginPageTemplate from 'components/templates/LoginPageTemplate';
-import { USER_ACTIONS } from 'store/User/userActions';
-import LocalStorage from 'utils/LocalStorage';
+import { Contact, Message } from 'models';
+import { IContactParams } from 'models/Contact';
+import React, { FC, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
+import { APP_ACTIONS } from 'store/App/appActions';
+import { USER_ACTIONS } from 'store/User/userActions';
+import { setupUser } from 'store/User/userController';
+import UserStore from 'store/User/UserStore';
+import LocalStorage from 'utils/LocalStorage';
+
+// import Logger from 'utils/Logger';
 
 export interface LoginPageProps {}
 
-const localStorage = LocalStorage.getInstance();
+const persistence = LocalStorage.getInstance();
 
 const LoginPage: FC<LoginPageProps> = () => {
+  const { state, dispatch } = useContext(UserStore);
   const {
-    state: {
-      UserState: { user },
-    },
-    dispatch,
-  } = useContext(UserStore);
+    UserState: { user },
+    AppState: { isLoading },
+  } = state;
 
   const history = useHistory();
 
   useEffect(() => {
-    const keystore = localStorage.getItem('keystore');
+    const keystore = persistence.getItem('keystore');
     const rnsName = user && user.rnsName;
 
-    if (!rnsName && keystore) {
-      dispatch({
-        type: USER_ACTIONS.RESTORE_USER,
-        payload: {
-          keystore,
-        },
-      });
+    if (!isLoading && !rnsName && keystore) {
+      (async () => {
+        try {
+          const payload = await setupUser(
+            keystore,
+            (msg: { contact: Contact; message: Message }) => {
+              dispatch({
+                type: USER_ACTIONS.RECEIVE_MESSAGE,
+                payload: msg,
+              });
+            },
+          );
+          dispatch({ type: USER_ACTIONS.SET_CLIENT, payload });
+          const storedContacts = persistence.getItem('contacts');
+          const contacts = storedContacts
+            ? await Promise.all(
+                storedContacts.map((contact: IContactParams) =>
+                  Contact.new(contact),
+                ),
+              )
+            : [];
+          dispatch({
+            type: USER_ACTIONS.SET_CONTACTS,
+            payload: {
+              contacts,
+            },
+          });
+        } catch (err) {
+          return { type: APP_ACTIONS.SET_ERROR, payload: err };
+        }
+      })();
     }
     if (rnsName && keystore) {
       history.goBack();
     }
-  }, [user, dispatch, history]);
+  }, [isLoading, user, dispatch, history]);
 
   return <LoginPageTemplate user={user} />;
 };

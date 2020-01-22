@@ -1,21 +1,23 @@
-import React, { FC, useState, useContext } from 'react';
-import ModalFormTemplate, {
-  ModalFormTemplateProps,
-} from 'components/templates/ModalFormTemplate';
+import { fetchUserByName } from 'api/RIFNameService';
 import {
-  InputGroup,
   FormControl,
+  InputGroup,
   InputGroupAppend,
   InputGroupText,
 } from 'components/atoms/forms';
-import { useFormik } from 'formik';
-import UserStore from 'store/User/UserStore';
-import { USER_ACTIONS } from 'store/User/userActions';
-import PublicKey from 'components/molecules/PublicKey';
-import { Contact } from 'models';
-import { useHistory } from 'react-router';
-import { ROUTES } from 'routes';
 import { FormInfoBar } from 'components/molecules/FormInfoBar';
+import PublicKey from 'components/molecules/PublicKey';
+import ModalFormTemplate, {
+  ModalFormTemplateProps,
+} from 'components/templates/ModalFormTemplate';
+import { useFormik } from 'formik';
+import { Contact } from 'models';
+import React, { FC, useContext, useState } from 'react';
+import { USER_ACTIONS } from 'store/User/userActions';
+import UserStore from 'store/User/UserStore';
+import Logger from 'utils/Logger';
+
+const logger = Logger.getInstance();
 
 export interface NewContactModalProps {
   show: boolean;
@@ -32,14 +34,12 @@ interface FormErrors extends FormValues {}
 const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
   const { dispatch } = useContext(UserStore);
   const [contactKey, setContactKey] = useState('');
-  const history = useHistory();
 
-  let formErrors: FormErrors = {};
   const formikProps = {
     initialErrors: {},
     initialValues: {},
-    onSubmit: ({ rnsName }: FormValues, actions) => {
-      const contact = new Contact({
+    onSubmit: async ({ rnsName }: FormValues, actions) => {
+      const contact = await Contact.new({
         rnsName,
         publicKey: contactKey,
         multiaddr: '',
@@ -54,24 +54,26 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
     },
     // TODO: this can be DRY-ed more (extract all validations)
     validate: async ({ rnsName }: FormValues) => {
+      const errors: FormErrors = {};
       if (!rnsName) {
-        formErrors.rnsName = 'Required';
+        errors.rnsName = 'Required';
       } else if (!RegExp(/^([\w\d.\-_]+){3,20}$/).test(rnsName)) {
-        formErrors.rnsName =
+        errors.rnsName =
           'Min 3 alphanumeric characters plus optional ".", "_" and "-" only.';
       } else {
-        dispatch({
-          type: USER_ACTIONS.FETCH_RNS,
-          payload: {
-            rnsName,
-            setPublicKey: (publicKey: string | undefined) => {
-              publicKey && setContactKey(publicKey);
-              !publicKey && setErrors({ rnsName: 'User does not exist.' });
-            },
-          },
-        });
+        try {
+          const publicKey = await fetchUserByName(rnsName);
+          if (publicKey) {
+            setContactKey(publicKey);
+          } else {
+            errors.rnsName = 'User does not exist.';
+          }
+        } catch (err) {
+          const msg = (errors.rnsName = 'Could not fetch contact:');
+          logger.debug(msg, err);
+        }
       }
-      return formErrors;
+      return errors;
     },
   };
 
@@ -93,7 +95,6 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
 
   const {
     handleChange,
-    setErrors,
     handleBlur,
     values: { rnsName },
     errors,

@@ -1,5 +1,5 @@
 import React, { Dispatch, useReducer } from 'react';
-
+import { IState } from 'store/storeUtils/interfaces';
 import { AppAction } from './appActions';
 import appReducer from './appReducer';
 
@@ -10,7 +10,7 @@ export interface IAppMessage {
   formError?: any;
 }
 
-interface IAppState {
+export interface IAppState extends IState {
   message: IAppMessage;
 }
 

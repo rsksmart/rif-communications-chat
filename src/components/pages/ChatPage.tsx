@@ -3,9 +3,6 @@ import { Contact } from 'models';
 import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import UserStore from 'store/User/UserStore';
-import Logger from 'utils/Logger';
-
-const logger = Logger.getInstance();
 
 const ChatPage = () => {
   const { rnsName } = useParams();

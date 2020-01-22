@@ -5,9 +5,10 @@ import { User, Contact } from 'models/';
 import userReducer from './userReducer';
 import { UserAction } from './userActions';
 import Middleware from 'store/storeUtils/middleware';
+import { IState } from 'store/storeUtils/interfaces';
 
 //TODO: separate not-user-connection related stuff out
-export interface IUserState {
+export interface IUserState extends IState {
   user: User | undefined;
   clientNode?: libp2p;
   contacts: Contact[];

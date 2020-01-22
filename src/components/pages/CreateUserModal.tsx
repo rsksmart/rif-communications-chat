@@ -10,9 +10,13 @@ import {
   InputGroupText,
 } from 'components/atoms/forms';
 import { useFormik } from 'formik';
-import { USER_ACTIONS } from 'store/User/userActions';
-import { User } from 'models';
+import { USER_ACTIONS, checkUserExists } from 'store/User/userActions';
+import { User, Contact, Message } from 'models';
 import { FormInfoBar } from 'components/molecules/FormInfoBar';
+import { createUser } from 'store/User/userController';
+import { APP_ACTIONS } from 'store/App/appActions';
+import { useHistory } from 'react-router';
+import { ROUTES } from 'routes';
 
 export interface CreateUserModalProps {
   show: boolean;
@@ -28,38 +32,42 @@ interface FormErrors extends FormValues {}
 
 const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
   const { dispatch } = useContext(UserStore);
-
-  const formErrors: FormErrors = {};
+  const history = useHistory();
 
   const formikProps = {
     initialErrors: {},
     initialValues: {},
-    onSubmit: ({ rnsName }: FormValues) => {
-      const payload: User = { rnsName, pi: null, publicKey: null };
-      dispatch({
-        type: USER_ACTIONS.CREATE_USER,
-        payload,
-      });
+    onSubmit: async ({ rnsName }: FormValues) => {
+      if (rnsName) {
+        try {
+          const payload = await createUser(
+            rnsName,
+            (msg: { contact: Contact; message: Message }) => {
+              dispatch({
+                type: USER_ACTIONS.RECEIVE_MESSAGE,
+                payload: msg,
+              });
+            },
+          );
+          dispatch({ type: USER_ACTIONS.SET_CLIENT, payload });
+          history.push(ROUTES.PROFILE);
+        } catch (err) {
+          return { type: APP_ACTIONS.SET_ERROR, payload: err };
+        }
+      }
     },
     // TODO: this can be DRY-ed more (extract all validations)
     validate: async ({ rnsName }: FormValues) => {
+      const errors: FormErrors = {};
       if (!rnsName) {
-        formErrors.rnsName = 'Required';
+        errors.rnsName = 'Required';
       } else if (!RegExp(/^([\w\d.\-_]+){3,20}$/).test(rnsName)) {
-        formErrors.rnsName =
+        errors.rnsName =
           'Min 3 alphanumeric characters plus optional ".", "_" and "-" only.';
-      } else {
-        dispatch({
-          type: USER_ACTIONS.CHECK_RNS,
-          payload: {
-            rnsName,
-            errorsCb: (rnsExists: boolean) => {
-              rnsExists && setErrors({ rnsName: 'Already registered.' });
-            },
-          },
-        });
+      } else if (await checkUserExists(rnsName)) {
+        errors.rnsName = 'Already registered.';
       }
-      return formErrors;
+      return errors;
     },
   };
 
@@ -84,7 +92,6 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
     handleBlur,
     values: { rnsName },
     errors,
-    setErrors,
   } = formik;
   return (
     <ModalFormTemplate {...modalTemplateProps}>

@@ -1,16 +1,12 @@
 import LocalStorage from 'utils/LocalStorage';
 import Logger from 'utils/Logger';
-import { addContact, UserAction, USER_ACTIONS } from './userActions';
-import { initialState } from './UserStore';
-
-const {
-  RESTORE_USER,
-  SET_CLIENT_NODE,
-  LOGOUT,
-  ADD_CONTACT,
-  SEND_MESSAGE,
-  RECEIVE_MESSAGE,
-} = USER_ACTIONS;
+import {
+  addContact,
+  UserAction,
+  USER_ACTIONS,
+  updateContactsWithMessage,
+} from './userActions';
+import { initialState, IUserState } from './UserStore';
 
 const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();
@@ -20,70 +16,86 @@ const userReducer = (state = initialState, action: UserAction) => {
   logger.debug('userReducer -> action', action);
 
   const { type, payload } = action;
+  const newState = userActions[type]
+    ? userActions[type](state, payload)
+    : state;
 
-  if (type) {
-    switch (type) {
-      case SET_CLIENT_NODE:
-        state = {
-          ...state,
-          ...payload,
-        };
-        const { user } = state;
-        const rnsName = user && user.rnsName;
-        persistence.setItem('rnsName', rnsName || '');
-        break;
-      case RESTORE_USER:
-        state = {
-          ...state,
-          user: {
-            ...payload.user,
-          },
-          contacts: persistence.getItem('contacts') || [],
-        };
-        break;
-      case ADD_CONTACT:
-        state = {
-          ...state,
-          contacts: addContact(state, payload.contact),
-        };
-        break;
-      case SEND_MESSAGE:
-        payload.contact.chat.push(payload.message);
-        state = {
-          ...state,
-          sentMsgs: state.sentMsgs + 1,
-        };
-        persistence.setItem('contacts', state.contacts);
-        break;
-      case RECEIVE_MESSAGE:
-        let { contacts } = state;
-        const { message, contact } = payload;
-        const contactExists = !!contacts.find(
-          contact => contact.peerInfo?.id?.publicKey === contact.publicKey,
-        );
-        const newContacts = [...contacts];
-        if (!contactExists) {
-          newContacts.push(contact);
-          //TODO: DRY it (exists in userActions -> addContact)
-          newContacts.sort((a, b) => {
-            if (a.rnsName && !b.rnsName)
-              return a.publicKey < b.publicKey ? -1 : 1;
-            else if (!a.rnsName) return -1;
-            else if (!b.rnsName) return 1; // FIXME: never reached as !(A&&!B) -> [[!A,!B], [!A,B], [A,B]]
-            return a.rnsName < b.rnsName ? -1 : 1;
-          });
-          localStorage.setItem('contacts', JSON.stringify(contacts));
-        }
-        state = {
-          ...state,
-          contacts: newContacts,
-        };
-      case LOGOUT:
-        state = initialState;
-        break;
-      default:
-    }
-  }
-  return state;
+  return newState;
 };
+
+type IUserActions = {
+  [key in USER_ACTIONS]: (state: IUserState, payload: any) => IUserState;
+};
+
+const {
+  ADD_CONTACT,
+  LOGOUT,
+  RECEIVE_MESSAGE,
+  SET_CONTACTS,
+  SEND_MESSAGE,
+  ERROR,
+  CREATE_USER_NODE,
+  CONNECT_TO_NODE,
+  ADD_USER,
+  CREATE_USER,
+  SET_CLIENT,
+} = USER_ACTIONS;
+
+const userActions: IUserActions = {
+  [SET_CONTACTS]: (state, payload) => {
+    const { contacts } = payload;
+    return {
+      ...state,
+      contacts,
+    };
+  },
+  [ADD_CONTACT]: (state, payload) => {
+    const { contact } = payload;
+    return contact
+      ? {
+          ...state,
+          contacts: addContact(state, contact),
+        }
+      : state;
+  },
+  [SET_CLIENT]: (state, payload) => {
+    const { user, clientNode } = payload;
+    persistence.setItem('rnsName', user.rnsName);
+    return {
+      ...state,
+      clientNode,
+      user,
+    };
+  },
+  [RECEIVE_MESSAGE]: (state, payload) => {
+    if (!payload.contact) return state;
+
+    const { contacts } = state;
+    const newContacts = updateContactsWithMessage(contacts, payload);
+    return {
+      ...state,
+      contacts: newContacts,
+    };
+  },
+  [SEND_MESSAGE]: (state, payload) => {
+    const { contacts } = state;
+    const newContacts = updateContactsWithMessage(contacts, payload);
+    return {
+      ...state,
+      sentMsgs: state.sentMsgs + 1,
+      contacts: newContacts,
+    };
+  },
+  [LOGOUT]: (_state, _payload) => {
+    persistence.clear();
+    return initialState;
+  },
+
+  [ERROR]: (state, _payload) => state,
+  [CREATE_USER_NODE]: (state, _payload) => state,
+  [CONNECT_TO_NODE]: (state, _payload) => state,
+  [ADD_USER]: (state, _payload) => state,
+  [CREATE_USER]: (state, _payload) => state,
+};
+
 export default userReducer;
