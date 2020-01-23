@@ -85,7 +85,6 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
   const publicKey = !!contact && contact.publicKey;
   const chat = !!contact && contact.chat;
 
-  // TODO: Extract all forms into a reusable component
   return (
     <UserPageTemplate {...rest}>
       <Heading level={5} style={{ paddingLeft: '8px', paddingRight: '8px' }}>

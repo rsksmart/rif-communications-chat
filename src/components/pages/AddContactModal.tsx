@@ -52,7 +52,6 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
       actions.setErrors({});
       onHide();
     },
-    // TODO: this can be DRY-ed more (extract all validations)
     validate: async ({ rnsName }: FormValues) => {
       const errors: FormErrors = {};
       if (!rnsName) {
@@ -83,7 +82,6 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
     className: 'new-contact',
     modalFormProps: {
       formik,
-      //TODO: prop-drilling here. use context?
       modalProps: {
         show,
         onHide,
@@ -119,7 +117,6 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
           autoFocus
           required
         />
-        {/* TODO: this can be DRY-ed more (see other modal pages)  */}
         <InputGroupAppend>
           <InputGroupText id="basic-addon2">.rsk</InputGroupText>
         </InputGroupAppend>

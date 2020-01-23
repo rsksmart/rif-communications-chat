@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 
-// TODO: fix and use the Image atom instead
 import { Image } from 'react-bootstrap';
 
 import cosmonaut from 'assets/cosmonaut.png';

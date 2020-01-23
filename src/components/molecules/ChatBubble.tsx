@@ -4,7 +4,6 @@ import Bubble, { BubbleProps } from 'components/atoms/chat/Bubble';
 
 interface ChatBubbleProps extends ChatLineProps, BubbleProps {}
 
-//TODO: better name?
 const ChatBubble: FC<ChatBubbleProps> = ({ children, colour, ...props }) => {
   return (
     <ChatLine {...props}>

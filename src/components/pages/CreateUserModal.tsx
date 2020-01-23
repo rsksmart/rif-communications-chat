@@ -56,7 +56,6 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
         }
       }
     },
-    // TODO: this can be DRY-ed more (extract all validations)
     validate: async ({ rnsName }: FormValues) => {
       const errors: FormErrors = {};
       if (!rnsName) {
@@ -77,7 +76,6 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
     className: 'create-user',
     modalFormProps: {
       formik,
-      //TODO: prop-drilling here. use context?
       modalProps: {
         show,
         onHide,
@@ -115,7 +113,6 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
           autoFocus
           required
         />
-        {/* TODO: this can be DRY-ed more (see other modal pages)  */}
         <InputGroupAppend>
           <InputGroupText id="basic-addon2">.rsk</InputGroupText>
         </InputGroupAppend>

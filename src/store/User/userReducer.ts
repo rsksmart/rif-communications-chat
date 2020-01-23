@@ -12,7 +12,6 @@ import { Contact, Message } from 'models';
 const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();
 
-// FIXME: Reducer should to be able to tell whether the action is meant for it
 const userReducer = (state = initialState, action: UserAction) => {
   logger.debug('userReducer -> action', action);
 

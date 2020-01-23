@@ -37,7 +37,6 @@ const LoginPageTemplate: FC<LoginPageTemplateProps> = ({ user }) => {
           alignItems: 'center',
         }}
       >
-        {/*TODO: Refactor these buttons */}
         <Button
           size="lg"
           variant="primary"

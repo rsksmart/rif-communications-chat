@@ -43,17 +43,15 @@ export const getUserPubKey = rnsName => {
   return fetchUserByName(rnsName);
 };
 
-// TODO: state should not be here
 export const addContact = (state, contact: Contact): Contact[] => {
   const { contacts } = state;
   let newContacts: Contact[] = [...contacts];
   if (!state.contacts.find((c: Contact) => c.publicKey === contact.publicKey)) {
-    // TODO: perhaps more efficient insert would be better than sort?
     newContacts.push(contact);
     newContacts.sort((a, b) => {
       if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
       else if (!a.rnsName) return -1;
-      else if (!b.rnsName) return 1; // FIXME: never reached as !(A&&!B) -> [[!A,!B], [!A,B], [A,B]]
+      else if (!b.rnsName) return 1;
       return a.rnsName < b.rnsName ? -1 : 1;
     });
     persistence.setItem('contacts', newContacts);

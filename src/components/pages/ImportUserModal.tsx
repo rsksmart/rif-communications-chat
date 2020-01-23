@@ -7,9 +7,10 @@ import { useFormik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
 import { checkUserExists } from 'store/User/userActions';
 import UserStore from 'store/User/UserStore';
+import { IUserRecData, recoverUser } from 'store/User/userUtils';
 import LocalStorage from 'utils/LocalStorage';
 import Logger from 'utils/Logger';
-import { IUserRecData, recoverUser } from './LoginPage';
+import { FormInfoBar } from 'components/molecules/FormInfoBar';
 const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();
 
@@ -63,7 +64,6 @@ const ImportUserModal: FC<ImportUserModalProps> = ({ show, onHide }) => {
     validate: async ({ importText }: FormValues) => {
       const errors: FormErrors = {};
       try {
-        // TODO: Maybe add checking against schema of a User (could use Yup)
         const textJson = JSON.parse(importText);
         const { rnsName, keystore, contacts } = textJson;
         const userExists = await checkUserExists(rnsName);
@@ -90,7 +90,6 @@ const ImportUserModal: FC<ImportUserModalProps> = ({ show, onHide }) => {
     className: 'import-user',
     modalFormProps: {
       formik,
-      //TODO: prop-drilling here. use context?
       modalProps: {
         show,
         onHide,
@@ -121,15 +120,8 @@ const ImportUserModal: FC<ImportUserModalProps> = ({ show, onHide }) => {
           autoFocus
           required
         />
-        {/* TODO: this can be DRY-ed more (see other modal pages)  */}
-
-        {/* {isLoading && <small>Waiting for server...</small>} */}
       </InputGroup>
-      {errors.importText && (
-        <SmallText style={{ color: 'red', alignSelf: 'center' }}>
-          {errors.importText}
-        </SmallText>
-      )}
+      <FormInfoBar error={errors.importText} />
     </ModalFormTemplate>
   );
 };

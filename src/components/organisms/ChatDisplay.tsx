@@ -35,7 +35,6 @@ const ChatDisplay: FC<ChatDisplayProps> = ({ chat }) => {
           </ChatBubble>
         );
       })}
-      {/* TODO: Should this hack be replaced by something else? */}
       <div
         ref={el => {
           if (el) el.scrollIntoView();

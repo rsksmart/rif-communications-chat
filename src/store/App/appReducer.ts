@@ -6,7 +6,6 @@ import Logger from 'utils/Logger';
 const { SET_IS_LOADING, SET_ERROR } = APP_ACTIONS;
 const logger = Logger.getInstance();
 
-// FIXME: Reducer should to be able to tell whether the action is meant for it
 const appReducer = (state = initialState, action: AppAction) => {
   logger.debug('appReducer -> action', action);
   const { type, payload } = action;
