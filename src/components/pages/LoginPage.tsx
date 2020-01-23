@@ -34,7 +34,7 @@ const LoginPage: FC<LoginPageProps> = () => {
       recoverUser({ keystore, contacts }, dispatch);
     }
     if (rnsName && keystore) {
-      history.goBack();
+      history.replace(history.location.state.backTo);
     }
   }, [isLoading, user, dispatch, history]);
 
