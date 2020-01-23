@@ -63,11 +63,16 @@ export const addContact = (state, contact: Contact): Contact[] => {
 
 export const updateContactsWithMessage = (contacts, payload): Contact[] => {
   const { contact, message } = payload;
-  const { chat, publicKey } = contact;
-  contact.chat = [...chat, message];
-  const newContacts = !!contacts.find((c: Contact) => c.publicKey === publicKey)
-    ? contacts
-    : [...contacts, contact];
+  const { publicKey } = contact;
+  const existingContact = [...contacts].find(
+    (c: Contact) => c.publicKey === publicKey,
+  );
+
+  const chat = [...(existingContact || contact).chat, message];
+  const newContact = existingContact || contact;
+  newContact.chat = chat;
+  const newContacts = existingContact ? contacts : [...contacts, newContact];
+
   persistence.setItem('contacts', newContacts);
   return newContacts;
 };

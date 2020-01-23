@@ -7,6 +7,7 @@ import {
   updateContactsWithMessage,
 } from './userActions';
 import { initialState, IUserState } from './UserStore';
+import { Contact, Message } from 'models';
 
 const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();
@@ -67,7 +68,10 @@ const userActions: IUserActions = {
       user,
     };
   },
-  [RECEIVE_MESSAGE]: (state, payload) => {
+  [RECEIVE_MESSAGE]: (
+    state,
+    payload: { contact: Contact; message: Message },
+  ) => {
     if (!payload.contact) return state;
 
     const { contacts } = state;

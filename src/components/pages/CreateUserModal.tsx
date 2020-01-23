@@ -42,10 +42,10 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
         try {
           const payload = await createUser(
             rnsName,
-            (msg: { contact: Contact; message: Message }) => {
+            (payload: { contact: Contact; message: Message }) => {
               dispatch({
                 type: USER_ACTIONS.RECEIVE_MESSAGE,
-                payload: msg,
+                payload,
               });
             },
           );
