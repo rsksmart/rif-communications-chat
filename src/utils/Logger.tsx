@@ -60,7 +60,7 @@ class Logger implements ILogger {
 
   public debug = (message: any, ...rest: any): void => {
     if (this.isLogLevelEnabled(LOG_LEVELS.DEBUG))
-      this.log(LOG_LEVELS.DEBUG, `%c${message}`, 'color: blue', ...rest);
+      this.log(LOG_LEVELS.DEBUG, message, ...rest);
   };
   public error = (message: string, ...rest: any): void => {
     if (this.isLogLevelEnabled(LOG_LEVELS.ERROR))
