@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import UserStore from 'store/User/UserStore';
 import { recoverUser } from 'store/User/userUtils';
 import LocalStorage from 'utils/LocalStorage';
+import { ROUTES } from 'routes';
 
 // import Logger from 'utils/Logger';
 
@@ -29,7 +30,9 @@ const LoginPage: FC<LoginPageProps> = () => {
       recoverUser({ keystore, contacts }, dispatch);
     }
     if (rnsName && keystore) {
-      history.replace(history.location.state.backTo);
+      const { location } = history;
+      const backTo = location.state && location.state.backTo;
+      history.replace(backTo || ROUTES.PROFILE);
     }
   }, [isLoading, user, dispatch, history]);
 
