@@ -11,8 +11,6 @@ import ModalFormTemplate, {
 import { useFormik } from 'formik';
 import { Contact, Message } from 'models';
 import React, { FC, useContext } from 'react';
-import { useHistory } from 'react-router';
-import { ROUTES } from 'routes';
 import { APP_ACTIONS } from 'store/App/appActions';
 import { checkUserExists, USER_ACTIONS } from 'store/User/userActions';
 import { createUser } from 'store/User/userController';
@@ -32,7 +30,6 @@ interface FormErrors extends FormValues {}
 
 const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
   const { dispatch } = useContext(UserStore);
-  const history = useHistory();
 
   const formikProps = {
     initialErrors: {},
@@ -50,7 +47,7 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
             },
           );
           dispatch({ type: USER_ACTIONS.SET_CLIENT, payload });
-          history.push(ROUTES.PROFILE);
+          onHide();
         } catch (err) {
           return { type: APP_ACTIONS.SET_ERROR, payload: err };
         }
