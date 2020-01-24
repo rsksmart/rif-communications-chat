@@ -13,15 +13,14 @@ const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();
 
 const userReducer = (state = initialState, action: UserAction) => {
-  logger.debug('userReducer -> action', action);
-
   const { type, payload } = action;
-  const newState = userActions[type]
-    ? userActions[type](state, payload)
-    : state;
+  const userAction = userActions[type];
+  if (!!userAction) logger.debug('userReducer -> action', action);
+  const newState = (!!userAction && userAction(state, payload)) || state;
 
   return newState;
 };
+export default userReducer;
 
 type IUserActions = {
   [key in USER_ACTIONS]: (state: IUserState, payload: any) => IUserState;
@@ -100,5 +99,3 @@ const userActions: IUserActions = {
   [ADD_USER]: (state, _payload) => state,
   [CREATE_USER]: (state, _payload) => state,
 };
-
-export default userReducer;
