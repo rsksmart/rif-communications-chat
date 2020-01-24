@@ -1,5 +1,5 @@
 import { FormControl, InputGroup } from 'components/atoms/forms';
-import SmallText from 'components/atoms/SmallText';
+import { FormInfoBar } from 'components/molecules/FormInfoBar';
 import ModalFormTemplate, {
   ModalFormTemplateProps,
 } from 'components/templates/ModalFormTemplate';
@@ -10,7 +10,6 @@ import UserStore from 'store/User/UserStore';
 import { IUserRecData, recoverUser } from 'store/User/userUtils';
 import LocalStorage from 'utils/LocalStorage';
 import Logger from 'utils/Logger';
-import { FormInfoBar } from 'components/molecules/FormInfoBar';
 const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();
 

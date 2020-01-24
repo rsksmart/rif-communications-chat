@@ -46,13 +46,13 @@ export const getUserPubKey = rnsName => {
 export const addContact = (state, contact: Contact): Contact[] => {
   const { contacts } = state;
   let newContacts: Contact[] = [...contacts];
-  if (!state.contacts.find((c: Contact) => c.publicKey === contact.publicKey)) {
+  if (!newContacts.find((c: Contact) => c.publicKey === contact.publicKey)) {
     newContacts.push(contact);
     newContacts.sort((a, b) => {
-      if (a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
-      else if (!a.rnsName) return -1;
-      else if (!b.rnsName) return 1;
-      return a.rnsName < b.rnsName ? -1 : 1;
+      if (a.rnsName && b.rnsName) return a.rnsName < b.rnsName ? -1 : 1;
+      if (!a.rnsName && !b.rnsName) return a.publicKey < b.publicKey ? -1 : 1;
+      if (!a.rnsName) return -1;
+      return 1;
     });
     persistence.setItem('contacts', newContacts);
   }
