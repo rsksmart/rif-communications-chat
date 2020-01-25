@@ -91,7 +91,6 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
         {rnsName ? `${rnsName}.rsk` : publicKey}
       </Heading>
       {!!chat && <ChatDisplay chat={chat} />}
-      <hr />
       <div
         style={{
           position: 'fixed',
