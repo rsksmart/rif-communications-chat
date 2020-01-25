@@ -25,10 +25,11 @@ const LoginPageTemplate: FC<LoginPageTemplateProps> = ({ isRecovering }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        maxHeight: '80vh',
       }}
       className="login"
     >
-      <Logo />
+      <Logo style={{ maxWidth: '80vw' }} />
       {!!isRecovering && <LoadingSpinner message="Recovering user..." />}
       {!isRecovering && (
         <span
