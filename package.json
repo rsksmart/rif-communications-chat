@@ -1,7 +1,28 @@
 {
-  "name": "rcm-ui",
+  "name": "rif-communications-chat",
   "version": "0.1.0",
-  "private": true,
+  "description": "Library for decentralized communication build as part of RIF OS",
+  "keywords": [
+    "RIF",
+    "communication",
+    "decentralized",
+    "RSK"
+  ],
+  "homepage": "https://github.com/rsksmart/rif-communications-chat",
+  "bugs": {
+    "url": "https://github.com/rsksmart/rif-communications-chat/issues/"
+  },
+  "license": "MIT",
+  "files": [
+    "types",
+    "lib",
+    "dist"
+  ],
+  "main": "src/index.tsx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rsksmart/rif-communications-chat.git"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
@@ -28,11 +49,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "tslint": "tslint 'src/**/*.ts*'",
-    "prettify": "prettier --single-quote --write 'src/**/*.ts*'"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "lint": "tasegir lint",
+    "prettify": "tasegir lint --fix"
   },
   "browserslist": {
     "production": [
@@ -47,25 +65,15 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
     "@types/jest": "24.0.18",
     "@types/node": "^12.7.12",
     "@types/react": "16.9.5",
     "@types/react-dom": "^16.9.1",
     "@types/react-router-bootstrap": "^0.24.5",
     "@types/react-router-dom": "^5.1.0",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.7.2",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-import": "^2.20.0",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-react": "^7.17.0",
-    "prettier": "^1.19.1",
-    "tslint": "^5.20.0",
-    "tslint-config-airbnb": "^5.11.2",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1",
-    "tslint-react": "^4.1.0"
+    "tasegir": "^1.4.0"
   }
 }
