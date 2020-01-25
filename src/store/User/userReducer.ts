@@ -50,10 +50,11 @@ const userActions: IUserActions = {
   },
   [ADD_CONTACT]: (state, payload) => {
     const { contact } = payload;
+    const { contacts } = state;
     return contact
       ? {
           ...state,
-          contacts: addContact(state, contact),
+          contacts: addContact(contacts, contact),
         }
       : state;
   },

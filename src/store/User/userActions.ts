@@ -43,8 +43,10 @@ export const getUserPubKey = rnsName => {
   return fetchUserByName(rnsName);
 };
 
-export const addContact = (state, contact: Contact): Contact[] => {
-  const { contacts } = state;
+export const addContact = (
+  contacts: Contact[],
+  contact: Contact,
+): Contact[] => {
   let newContacts: Contact[] = [...contacts];
   if (!newContacts.find((c: Contact) => c.publicKey === contact.publicKey)) {
     newContacts.push(contact);
