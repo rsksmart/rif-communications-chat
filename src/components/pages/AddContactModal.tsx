@@ -58,6 +58,7 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
       });
       actions.resetForm();
       actions.setErrors({});
+      setContactKey('');
       dispatch({
         type: APP_ACTIONS.SET_IS_LOADING,
         payload: { isLoading: false },
