@@ -13,6 +13,7 @@ import ModalFormTemplate, {
 import { useFormik } from 'formik';
 import { Contact } from 'models';
 import React, { FC, useContext, useState } from 'react';
+import { APP_ACTIONS } from 'store/App/appActions';
 import { USER_ACTIONS } from 'store/User/userActions';
 import UserStore from 'store/User/UserStore';
 import Logger from 'utils/Logger';
@@ -39,6 +40,13 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
     initialErrors: {},
     initialValues: {},
     onSubmit: async ({ rnsName }: FormValues, actions) => {
+      dispatch({
+        type: APP_ACTIONS.SET_IS_LOADING,
+        payload: {
+          isLoading: true,
+          message: `Saving ${rnsName}.rsk to contacts...`,
+        },
+      });
       const contact = await Contact.new({
         rnsName,
         publicKey: contactKey,
@@ -50,6 +58,10 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
       });
       actions.resetForm();
       actions.setErrors({});
+      dispatch({
+        type: APP_ACTIONS.SET_IS_LOADING,
+        payload: { isLoading: false },
+      });
       onHide();
     },
     validate: async ({ rnsName }: FormValues) => {
@@ -60,6 +72,14 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
         errors.rnsName =
           'Min 3 alphanumeric characters plus optional ".", "_" and "-" only.';
       } else {
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: {
+            isLoading: true,
+            message: `Looking for ${rnsName}.rsk...`,
+          },
+        });
+
         try {
           const publicKey = await fetchUserByName(rnsName);
           if (publicKey) {
@@ -70,6 +90,11 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
         } catch (err) {
           const msg = (errors.rnsName = 'Could not fetch contact:');
           logger.debug(msg, err);
+        } finally {
+          dispatch({
+            type: APP_ACTIONS.SET_IS_LOADING,
+            payload: { isLoading: false },
+          });
         }
       }
       return errors;

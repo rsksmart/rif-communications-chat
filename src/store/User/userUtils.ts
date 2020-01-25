@@ -9,8 +9,16 @@ export interface IUserRecData {
   keystore: PeerId;
   contacts: Contact[];
 }
-export const recoverUser = async (userRecData: IUserRecData, dispatch: any) => {
+export const recoverUser = async (
+  userRecData: IUserRecData,
+  dispatch: any,
+  onEnd?: Function,
+) => {
   const { keystore, contacts } = userRecData;
+  dispatch({
+    type: APP_ACTIONS.SET_IS_LOADING,
+    payload: { isLoading: true, message: 'Recovering user...' },
+  });
   try {
     const payload = await setupUser(
       keystore,
@@ -35,5 +43,11 @@ export const recoverUser = async (userRecData: IUserRecData, dispatch: any) => {
     });
   } catch (err) {
     return { type: APP_ACTIONS.SET_ERROR, payload: err };
+  } finally {
+    dispatch({
+      type: APP_ACTIONS.SET_IS_LOADING,
+      payload: { isLoading: false },
+    });
+    onEnd && onEnd();
   }
 };

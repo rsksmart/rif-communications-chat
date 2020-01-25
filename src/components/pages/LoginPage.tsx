@@ -1,10 +1,11 @@
 import LoginPageTemplate from 'components/templates/LoginPageTemplate';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import UserStore from 'store/User/UserStore';
 import { recoverUser } from 'store/User/userUtils';
 import LocalStorage from 'utils/LocalStorage';
 import { ROUTES } from 'routes';
+import { APP_ACTIONS } from 'store/App/appActions';
 
 // import Logger from 'utils/Logger';
 
@@ -16,27 +17,40 @@ const LoginPage: FC<LoginPageProps> = () => {
   const { state, dispatch } = useContext(UserStore);
   const {
     UserState: { user },
-    AppState: { isLoading },
   } = state;
 
+  const [isRecovering, setIsRecovering] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
     const keystore = persistence.getItem('keystore');
     const rnsName = user && user.rnsName;
 
-    if (!isLoading && !rnsName && keystore) {
+    if (!isRecovering && !rnsName && keystore) {
+      setIsRecovering(true);
       const contacts = persistence.getItem('contacts');
-      recoverUser({ keystore, contacts }, dispatch);
+      recoverUser({ keystore, contacts }, dispatch, () => {
+        setIsRecovering(false);
+      });
+      dispatch({
+        type: APP_ACTIONS.SET_IS_LOADING,
+        payload: { isLoading: false },
+      });
     }
-    if (rnsName && keystore) {
+  }, [isRecovering, user, dispatch]);
+
+  useEffect(() => {
+    const keystore = persistence.getItem('keystore');
+    const rnsName = user && user.rnsName;
+
+    if (!isRecovering && rnsName && keystore) {
       const { location } = history;
       const backTo = location.state && location.state.backTo;
       history.replace(backTo || ROUTES.PROFILE);
     }
-  }, [isLoading, user, dispatch, history]);
+  }, [history, user, isRecovering]);
 
-  return <LoginPageTemplate user={user} />;
+  return <LoginPageTemplate isRecovering={isRecovering} />;
 };
 
 export default LoginPage;

@@ -10,6 +10,7 @@ import UserStore from 'store/User/UserStore';
 import { IUserRecData, recoverUser } from 'store/User/userUtils';
 import LocalStorage from 'utils/LocalStorage';
 import Logger from 'utils/Logger';
+import { APP_ACTIONS } from 'store/App/appActions';
 const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();
 
@@ -61,23 +62,33 @@ const ImportUserModal: FC<ImportUserModalProps> = ({ show, onHide }) => {
       }
     },
     validate: async ({ importText }: FormValues) => {
+      dispatch({
+        type: APP_ACTIONS.SET_IS_LOADING,
+        payload: {
+          isLoading: true,
+          message: `Checking...`,
+        },
+      });
       const errors: FormErrors = {};
       try {
         const textJson = JSON.parse(importText);
-        const { rnsName, keystore, contacts } = textJson;
+        const { rnsName, keystore } = textJson;
         const userExists = await checkUserExists(rnsName);
         // TOFOO: Ugh bleah
         if (!userExists) {
           errors.importText = 'Must contain a valid RNS name.';
         } else if (!keystore) {
           errors.importText = 'Must contain keystore.';
-        } else if (!contacts) {
-          errors.importText = 'Must contain contacts (may be empty).';
         } else {
           setImportJson(textJson);
         }
       } catch (_) {
         errors.importText = 'Text has to be JSON parsable.';
+      } finally {
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: { isLoading: false },
+        });
       }
       return errors;
     },

@@ -36,6 +36,13 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
     initialValues: {},
     onSubmit: async ({ rnsName }: FormValues) => {
       if (rnsName) {
+        dispatch({
+          type: APP_ACTIONS.SET_IS_LOADING,
+          payload: {
+            isLoading: true,
+            message: `Saving ${rnsName}.rsk to contacts...`,
+          },
+        });
         try {
           const payload = await createUser(
             rnsName,
@@ -50,19 +57,37 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
           onHide();
         } catch (err) {
           return { type: APP_ACTIONS.SET_ERROR, payload: err };
+        } finally {
+          dispatch({
+            type: APP_ACTIONS.SET_IS_LOADING,
+            payload: { isLoading: false },
+          });
         }
       }
     },
     validate: async ({ rnsName }: FormValues) => {
       const errors: FormErrors = {};
+      dispatch({
+        type: APP_ACTIONS.SET_IS_LOADING,
+        payload: {
+          isLoading: true,
+          message: `Saving ${rnsName}.rsk to contacts...`,
+        },
+      });
       if (!rnsName) {
         errors.rnsName = 'Required';
       } else if (!RegExp(/^([\w\d.\-_]+){3,20}$/).test(rnsName)) {
         errors.rnsName =
           'Min 3 alphanumeric characters plus optional ".", "_" and "-" only.';
-      } else if (await checkUserExists(rnsName)) {
-        errors.rnsName = 'Already registered.';
+      } else {
+        if (await checkUserExists(rnsName)) {
+          errors.rnsName = 'Already registered.';
+        }
       }
+      dispatch({
+        type: APP_ACTIONS.SET_IS_LOADING,
+        payload: { isLoading: false },
+      });
       return errors;
     },
   };
