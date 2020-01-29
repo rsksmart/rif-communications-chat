@@ -49,7 +49,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "tslint": "tslint 'src/**/*.ts*'",
+    "lint": "tslint 'src/**/*.ts*'",
     "prettify": "prettier --single-quote --write 'src/**/*.ts*'"
   },
   "eslintConfig": {
