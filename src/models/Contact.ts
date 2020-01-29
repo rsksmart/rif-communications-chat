@@ -13,17 +13,6 @@ export interface IContactParams {
 }
 
 export default class Contact implements IUserInfo {
-  rnsName?: string;
-  peerInfo: PeerInfo;
-  publicKey: string;
-  chat: Message[];
-
-  private constructor({ rnsName, publicKey, chat }: IContactParams) {
-    this.rnsName = rnsName;
-    this.chat = chat || [];
-    this.publicKey = publicKey;
-  }
-
   public static new = async (contactParams: IContactParams) => {
     const contact = new Contact(contactParams);
     const { publicKey, multiaddr } = contactParams;
@@ -36,6 +25,16 @@ export default class Contact implements IUserInfo {
 
     return contact;
   };
+  public rnsName?: string;
+  public peerInfo: PeerInfo;
+  public publicKey: string;
+  public chat: Message[];
+
+  private constructor({ rnsName, publicKey, chat }: IContactParams) {
+    this.rnsName = rnsName;
+    this.chat = chat || [];
+    this.publicKey = publicKey;
+  }
 }
 
 export const createContactFromPublicKey = async (

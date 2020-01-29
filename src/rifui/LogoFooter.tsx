@@ -1,5 +1,5 @@
-import React from "react";
-import logo from "./assets/logo-footer.png";
+import React from 'react';
+import logo from './assets/logo-footer.png';
 
 interface ILogoFooter extends React.Props<HTMLImageElement> {
   alt?: string;
@@ -10,9 +10,9 @@ interface ILogoFooter extends React.Props<HTMLImageElement> {
 
 export default React.forwardRef(function LogoFooter(
   props: ILogoFooter,
-  ref?: React.Ref<HTMLImageElement> | null
+  ref?: React.Ref<HTMLImageElement> | null,
 ) {
-  const { className, alt = "RIF OS", width = "150", ...other } = props;
+  const { className, alt = 'RIF OS', width = '150', ...other } = props;
 
   return (
     <img

@@ -10,9 +10,9 @@ export interface IMessageParams {
 }
 
 export default class Message {
-  sender: MESSAGE_SENDER;
-  content: string;
-  timestamp: number;
+  public sender: MESSAGE_SENDER;
+  public content: string;
+  public timestamp: number;
 
   constructor({ sender, content, timestamp }: IMessageParams) {
     this.sender = sender || MESSAGE_SENDER.ME;

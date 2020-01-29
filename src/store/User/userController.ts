@@ -41,7 +41,7 @@ export const setupUser = async (
 ): Promise<User> => {
   const rnsName = persistence.getItem('rnsName');
   const peer: PeerId = await createPeerIdFromJSON(keystore);
-  return await connectUser(peer, rnsName, onMessageReceived);
+  return connectUser(peer, rnsName, onMessageReceived);
 };
 
 const connectUser = async (
@@ -72,7 +72,7 @@ const createKdmNode = async (user: User, onMessageReceived: any) => {
     );
   } catch (e) {
     // At least start with localhost if public IP can not be obtained
-    return await createNode(
+    return createNode(
       user.pi,
       '127.0.0.1',
       80,

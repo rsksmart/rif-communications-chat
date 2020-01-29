@@ -1,3 +1,3 @@
 declare module 'wrtc' {
-    export let wrtc: any
+  export let wrtc: any;
 }

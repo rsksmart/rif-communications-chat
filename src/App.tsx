@@ -16,7 +16,7 @@ const App = () => {
       <UserStoreProvider>
         <Router>
           <div
-          data-testid="wrapper"
+            data-testid="wrapper"
             style={{
               minHeight: '100vh',
               display: 'flex',

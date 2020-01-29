@@ -47,7 +47,7 @@ export const addContact = (
   contacts: Contact[],
   contact: Contact,
 ): Contact[] => {
-  let newContacts: Contact[] = [...contacts];
+  const newContacts: Contact[] = [...contacts];
   if (!newContacts.find((c: Contact) => c.publicKey === contact.publicKey)) {
     newContacts.push(contact);
     newContacts.sort((a, b) => {

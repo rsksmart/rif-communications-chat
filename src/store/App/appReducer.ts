@@ -1,7 +1,7 @@
-import { initialState, IAppMessage, IAppState } from './AppStore';
-import { APP_ACTIONS } from './appActions';
 import { AppAction } from 'store/App/appActions';
 import Logger from 'utils/Logger';
+import { APP_ACTIONS } from './appActions';
+import { IAppMessage, IAppState, initialState } from './AppStore';
 
 const logger = Logger.getInstance();
 

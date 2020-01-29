@@ -1,13 +1,13 @@
+import { Contact, Message } from 'models';
 import LocalStorage from 'utils/LocalStorage';
 import Logger from 'utils/Logger';
 import {
   addContact,
-  UserAction,
-  USER_ACTIONS,
   updateContactsWithMessage,
+  USER_ACTIONS,
+  UserAction,
 } from './userActions';
 import { initialState, IUserState } from './UserStore';
-import { Contact, Message } from 'models';
 
 const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();

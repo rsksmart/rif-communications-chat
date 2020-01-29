@@ -1,4 +1,4 @@
-import UserStore, { UserStoreProvider, initialState } from './UserStore';
+import UserStore, { initialState, UserStoreProvider } from './UserStore';
 
 export default {
   UserStore,
