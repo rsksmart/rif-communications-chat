@@ -1,15 +1,15 @@
-import React, { FC } from 'react';
+import React, { FC } from 'react'
 
-import { Image } from 'react-bootstrap';
+import { Image } from 'react-bootstrap'
 
-import cosmonaut from 'assets/cosmonaut.png';
-import Heading from 'components/atoms/Heading';
-import PublicKey from 'components/molecules/PublicKey';
+import cosmonaut from 'assets/cosmonaut.png'
+import Heading from 'components/atoms/Heading'
+import PublicKey from 'components/molecules/PublicKey'
 
 export interface ContactDetailsProps {
-  rnsName: string;
-  publicKey: string;
-  nameChanger?: any;
+  rnsName: string
+  publicKey: string
+  nameChanger?: any
 }
 
 export const ContactDetails: FC<ContactDetailsProps> = ({
@@ -35,7 +35,7 @@ export const ContactDetails: FC<ContactDetailsProps> = ({
           paddingTop: '1em',
         }}
       >
-        <Heading level={4}>
+        <Heading hLevel={4}>
           {rnsName && `${rnsName}.rsk `}
           {!!NameChanger && <NameChanger />}
         </Heading>
@@ -43,5 +43,5 @@ export const ContactDetails: FC<ContactDetailsProps> = ({
         {children}
       </div>
     </>
-  );
-};
+  )
+}

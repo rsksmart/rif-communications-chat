@@ -1,26 +1,26 @@
-import ButtonCircle from 'components/atoms/buttons/ButtonCircle';
-import { Form, FormControl } from 'components/atoms/forms';
-import Heading from 'components/atoms/Heading';
-import PaperPlaneIcon from 'components/atoms/icons/PaperPlaneIcon';
-import ChatDisplay from 'components/organisms/ChatDisplay';
-import { useFormik } from 'formik';
-import { Contact, Message } from 'models';
-import React, { FC, useContext } from 'react';
-import { sendMsg } from 'rif-communications';
-import { USER_ACTIONS } from 'store/User/userActions';
-import { connectToKdmNode } from 'store/User/userController';
-import UserStore from 'store/User/UserStore';
-import Logger from 'utils/Logger';
-import { UserPageTemplate, UserPageTemplateProps } from './UserPageTemplate';
+import ButtonCircle from 'components/atoms/buttons/ButtonCircle'
+import { Form, FormControl } from 'components/atoms/forms'
+import Heading from 'components/atoms/Heading'
+import PaperPlaneIcon from 'components/atoms/icons/PaperPlaneIcon'
+import ChatDisplay from 'components/organisms/ChatDisplay'
+import { useFormik } from 'formik'
+import { Contact, Message } from 'models'
+import React, { FC, useContext } from 'react'
+import { sendMsg } from 'rif-communications'
+import { USER_ACTIONS } from 'store/User/userActions'
+import { connectToKdmNode } from 'store/User/userController'
+import UserStore from 'store/User/UserStore'
+import Logger from 'utils/Logger'
+import { UserPageTemplate, UserPageTemplateProps } from './UserPageTemplate'
 
-const logger = Logger.getInstance();
+const logger = Logger.getInstance()
 
 export interface ChatPageTemplateProps extends UserPageTemplateProps {
-  contact: Contact;
+  contact: Contact
 }
 
 interface FormValues {
-  content?: string;
+  content?: string
 }
 
 const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
@@ -33,7 +33,7 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
       UserState: { clientNode, sentMsgs },
     },
     dispatch,
-  } = useContext(UserStore);
+  } = useContext(UserStore)
 
   const formikProps = {
     initialValues: {
@@ -42,9 +42,9 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
     initialErrors: {},
     onSubmit: async ({ content }: FormValues, actions) => {
       if (content) {
-        const { peerInfo } = contact;
+        const { peerInfo } = contact
         try {
-          await sendMsg(clientNode, peerInfo, content, sentMsgs, true);
+          await sendMsg(clientNode, peerInfo, content, sentMsgs, true)
 
           dispatch({
             type: USER_ACTIONS.SEND_MESSAGE,
@@ -55,23 +55,23 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
                 timestamp: Date.now(),
               }),
             },
-          });
-          actions.resetForm();
+          })
+          actions.resetForm()
         } catch (err) {
           logger.error(
             'Unable to dial contact, try to reconnect to bootnode:',
             err,
-          );
+          )
           // Option number 1, try to reconnect if sending fails
           connectToKdmNode(clientNode).catch(connErr => {
-            logger.error('Unable to reconnect to node');
-          });
+            logger.error('Unable to reconnect to node')
+          })
         }
       }
     },
-  };
+  }
 
-  const formik = useFormik(formikProps);
+  const formik = useFormik(formikProps)
 
   const {
     submitForm,
@@ -79,15 +79,15 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
     handleSubmit,
     handleBlur,
     values: { content },
-  } = formik;
+  } = formik
 
-  const rnsName = !!contact && contact.rnsName;
-  const publicKey = !!contact && contact.publicKey;
-  const chat = !!contact && contact.chat;
+  const rnsName = !!contact && contact.rnsName
+  const publicKey = !!contact && contact.publicKey
+  const chat = !!contact && contact.chat
 
   return (
     <UserPageTemplate {...rest}>
-      <Heading level={5} style={{ paddingLeft: '8px', paddingRight: '8px' }}>
+      <Heading hLevel={5} style={{ paddingLeft: '8px', paddingRight: '8px' }}>
         {rnsName ? `${rnsName}.rsk` : publicKey}
       </Heading>
       {!!chat && <ChatDisplay chat={chat} />}
@@ -129,7 +129,7 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
         </Form>
       </div>
     </UserPageTemplate>
-  );
-};
+  )
+}
 
-export default ChatPageTemplate;
+export default ChatPageTemplate
