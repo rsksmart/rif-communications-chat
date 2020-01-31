@@ -3,14 +3,14 @@ import {
   InputGroup,
   InputGroupAppend,
   InputGroupText,
-} from 'components/atoms/forms';
-import React, { FC } from 'react';
+} from 'components/atoms/forms'
+import React, { FC } from 'react'
 
 export interface NameInputProps {
-  tld: string;
+  topLevelDomain: string
 }
 
-const NameInput: FC<NameInputProps> = ({ tld, ...rest }) => {
+const NameInput: FC<NameInputProps> = ({ topLevelDomain, ...rest }) => {
   return (
     <InputGroup className="mb-3">
       <FormControl
@@ -21,10 +21,10 @@ const NameInput: FC<NameInputProps> = ({ tld, ...rest }) => {
         {...rest}
       />
       <InputGroupAppend>
-        <InputGroupText id="basic-addon2">{tld}</InputGroupText>
+        <InputGroupText id="basic-addon2">{topLevelDomain}</InputGroupText>
       </InputGroupAppend>
     </InputGroup>
-  );
-};
+  )
+}
 
-export default NameInput;
+export default NameInput
