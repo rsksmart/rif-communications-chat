@@ -1,18 +1,18 @@
-import React, { FC } from 'react';
-import Button, { ButtonProps } from './Button';
+import React, { FC } from 'react'
+import Button, { ButtonProps } from './Button'
 
-export interface ButtonCircleProps extends ButtonProps {}
+export interface ButtonCircleProps extends ButtonProps { }
 
 const ButtonCircle: FC<ButtonCircleProps> = ({
   children,
-  className,
+  className = '',
   ...rest
 }) => {
   return (
-    <Button className={`btn-circle ${className || ''}`} {...rest}>
+    <Button className={`btn-circle ${className}`} {...rest}>
       {children}
     </Button>
-  );
-};
+  )
+}
 
-export default ButtonCircle;
+export default ButtonCircle

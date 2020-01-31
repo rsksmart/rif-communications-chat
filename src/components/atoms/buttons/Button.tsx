@@ -1,21 +1,21 @@
-import React, { FC, HTMLAttributes } from 'react';
+import React, { FC, HTMLAttributes } from 'react'
 import {
   Button as BSButton,
   ButtonProps as BSButtonProps,
-} from 'react-bootstrap';
+} from 'react-bootstrap'
 
 export interface ButtonProps
   extends BSButtonProps,
-    HTMLAttributes<HTMLButtonElement> {
-  className?: string;
+  HTMLAttributes<HTMLButtonElement> {
+  className?: string
 }
 
-const Button: FC<ButtonProps> = ({ children, className, ...rest }) => {
+const Button: FC<ButtonProps> = ({ children, className = '', ...rest }) => {
   return (
-    <BSButton className={`btn ${className || ''}`} {...rest}>
+    <BSButton className={`btn ${className}`} {...rest}>
       {children}
     </BSButton>
-  );
-};
+  )
+}
 
-export default Button;
+export default Button

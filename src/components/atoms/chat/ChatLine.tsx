@@ -1,14 +1,12 @@
-import React, { FC, HTMLAttributes } from 'react';
+import React, { FC, HTMLAttributes } from 'react'
 
 export interface ChatLineProps extends HTMLAttributes<HTMLDivElement> {
-  index: number;
-  justified: 'start' | 'end';
+  justified: 'start' | 'end'
 }
 
-const ChatLine: FC<ChatLineProps> = ({ index, justified, children }) => {
+const ChatLine: FC<ChatLineProps> = ({ justified, children }) => {
   return (
     <div
-      key={index}
       style={{
         display: 'flex',
         marginBottom: '5px',
@@ -18,7 +16,7 @@ const ChatLine: FC<ChatLineProps> = ({ index, justified, children }) => {
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default ChatLine;
+export default ChatLine

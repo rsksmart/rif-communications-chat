@@ -27,7 +27,6 @@ const ChatDisplay: FC<ChatDisplayProps> = ({ chat }) => {
         return (
           <ChatBubble
             color={colour}
-            index={i}
             justified={justified}
             key={message.timestamp}
           >
