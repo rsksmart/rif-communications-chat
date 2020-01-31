@@ -41,7 +41,7 @@
     "moment": "^2.24.0",
     "multiaddr": "6.1.1",
     "multihashes": "0.4.15",
-    "peer-info": "0.15.1",
+    "peer-info": "0.17.1",
     "public-ip": "^4.0.0",
     "react": "^16.10.2",
     "react-bootstrap": "^1.0.0-beta.12",
