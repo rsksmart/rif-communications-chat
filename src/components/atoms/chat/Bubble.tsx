@@ -1,10 +1,10 @@
-import React, { FC, HTMLAttributes } from 'react';
+import React, { FC, HTMLAttributes } from 'react'
 
 export interface BubbleProps extends HTMLAttributes<HTMLDivElement> {
-  colour: 'light' | 'primary';
+  color: 'light' | 'primary'
 }
 
-const Bubble: FC<BubbleProps> = ({ children, colour }) => {
+const Bubble: FC<BubbleProps> = ({ children, color: colour }) => {
   return (
     <div
       className={`bubble bg-${colour}`}
@@ -17,7 +17,7 @@ const Bubble: FC<BubbleProps> = ({ children, colour }) => {
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default Bubble;
+export default Bubble

@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC } from 'react'
 
-import ChatBubble from 'components/molecules/ChatBubble';
-import Message, { MESSAGE_SENDER } from 'models/Message';
+import ChatBubble from 'components/molecules/ChatBubble'
+import Message, { MESSAGE_SENDER } from 'models/Message'
 
 export interface ChatDisplayProps {
-  chat: Message[];
+  chat: Message[]
 }
 
 const ChatDisplay: FC<ChatDisplayProps> = ({ chat }) => {
@@ -21,27 +21,27 @@ const ChatDisplay: FC<ChatDisplayProps> = ({ chat }) => {
     >
       {chat.map((message, i) => {
         const colour =
-          message.sender === MESSAGE_SENDER.ME ? 'light' : 'primary';
+          message.sender === MESSAGE_SENDER.ME ? 'light' : 'primary'
         const justified =
-          message.sender === MESSAGE_SENDER.ME ? 'start' : 'end';
+          message.sender === MESSAGE_SENDER.ME ? 'start' : 'end'
         return (
           <ChatBubble
-            colour={colour}
+            color={colour}
             index={i}
             justified={justified}
             key={message.timestamp}
           >
             {message.content}
           </ChatBubble>
-        );
+        )
       })}
       <div
         ref={el => {
-          if (el) el.scrollIntoView();
+          if (el) el.scrollIntoView()
         }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default ChatDisplay;
+export default ChatDisplay
