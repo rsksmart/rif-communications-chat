@@ -1,11 +1,11 @@
-import React, { Dispatch } from 'react';
 import libp2p from 'libp2p';
+import React, { Dispatch } from 'react';
 
-import { User, Contact } from 'models/';
-import userReducer from './userReducer';
-import { UserAction } from './userActions';
-import Middleware from 'store/storeUtils/middleware';
+import { Contact, User } from 'models/';
 import { IState } from 'store/storeUtils/interfaces';
+import Middleware from 'store/storeUtils/middleware';
+import { UserAction } from './userActions';
+import userReducer from './userReducer';
 
 export interface IUserState extends IState {
   user: User | undefined;

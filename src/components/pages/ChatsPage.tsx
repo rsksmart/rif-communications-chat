@@ -1,7 +1,7 @@
-import React, { useContext, FC } from 'react';
+import React, { FC, useContext } from 'react';
 
-import UserStore from 'store/User/UserStore';
 import ChatsPageTemplate from 'components/templates/ChatsPageTemplate';
+import UserStore from 'store/User/UserStore';
 
 export interface ChatsPageProps {}
 

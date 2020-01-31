@@ -1,5 +1,5 @@
-import React, { FC, useContext } from 'react';
 import SmallText from 'components/atoms/SmallText';
+import React, { FC, useContext } from 'react';
 import UserStore from 'store/User/UserStore';
 
 export interface FormInfoBarProps {

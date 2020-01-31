@@ -6,12 +6,12 @@ import ChatDisplay from 'components/organisms/ChatDisplay';
 import { useFormik } from 'formik';
 import { Contact, Message } from 'models';
 import React, { FC, useContext } from 'react';
-import { USER_ACTIONS } from 'store/User/userActions';
-import UserStore from 'store/User/UserStore';
-import { UserPageTemplate, UserPageTemplateProps } from './UserPageTemplate';
 import { sendMsg } from 'rif-communications';
+import { USER_ACTIONS } from 'store/User/userActions';
 import { connectToKdmNode } from 'store/User/userController';
+import UserStore from 'store/User/UserStore';
 import Logger from 'utils/Logger';
+import { UserPageTemplate, UserPageTemplateProps } from './UserPageTemplate';
 
 const logger = Logger.getInstance();
 
@@ -62,7 +62,7 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
             'Unable to dial contact, try to reconnect to bootnode:',
             err,
           );
-          //Option number 1, try to reconnect if sending fails
+          // Option number 1, try to reconnect if sending fails
           connectToKdmNode(clientNode).catch(connErr => {
             logger.error('Unable to reconnect to node');
           });
@@ -111,7 +111,7 @@ const ChatPageTemplate: FC<ChatPageTemplateProps> = ({
             onBlur={handleBlur}
             value={content}
             autoComplete="off"
-            autoFocus
+            autoFocus={true}
             style={{ width: '100%' }}
           />
           <ButtonCircle

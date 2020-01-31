@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 import ButtonCircleXL from 'components/atoms/buttons/ButtonCircleXL';
+import PlusIcon from 'components/atoms/icons/PlusIcon';
 import ContactList from 'components/organisms/ContactList';
 import AddContactModal from 'components/pages/AddContactModal';
-import PlusIcon from 'components/atoms/icons/PlusIcon';
 import { UserPageTemplate } from './UserPageTemplate';
 
 const ChatsPageTemplate = ({ contacts }) => {

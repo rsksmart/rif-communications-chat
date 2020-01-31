@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
 import SmallText from 'components/atoms/SmallText';
+import React, { FC } from 'react';
 
 export interface PublicKeyProps {
   publicKey: string;

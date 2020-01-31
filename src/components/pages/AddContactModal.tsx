@@ -132,7 +132,7 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
           aria-describedby="basic-addon2"
           name="rnsName"
           onChange={event => {
-            let { value } = event.target;
+            const { value } = event.target;
 
             event.target.value = value.toLowerCase();
             handleChange(event);
@@ -140,8 +140,8 @@ const AddContactModal: FC<NewContactModalProps> = ({ show, onHide }) => {
           onBlur={handleBlur}
           defaultValue={rnsName}
           autoComplete="off"
-          autoFocus
-          required
+          autoFocus={true}
+          required={true}
         />
         <InputGroupAppend>
           <InputGroupText id="basic-addon2">.rsk</InputGroupText>

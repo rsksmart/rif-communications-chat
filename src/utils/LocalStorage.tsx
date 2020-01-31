@@ -1,7 +1,4 @@
 export default class LocalStorage {
-  private static instance: LocalStorage;
-
-  private constructor() {}
 
   public static getInstance(): LocalStorage {
     if (!LocalStorage.instance) {
@@ -10,6 +7,9 @@ export default class LocalStorage {
 
     return LocalStorage.instance;
   }
+  private static instance: LocalStorage;
+
+  private constructor() {}
   public setItem(key: string, item: string | object): void {
     try {
       const value = typeof item === 'object' ? JSON.stringify(item) : item;

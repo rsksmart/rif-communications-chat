@@ -1,17 +1,17 @@
-import React, { FC, useState } from 'react';
-import { UserPageTemplate } from './UserPageTemplate';
-import { User, Contact } from 'models';
-import { ContactDetails } from 'components/organisms/ContactDetails';
-import CreateUserModal from 'components/pages/CreateUserModal';
 import ButtonCircle from 'components/atoms/buttons/ButtonCircle';
-import PencilIcon from 'components/atoms/icons/PencilIcon';
-import ExportUserModal from 'components/pages/ExportUserModal';
-import Button from 'react-bootstrap/Button';
-import LogoutModal from 'components/pages/LogoutModal';
 import Heading from 'components/atoms/Heading';
-import ContactList from 'components/organisms/ContactList';
+import PencilIcon from 'components/atoms/icons/PencilIcon';
 import PlusIcon from 'components/atoms/icons/PlusIcon';
+import { ContactDetails } from 'components/organisms/ContactDetails';
+import ContactList from 'components/organisms/ContactList';
 import AddContactModal from 'components/pages/AddContactModal';
+import CreateUserModal from 'components/pages/CreateUserModal';
+import ExportUserModal from 'components/pages/ExportUserModal';
+import LogoutModal from 'components/pages/LogoutModal';
+import { Contact, User } from 'models';
+import React, { FC, useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import { UserPageTemplate } from './UserPageTemplate';
 
 export interface ProfilePageTemplateProps {
   user: User;

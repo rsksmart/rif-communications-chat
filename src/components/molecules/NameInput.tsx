@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
 import {
   FormControl,
   InputGroup,
   InputGroupAppend,
   InputGroupText,
 } from 'components/atoms/forms';
+import React, { FC } from 'react';
 
 export interface NameInputProps {
   tld: string;
@@ -16,8 +16,8 @@ const NameInput: FC<NameInputProps> = ({ tld, ...rest }) => {
       <FormControl
         aria-describedby="basic-addon2"
         autoComplete="off"
-        autoFocus
-        required
+        autoFocus={true}
+        required={true}
         {...rest}
       />
       <InputGroupAppend>

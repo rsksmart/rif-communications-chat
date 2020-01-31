@@ -26,12 +26,6 @@ const envLogLevel: string | undefined =
   process.env.REACT_APP_LOG_LEVEL.toUpperCase();
 
 class Logger implements ILogger {
-  private static instance: Logger;
-  private logLevel: LOG_LEVELS;
-
-  private constructor() {
-    this.logLevel = LOG_LEVELS[envLogLevel || DEFAULT_LOG_LEVEL];
-  }
 
   public static getInstance(): Logger {
     if (!Logger.instance) {
@@ -40,6 +34,33 @@ class Logger implements ILogger {
 
     return Logger.instance;
   }
+  private static instance: Logger;
+  private logLevel: LOG_LEVELS;
+
+  private constructor() {
+    this.logLevel = LOG_LEVELS[envLogLevel || DEFAULT_LOG_LEVEL];
+  }
+
+  public debug = (message: any, ...rest: any): void => {
+    if (this.isLogLevelEnabled(LOG_LEVELS.DEBUG)) {
+      this.log(LOG_LEVELS.DEBUG, message, ...rest);
+    }
+  };
+  public error = (message: string, ...rest: any): void => {
+    if (this.isLogLevelEnabled(LOG_LEVELS.ERROR)) {
+      this.log(LOG_LEVELS.ERROR, message, ...rest);
+    }
+  };
+  public info = (message: string, ...rest: any): void => {
+    if (this.isLogLevelEnabled(LOG_LEVELS.INFO)) {
+      this.log(LOG_LEVELS.INFO, message, ...rest);
+    }
+  };
+  public warn = (message: string, ...rest: any): void => {
+    if (this.isLogLevelEnabled(LOG_LEVELS.WARN)) {
+      this.log(LOG_LEVELS.WARN, message, ...rest);
+    }
+  };
 
   private now = (): Date => new Date(Date.now());
 
@@ -57,23 +78,6 @@ class Logger implements ILogger {
 
   private isLogLevelEnabled = (logLevel: LOG_LEVELS): boolean =>
     VERBOSITY_LEVELS[this.logLevel] >= VERBOSITY_LEVELS[logLevel];
-
-  public debug = (message: any, ...rest: any): void => {
-    if (this.isLogLevelEnabled(LOG_LEVELS.DEBUG))
-      this.log(LOG_LEVELS.DEBUG, message, ...rest);
-  };
-  public error = (message: string, ...rest: any): void => {
-    if (this.isLogLevelEnabled(LOG_LEVELS.ERROR))
-      this.log(LOG_LEVELS.ERROR, message, ...rest);
-  };
-  public info = (message: string, ...rest: any): void => {
-    if (this.isLogLevelEnabled(LOG_LEVELS.INFO))
-      this.log(LOG_LEVELS.INFO, message, ...rest);
-  };
-  public warn = (message: string, ...rest: any): void => {
-    if (this.isLogLevelEnabled(LOG_LEVELS.WARN))
-      this.log(LOG_LEVELS.WARN, message, ...rest);
-  };
 }
 
 export default Logger;

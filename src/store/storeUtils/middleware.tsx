@@ -1,13 +1,10 @@
-import { useReducer, useRef, useMemo, useEffect } from 'react';
+import { useEffect, useMemo, useReducer, useRef } from 'react';
 import appReducer from 'store/App/appReducer';
 import Logger from 'utils/Logger';
 
 const logger = Logger.getInstance();
 
 export default class Middleware {
-  private static instance: Middleware;
-
-  private constructor() {}
 
   public static getInstance(): Middleware {
     if (!Middleware.instance) {
@@ -15,9 +12,12 @@ export default class Middleware {
     }
     return Middleware.instance;
   }
+  private static instance: Middleware;
+
+  private constructor() {}
 
   // From: https://github.com/the-road-to-learn-react/use-combined-reducers/blob/master/src/index.js
-  useCombinedReducers = combinedReducers => {
+  public useCombinedReducers = combinedReducers => {
     // Global State
     const state = Object.keys(combinedReducers).reduce(
       (acc, key) => ({
@@ -40,8 +40,8 @@ export default class Middleware {
     return [state, dispatch];
   };
 
-  useMiddleware = (stateName: string, reducer, initialState) => {
-    let prevState = useRef(initialState);
+  public useMiddleware = (stateName: string, reducer, initialState) => {
+    const prevState = useRef(initialState);
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const [appState, appDispatch] = useReducer(appReducer, {

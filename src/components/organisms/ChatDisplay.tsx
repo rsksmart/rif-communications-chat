@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
-import Message, { MESSAGE_SENDER } from 'models/Message';
 import ChatBubble from 'components/molecules/ChatBubble';
+import Message, { MESSAGE_SENDER } from 'models/Message';
 
 export interface ChatDisplayProps {
   chat: Message[];

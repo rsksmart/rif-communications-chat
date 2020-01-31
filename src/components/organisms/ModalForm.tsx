@@ -1,9 +1,9 @@
 import React, { FC, useContext } from 'react';
 
 import Button from 'components/atoms/buttons/Button';
-import ModalDialogue from 'components/molecules/ModalDialogue';
 import { Form } from 'components/atoms/forms';
 import { ModalProps } from 'components/atoms/modal/Modal';
+import ModalDialogue from 'components/molecules/ModalDialogue';
 import UserStore from 'store/User/UserStore';
 
 export interface ModalFormProps {

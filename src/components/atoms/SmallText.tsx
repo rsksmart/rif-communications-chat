@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, FC } from 'react';
+import React, { FC, HTMLAttributes } from 'react';
 
 export interface SmallTextProps extends HTMLAttributes<HTMLElement> {}
 

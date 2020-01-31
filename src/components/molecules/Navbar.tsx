@@ -4,10 +4,10 @@ import {
   NavbarProps as BSNavbarProps,
 } from 'react-bootstrap';
 
-import Nav from 'components/atoms/navigation/Nav';
 import LinkContainer from 'components/atoms/navigation/LinkContainer';
-import NavLink from 'components/atoms/navigation/NavLink';
+import Nav from 'components/atoms/navigation/Nav';
 import NavBrand from 'components/atoms/navigation/NavBrand';
+import NavLink from 'components/atoms/navigation/NavLink';
 import { ROUTES } from 'routes';
 import UserStore from 'store/User/UserStore';
 

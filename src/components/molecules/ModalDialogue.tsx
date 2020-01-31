@@ -1,12 +1,12 @@
-import React, { FC } from 'react';
 import {
   Modal,
-  ModalHeader,
   ModalBody,
   ModalFooter,
+  ModalHeader,
   ModalTitle,
 } from 'components/atoms/modal';
 import { ModalProps } from 'components/atoms/modal/Modal';
+import React, { FC } from 'react';
 
 export interface ModalDialogueProps extends ModalProps {
   title: string;
@@ -21,7 +21,7 @@ const ModalDialogue: FC<ModalDialogueProps> = ({
 }) => {
   return (
     <Modal {...props}>
-      <ModalHeader closeButton>
+      <ModalHeader closeButton={true}>
         <ModalTitle>{title}</ModalTitle>
       </ModalHeader>
       <ModalBody>{children}</ModalBody>

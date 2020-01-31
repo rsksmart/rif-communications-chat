@@ -22,7 +22,7 @@ export const ContactDetails: FC<ContactDetailsProps> = ({
     <>
       <Image
         src={cosmonaut}
-        roundedCircle
+        roundedCircle={true}
         style={{
           maxWidth: 150,
           borderWidth: 2,

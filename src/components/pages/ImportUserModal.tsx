@@ -5,12 +5,12 @@ import ModalFormTemplate, {
 } from 'components/templates/ModalFormTemplate';
 import { useFormik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
+import { APP_ACTIONS } from 'store/App/appActions';
 import { checkUserExists } from 'store/User/userActions';
 import UserStore from 'store/User/UserStore';
 import { IUserRecData, recoverUser } from 'store/User/userUtils';
 import LocalStorage from 'utils/LocalStorage';
 import Logger from 'utils/Logger';
-import { APP_ACTIONS } from 'store/App/appActions';
 const persistence = LocalStorage.getInstance();
 const logger = Logger.getInstance();
 
@@ -127,8 +127,8 @@ const ImportUserModal: FC<ImportUserModalProps> = ({ show, onHide }) => {
           name="importText"
           defaultValue={importText}
           onBlur={handleBlur}
-          autoFocus
-          required
+          autoFocus={true}
+          required={true}
         />
       </InputGroup>
       <FormInfoBar error={errors.importText} />

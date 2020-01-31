@@ -1,5 +1,5 @@
-import React, { FC, HTMLAttributes } from 'react';
 import ModalForm, { ModalFormProps } from 'components/organisms/ModalForm';
+import React, { FC, HTMLAttributes } from 'react';
 import PageTemplate from './PageTemplate';
 
 export interface ModalFormTemplateProps extends HTMLAttributes<HTMLElement> {

@@ -1,11 +1,11 @@
-import React, { FC, useContext, useEffect } from 'react';
-import PageTemplate from 'components/templates/PageTemplate';
-import Modal from 'components/molecules/ModalDialogue';
-import UserStore from 'store/User/UserStore';
-import { ModalProps } from 'components/atoms/modal/Modal';
 import Button from 'components/atoms/buttons/Button';
-import { USER_ACTIONS } from 'store/User/userActions';
+import { ModalProps } from 'components/atoms/modal/Modal';
+import Modal from 'components/molecules/ModalDialogue';
+import PageTemplate from 'components/templates/PageTemplate';
+import React, { FC, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { USER_ACTIONS } from 'store/User/userActions';
+import UserStore from 'store/User/UserStore';
 
 export interface LogoutModalProps extends ModalProps {}
 

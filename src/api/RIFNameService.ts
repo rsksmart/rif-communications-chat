@@ -1,8 +1,8 @@
-const TLD = '.rsk';
+const TLD = '.rsk'
 const BASE_ADD: string = process.env.REACT_APP_RNS_SERVER
   ? process.env.REACT_APP_RNS_SERVER
-  : 'http://64.225.35.211:3010';
-const API_ADD = BASE_ADD + '/api';
+  : 'http://64.225.35.211:3010'
+const API_ADD = BASE_ADD + '/api'
 
 export const fetchUserByName = async (
   rnsName: string,
@@ -11,16 +11,16 @@ export const fetchUserByName = async (
     fetch(`${API_ADD}/domain?domain=${rnsName + TLD}`)
       .then(response => {
         if (response.status === 404) {
-          resolve(false);
+          resolve(false)
         }
-        return response.json();
+        return response.json()
       })
       .then(body => {
-        resolve(body);
+        resolve(body)
       })
-      .catch(err => reject(err));
-  });
-};
+      .catch(err => reject(err))
+  })
+}
 
 export const createRNS = async (
   rnsName: string,
@@ -40,28 +40,28 @@ export const createRNS = async (
     })
       .then(async response => {
         if (response.status === 200) {
-          return response.json();
+          return response.json()
         }
 
-        throw Error(await response.json());
+        throw Error(await response.json())
       })
       .then(body => resolve(body))
-      .catch(err => reject(err));
-  });
-};
+      .catch(err => reject(err))
+  })
+}
 
 export const getDomainByPubKey = async (pubKey: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     fetch(`${API_ADD}/lookup?publicKey=${pubKey}`)
       .then(response => {
         if (response.status === 404) {
-          resolve();
+          resolve()
         }
-        return response.json();
+        return response.json()
       })
       .then(body => {
-        resolve(body);
+        resolve(body)
       })
-      .catch(err => reject(err));
-  });
-};
+      .catch(err => reject(err))
+  })
+}

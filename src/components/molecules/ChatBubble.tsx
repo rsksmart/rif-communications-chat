@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
-import ChatLine, { ChatLineProps } from 'components/atoms/chat/ChatLine';
 import Bubble, { BubbleProps } from 'components/atoms/chat/Bubble';
+import ChatLine, { ChatLineProps } from 'components/atoms/chat/ChatLine';
+import React, { FC } from 'react';
 
 interface ChatBubbleProps extends ChatLineProps, BubbleProps {}
 

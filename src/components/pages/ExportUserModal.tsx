@@ -28,7 +28,7 @@ const ExportUserModal: FC<ExportUserModalProps> = modalProps => {
     <PageTemplate>
       <Modal title="Export profile." {...modalProps}>
         <FormControl
-          readOnly
+          readOnly={true}
           as="textarea"
           rows="3"
           value={profile}
