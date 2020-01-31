@@ -39,7 +39,7 @@
     "libp2p-webrtc-direct": "0.4.0",
     "libp2p-websockets": "0.12.4",
     "moment": "^2.24.0",
-    "multiaddr": "6.1.1",
+    "multiaddr": "7.2.1",
     "multihashes": "0.4.15",
     "peer-info": "0.15.1",
     "public-ip": "^4.0.0",
