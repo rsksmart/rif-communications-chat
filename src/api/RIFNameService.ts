@@ -43,7 +43,7 @@ export const createRNS = async (
           return response.json()
         }
 
-        throw Error(await response.json())
+        throw Error(response.statusText)
       })
       .then(body => resolve(body))
       .catch(err => reject(err))
