@@ -43,12 +43,12 @@ export const recoverUser = async (
     })
   } catch (err) {
     const { message } = err
-    return {
+    dispatch({
       type: APP_ACTIONS.SET_MESSAGE, payload: {
         isError: true,
         message
       }
-    }
+    })
   } finally {
     dispatch({
       type: APP_ACTIONS.SET_IS_LOADING,

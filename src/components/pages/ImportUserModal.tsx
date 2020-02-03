@@ -1,44 +1,42 @@
-import { FormControl, InputGroup } from 'components/atoms/forms';
-import { FormInfoBar } from 'components/molecules/FormInfoBar';
+import { FormControl, InputGroup } from 'components/atoms/forms'
+import { FormInfoBar } from 'components/molecules/FormInfoBar'
 import ModalFormTemplate, {
   ModalFormTemplateProps,
-} from 'components/templates/ModalFormTemplate';
-import { useFormik } from 'formik';
-import React, { FC, useContext, useState } from 'react';
-import { APP_ACTIONS } from 'store/App/appActions';
-import { checkUserExists } from 'store/User/userActions';
-import UserStore from 'store/User/UserStore';
-import { IUserRecData, recoverUser } from 'store/User/userUtils';
-import LocalStorage from 'utils/LocalStorage';
-import Logger from 'utils/Logger';
-const persistence = LocalStorage.getInstance();
-const logger = Logger.getInstance();
+} from 'components/templates/ModalFormTemplate'
+import { useFormik } from 'formik'
+import React, { FC, useContext, useState } from 'react'
+import { APP_ACTIONS } from 'store/App/appActions'
+import { checkUserExists } from 'store/User/userActions'
+import UserStore from 'store/User/UserStore'
+import { IUserRecData, recoverUser } from 'store/User/userUtils'
+import LocalStorage from 'utils/LocalStorage'
+const persistence = LocalStorage.getInstance()
 
 export interface ImportUserModalProps {
-  show: boolean;
-  onHide: () => void;
+  show: boolean
+  onHide: () => void
 }
 
 interface FormValues {
-  importText: string;
+  importText: string
 }
 
 interface FormErrors {
-  importText?: string;
+  importText?: string
 }
 
 const initialErrors: FormErrors = {
   importText: '',
-};
+}
 
 const ImportUserModal: FC<ImportUserModalProps> = ({ show, onHide }) => {
-  const { dispatch } = useContext(UserStore);
+  const { dispatch } = useContext(UserStore)
 
   interface IImportJSON extends IUserRecData {
-    rnsName: string;
+    rnsName: string
   }
 
-  const [importJson, setImportJson] = useState<IImportJSON>();
+  const [importJson, setImportJson] = useState<IImportJSON>()
 
   const formikProps = {
     initialErrors,
@@ -47,18 +45,14 @@ const ImportUserModal: FC<ImportUserModalProps> = ({ show, onHide }) => {
     },
     onSubmit: async ({ importText }: FormValues, actions) => {
       if (importJson) {
-        try {
-          importJson && (await recoverUser(importJson, dispatch));
-          const { rnsName, keystore, contacts } = importJson;
-          persistence.setItem('contacts', contacts);
-          persistence.setItem('keystore', keystore);
-          persistence.setItem('rnsName', rnsName);
-          actions.resetForm();
-          actions.setErrors({});
-          onHide();
-        } catch (err) {
-          logger.error('Could not recover user:', err);
-        }
+        await recoverUser(importJson, dispatch)
+        const { rnsName, keystore, contacts } = importJson
+        persistence.setItem('contacts', contacts)
+        persistence.setItem('keystore', keystore)
+        persistence.setItem('rnsName', rnsName)
+        actions.resetForm()
+        actions.setErrors({})
+        onHide()
       }
     },
     validate: async ({ importText }: FormValues) => {
@@ -68,33 +62,33 @@ const ImportUserModal: FC<ImportUserModalProps> = ({ show, onHide }) => {
           isLoading: true,
           message: `Checking...`,
         },
-      });
-      const errors: FormErrors = {};
+      })
+      const errors: FormErrors = {}
       try {
-        const textJson = JSON.parse(importText);
-        const { rnsName, keystore } = textJson;
-        const userExists = await checkUserExists(rnsName);
+        const textJson = JSON.parse(importText)
+        const { rnsName, keystore } = textJson
+        const userExists = await checkUserExists(rnsName)
         // TOFOO: Ugh bleah
         if (!userExists) {
-          errors.importText = 'Must contain a valid RNS name.';
+          errors.importText = 'Must contain a valid RNS name.'
         } else if (!keystore) {
-          errors.importText = 'Must contain keystore.';
+          errors.importText = 'Must contain keystore.'
         } else {
-          setImportJson(textJson);
+          setImportJson(textJson)
         }
       } catch (_) {
-        errors.importText = 'Text has to be JSON parsable.';
+        errors.importText = 'Text has to be JSON parsable.'
       } finally {
         dispatch({
           type: APP_ACTIONS.SET_IS_LOADING,
           payload: { isLoading: false },
-        });
+        })
       }
-      return errors;
+      return errors
     },
-  };
+  }
 
-  const formik = useFormik(formikProps);
+  const formik = useFormik(formikProps)
 
   const modalTemplateProps: ModalFormTemplateProps = {
     className: 'import-user',
@@ -107,14 +101,14 @@ const ImportUserModal: FC<ImportUserModalProps> = ({ show, onHide }) => {
       submitBtnLabel: 'Get',
       title: 'Get your RNS pseudonym now!',
     },
-  };
+  }
 
   const {
     handleChange,
     values: { importText },
     handleBlur,
     errors,
-  } = formik;
+  } = formik
   return (
     <ModalFormTemplate {...modalTemplateProps}>
       <InputGroup className="mb-3" style={{ marginTop: '1em' }}>
@@ -133,7 +127,7 @@ const ImportUserModal: FC<ImportUserModalProps> = ({ show, onHide }) => {
       </InputGroup>
       <FormInfoBar error={errors.importText} />
     </ModalFormTemplate>
-  );
-};
+  )
+}
 
-export default ImportUserModal;
+export default ImportUserModal
