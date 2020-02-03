@@ -1,3 +1,7 @@
+import Logger from './Logger'
+
+const logger = Logger.getInstance()
+
 export default class LocalStorage {
 
   public static getInstance(): LocalStorage {
@@ -15,9 +19,7 @@ export default class LocalStorage {
       const value = typeof item === 'object' ? JSON.stringify(item) : item
       localStorage.setItem(key, value)
     } catch (e) {
-      import('./Logger').then(logger => {
-        logger.default.getInstance().error(e)
-      })
+      logger.error(`Persistence Error: ${e.message}`)
     }
   }
 
