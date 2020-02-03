@@ -1,8 +1,15 @@
-import React, { FC, HTMLAttributes } from 'react'
+import React, { FC } from 'react'
+import { ReplaceProps, BsPrefixProps } from 'react-bootstrap/helpers'
 
-export interface ChatLineProps extends HTMLAttributes<HTMLDivElement> {
+
+interface Props {
   justified: 'start' | 'end'
 }
+
+export type ChatLineProps = ReplaceProps<
+  React.ElementType,
+  BsPrefixProps<React.ElementType> & Props>
+
 
 const ChatLine: FC<ChatLineProps> = ({ justified, children }) => {
   return (

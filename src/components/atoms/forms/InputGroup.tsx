@@ -1,17 +1,16 @@
-import React, { FC, HTMLAttributes } from 'react';
+import React, { FC } from 'react'
 import {
   InputGroup as BSInputGroup,
   InputGroupProps as BSInputGroupProps,
-} from 'react-bootstrap';
+} from 'react-bootstrap'
+import { ReplaceProps, BsPrefixProps } from 'react-bootstrap/helpers'
 
-export interface InputGroupProps
-  extends BSInputGroupProps,
-    HTMLAttributes<HTMLInputElement> {
-  className?: string;
-}
+export type InputGroupProps = ReplaceProps<
+  React.ElementType,
+  BsPrefixProps<React.ElementType> & BSInputGroupProps>
 
 const InputGroup: FC<InputGroupProps> = ({ children, ...rest }) => {
-  return <BSInputGroup {...rest}>{children}</BSInputGroup>;
-};
+  return <BSInputGroup {...rest}>{children}</BSInputGroup>
+}
 
-export default InputGroup;
+export default InputGroup

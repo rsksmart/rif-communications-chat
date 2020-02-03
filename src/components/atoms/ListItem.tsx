@@ -1,14 +1,18 @@
-import React, { FC } from 'react';
+import React, { FC } from 'react'
 
-import { ListGroup as BSListGroup } from 'react-bootstrap';
+import {
+  ListGroup as BSListGroup,
+  ListGroupItemProps as BSListGroupItemProps
+} from 'react-bootstrap'
+import { ReplaceProps, BsPrefixProps } from 'react-bootstrap/helpers'
 
-export interface ListItemProps {
-  onClick: () => void;
-  children: React.ReactNode;
-}
+
+export type ListItemProps = ReplaceProps<
+  React.ElementType,
+  BsPrefixProps<React.ElementType> & BSListGroupItemProps>
 
 const ListItem: FC<ListItemProps> = ({ children, ...rest }) => {
-  return <BSListGroup.Item {...rest}>{children}</BSListGroup.Item>;
-};
+  return <BSListGroup.Item {...rest}>{children}</BSListGroup.Item>
+}
 
-export default ListItem;
+export default ListItem

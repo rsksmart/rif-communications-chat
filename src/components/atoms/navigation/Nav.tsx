@@ -1,14 +1,22 @@
-import React, { ReactNode } from 'react';
-import { Nav as BSNav } from 'react-bootstrap';
+import React, { FC } from 'react'
+import {
+  Nav as BSNav,
+  NavProps as BSNavProps
+} from 'react-bootstrap'
+import { ReplaceProps, BsPrefixProps } from 'react-bootstrap/helpers'
 
-interface NavProps {
-  position: 'center' | 'end';
-  children: ReactNode;
+
+interface Props extends BSNavProps {
+  position: 'center' | 'end'
 }
 
-const Nav = (props: NavProps) => (
-  <BSNav className={`ml-auto justify-content-${props.position}`}>
-    {props.children}
+export type NavProps = ReplaceProps<
+  React.ElementType,
+  BsPrefixProps<React.ElementType> & Props>
+
+const Nav: FC<NavProps> = ({ position, children, ...rest }) => (
+  <BSNav className={`ml-auto justify-content-${position}`} {...rest}>
+    {children}
   </BSNav>
-);
-export default Nav;
+)
+export default Nav
