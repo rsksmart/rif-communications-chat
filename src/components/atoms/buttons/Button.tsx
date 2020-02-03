@@ -1,14 +1,14 @@
-import React, { FC, HTMLAttributes } from 'react'
+import React, { FC } from 'react'
 import {
   Button as BSButton,
   ButtonProps as BSButtonProps,
 } from 'react-bootstrap'
+import { ReplaceProps, BsPrefixProps } from 'react-bootstrap/helpers'
 
-export interface ButtonProps
-  extends BSButtonProps,
-  HTMLAttributes<HTMLButtonElement> {
-  className?: string
-}
+
+export type ButtonProps = ReplaceProps<
+  React.ElementType,
+  BsPrefixProps<React.ElementType> & BSButtonProps>
 
 const Button: FC<ButtonProps> = ({ children, className = '', ...rest }) => {
   return (
@@ -17,5 +17,4 @@ const Button: FC<ButtonProps> = ({ children, className = '', ...rest }) => {
     </BSButton>
   )
 }
-
 export default Button

@@ -1,9 +1,7 @@
 import React, { FC } from 'react'
 import Button, { ButtonProps } from './Button'
 
-export interface ButtonCircleProps extends ButtonProps { }
-
-const ButtonCircle: FC<ButtonCircleProps> = ({
+const ButtonCircle: FC<ButtonProps> = ({
   children,
   className = '',
   ...rest
