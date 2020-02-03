@@ -1,6 +1,4 @@
-export interface IAction {
-  type: string;
-  payload?: any;
+export interface IAction<T> {
+  readonly type: string
+  readonly payload: T
 }
-
-export interface IState {}
