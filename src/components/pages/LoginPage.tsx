@@ -2,12 +2,9 @@ import LoginPageTemplate from 'components/templates/LoginPageTemplate'
 import React, { FC, useContext, useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { ROUTES } from 'routes'
-import { APP_ACTIONS } from 'store/App/appActions'
 import UserStore from 'store/User/UserStore'
 import { recoverUser } from 'store/User/userUtils'
 import LocalStorage from 'utils/LocalStorage'
-
-// import Logger from 'utils/Logger';
 
 export interface LoginPageProps { }
 
@@ -28,15 +25,13 @@ const LoginPage: FC<LoginPageProps> = () => {
     const rnsName = user && user.rnsName
 
     if (!isRecovering && !rnsName && keystore) {
-      setIsRecovering(true)
-      const contacts = persistence.getItem('contacts')
-      recoverUser({ keystore, contacts }, dispatch, () => {
-        setIsRecovering(false)
-      })
-      dispatch({
-        type: APP_ACTIONS.SET_IS_LOADING,
-        payload: { isLoading: false },
-      })
+      (async () => {
+        setIsRecovering(true)
+        const contacts = persistence.getItem('contacts')
+        await recoverUser({ keystore, contacts }, dispatch, () => {
+          setIsRecovering(false)
+        })
+      })()
     }
   }, [isRecovering, user, dispatch])
 
