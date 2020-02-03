@@ -130,9 +130,10 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
           aria-describedby="basic-addon2"
           name="rnsName"
           onChange={event => {
-            const { value } = event.target
+            const target = event.target as HTMLInputElement
+            const { value } = target
 
-            event.target.value = value.toLowerCase()
+            target.value = value.toLowerCase()
             handleChange(event)
           }}
           onBlur={handleBlur}

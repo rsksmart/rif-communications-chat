@@ -1,19 +1,17 @@
-import React, { FC, FormHTMLAttributes } from 'react';
+import React, { FC } from 'react'
 import {
-  Form as BSForm,
-  FormControlProps as BSFormControlProps,
-} from 'react-bootstrap';
+  Form,
+  FormControlProps as BsFormControlProps,
+} from 'react-bootstrap'
+import { ReplaceProps, BsPrefixProps } from 'react-bootstrap/helpers'
 
-export interface FormControlProps extends BSFormControlProps {
-  autoFocus?: boolean;
-  required?: boolean;
-  as?: any;
-  rows?: any;
+export type FormControlProps = ReplaceProps<
+  React.ElementType,
+  BsPrefixProps<React.ElementType> & BsFormControlProps>
+
+
+const FormControl: FC<FormControlProps> = ({ ...rest }) => {
+  return <Form.Control {...rest} />
 }
 
-const FormControl: FC<FormControlProps &
-  FormHTMLAttributes<HTMLInputElement>> = ({ ...rest }) => {
-  return <BSForm.Control {...rest} />;
-};
-
-export default FormControl;
+export default FormControl
