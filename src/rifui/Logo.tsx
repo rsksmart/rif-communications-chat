@@ -1,5 +1,5 @@
-import React from "react";
-import logo from "./assets/logo.svg";
+import React from 'react';
+import logo from './assets/logo-full.svg';
 
 interface ILogo extends React.Props<HTMLImageElement> {
   alt?: string;
@@ -8,9 +8,9 @@ interface ILogo extends React.Props<HTMLImageElement> {
 
 export default React.forwardRef(function LogoFooter(
   props: ILogo,
-  ref?: React.Ref<HTMLImageElement> | null
+  ref?: React.Ref<HTMLImageElement> | null,
 ) {
-  const { alt = "RIF OS", ...other } = props;
+  const { alt = 'RIF OS', ...other } = props;
 
   return <img src={logo} alt={alt} ref={ref} {...other} />;
 });

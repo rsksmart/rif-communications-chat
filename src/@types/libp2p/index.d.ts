@@ -1,11 +1,10 @@
-import { PeerInfo } from "peer-info";
-import { PeerId } from "peer-id";
-import Multiaddr from "multiaddr";
+import Multiaddr from 'multiaddr';
+import { PeerId } from 'peer-id';
+import { PeerInfo } from 'peer-info';
 
-declare module "libp2p" {
+declare module 'libp2p' {
   export default class Libp2p {
-    constructor(_options: any);
-    dht: any;
+    public dht: any;
 
     /**
      * Dials to the provided peer. If successful, the `PeerInfo` of the
@@ -15,6 +14,10 @@ declare module "libp2p" {
      * @param {function(Error)} callback
      * @returns {void}
      */
-    dial: (peer: PeerInfo | PeerId | Multiaddr | string, callback: any) => void;
+    public dial: (
+      peer: PeerInfo | PeerId | Multiaddr | string,
+      callback: any,
+    ) => void;
+    constructor(_options: any);
   }
 }

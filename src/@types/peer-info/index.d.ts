@@ -1,15 +1,15 @@
-import { PeerId } from "peer-id";
+import { PeerId } from 'peer-id';
 
 // TODO: CHECK THE ACTUAL IMPLEMENTATION AND CREATE RIGHT TYPINGs
 
-declare module "peer-info" {
+declare module 'peer-info' {
   class MultiaddrSet {
     public add: (a: any) => {};
   }
 
   export class PeerInfo {
-    id: PeerId;
-    multiaddrs: MultiaddrSet;
+    public id: PeerId;
+    public multiaddrs: MultiaddrSet;
     constructor(peerId: any);
   }
 
@@ -20,6 +20,6 @@ declare module "peer-info" {
 
   export const create: (
     peerId: any,
-    callback?: (err: Error, peer: PeerInfo) => void
+    callback?: (err: Error, peer: PeerInfo) => void,
   ) => void;
 }

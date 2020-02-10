@@ -1,6 +1,6 @@
-import crypto from "libp2p-crypto";
-import { PeerInfo } from "peer-info";
-import { IUserInfo } from "types";
+import crypto from 'libp2p-crypto';
+import { PeerInfo } from 'peer-info';
+import { IUserInfo } from 'types';
 
 export interface IUserParams {
   rnsName?: string | null;
@@ -23,7 +23,7 @@ export default class User implements IUserInfo {
 
   get publicKey() {
     return crypto.keys
-      .marshalPublicKey(this.pi.id.pubKey, "secp256k1")
-      .toString("base64");
+      .marshalPublicKey(this.pi.id.pubKey, 'secp256k1')
+      .toString('base64');
   }
 }

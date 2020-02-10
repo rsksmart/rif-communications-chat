@@ -2,7 +2,6 @@
 
 declare module 'peer-id' {
   class PeerId {
-    constructor(id: any, privKey?: any, pubKey?: any);
     public id: CID;
     public privKey: string;
     public pubKey: string;
@@ -10,6 +9,7 @@ declare module 'peer-id' {
     public marshalPrivKey: () => any;
     public marshal: (excludePriv?: boolean) => any;
     public toB58String: () => string;
+    constructor(id: any, privKey?: any, pubKey?: any);
   }
   class PeerIdWithIs extends PeerId {}
   export const createWithKeyChain: (
@@ -19,7 +19,7 @@ declare module 'peer-id' {
     callback: (err: Error, peer: PeerId) => void,
   ) => void;
 
-  //export const create: (_options: any) => Promise<PeerId>;
+  // export const create: (_options: any) => Promise<PeerId>;
   export const create: (
     _options: any,
     callback: (err: Error, peer: PeerId) => void,

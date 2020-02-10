@@ -1,3 +1,3 @@
 declare module 'theNode' {
-    export let theNode: any
+  export let theNode: any;
 }
