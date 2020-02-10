@@ -54,7 +54,6 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
             },
           )
           dispatch({ type: USER_ACTIONS.SET_CLIENT, payload })
-          onHide()
         } catch (err) {
           const { message } = err
           return {
@@ -68,6 +67,7 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
             type: APP_ACTIONS.SET_IS_LOADING,
             payload: { isLoading: false },
           })
+          onHide()
         }
       }
     },

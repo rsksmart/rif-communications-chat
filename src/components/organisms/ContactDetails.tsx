@@ -9,7 +9,7 @@ import PublicKey from 'components/molecules/PublicKey'
 export interface ContactDetailsProps {
   rnsName: string
   publicKey: string
-  nameChanger?: any
+  nameChanger?: React.ElementType
 }
 
 export const ContactDetails: FC<ContactDetailsProps> = ({

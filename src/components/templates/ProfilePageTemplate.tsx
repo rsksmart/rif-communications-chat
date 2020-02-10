@@ -39,25 +39,23 @@ export const ProfilePageTemplate: FC<ProfilePageTemplateProps> = ({
   const rnsName = !!user && user.rnsName
   const publicKey = !!user && user.publicKey
 
-  const renderChangeNameModal = () => (
-    <>
-      <ButtonCircle className="change-name" onClick={showCreateUserModal}>
-        <PencilIcon />
-      </ButtonCircle>
-      <CreateUserModal
-        show={isCreateUserVisible}
-        onHide={hideCreateUserModal}
-      />
-    </>
+  const renderNameChngButton = () => (
+    <ButtonCircle className="change-name" onClick={showCreateUserModal}>
+      <PencilIcon />
+    </ButtonCircle>
   )
 
   return (
     <UserPageTemplate style={{ textAlign: 'center' }} className="profile">
       <div style={{ textAlign: 'center' }}>
+        <CreateUserModal
+          show={isCreateUserVisible}
+          onHide={hideCreateUserModal}
+        />
         <ContactDetails
           rnsName={rnsName || 'NO NAME'}
           publicKey={publicKey}
-          nameChanger={renderChangeNameModal}
+          nameChanger={renderNameChngButton}
         >
           <div
             style={{
