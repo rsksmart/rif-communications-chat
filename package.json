@@ -29,7 +29,7 @@
     "@fortawesome/react-fontawesome": "^0.1.7",
     "bootstrap": "^4.3.1",
     "eccrypto": "rootstock/eccrypto#master",
-    "formik": "^2.1.2",
+    "formik": "^2.1.4",
     "js-libp2p-crypto": "0.2.0",
     "moment": "^2.24.0",
     "multiaddr": "6.1.1",
