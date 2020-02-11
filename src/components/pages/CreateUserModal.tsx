@@ -40,7 +40,7 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
           type: APP_ACTIONS.SET_IS_LOADING,
           payload: {
             isLoading: true,
-            message: `Saving ${rnsName}.rsk to contacts...`,
+            message: `Registering domain ${rnsName}.rsk...`,
           },
         })
         try {
@@ -77,7 +77,7 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
         type: APP_ACTIONS.SET_IS_LOADING,
         payload: {
           isLoading: true,
-          message: `Saving ${rnsName}.rsk to contacts...`,
+          message: `Checking ${rnsName}.rsk...`,
         },
       })
       if (!rnsName) {
