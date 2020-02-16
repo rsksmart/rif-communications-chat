@@ -4,19 +4,22 @@ export enum MESSAGE_SENDER {
 }
 
 export interface IMessageParams {
-  sender?: MESSAGE_SENDER;
-  content: string;
-  timestamp: number;
+  sender?: MESSAGE_SENDER
+  content: string
+  timestamp: number
+  isSync?: boolean
 }
 
 export default class Message {
-  public sender: MESSAGE_SENDER;
-  public content: string;
-  public timestamp: number;
+  public sender: MESSAGE_SENDER
+  public content: string
+  public timestamp: number
+  public isSync: boolean
 
-  constructor({ sender, content, timestamp }: IMessageParams) {
-    this.sender = sender || MESSAGE_SENDER.ME;
-    this.content = content;
-    this.timestamp = timestamp;
+  constructor({ sender, content, timestamp, isSync }: IMessageParams) {
+    this.sender = sender || MESSAGE_SENDER.ME
+    this.content = content
+    this.timestamp = timestamp
+    this.isSync = isSync || false
   }
 }

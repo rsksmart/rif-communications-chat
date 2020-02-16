@@ -1,11 +1,11 @@
-import { createRNS } from 'api/RIFNameService'
-import libp2p from 'libp2p'
-import { Message, User } from 'models'
-import { createContactFromPublicKey } from 'models/Contact'
-import { MESSAGE_SENDER } from 'models/Message'
-import { PeerId } from 'peer-id'
-import { PeerInfo } from 'peer-info'
-import publicIp from 'public-ip'
+import { createRNS } from 'api/RIFNameService';
+import libp2p from 'libp2p';
+import { Message, User } from 'models';
+import { createContactFromPublicKey } from 'models/Contact';
+import { MESSAGE_SENDER } from 'models/Message';
+import { PeerId } from 'peer-id';
+import { PeerInfo } from 'peer-info';
+import publicIp from 'public-ip';
 import {
   connectToNode,
   createKey,
@@ -15,7 +15,9 @@ import {
 } from 'rif-communications'
 import LocalStorage from 'utils/LocalStorage'
 import { INodePayload } from './userActions'
+import Logger from 'utils/Logger'
 
+const logger = Logger.getInstance()
 const BOOTNODE_ADDRESS: string = process.env.REACT_APP_BOOTNODE_ADDR
   ? process.env.REACT_APP_BOOTNODE_ADDR
   : '/ip4/127.0.0.1/tcp/57628/ws/ipfs/16Uiu2HAmHvtqJsjkztWXxwrBzCLHEYakmGAH9HJkkJnoKdyrXvNw'
@@ -82,17 +84,20 @@ const createKdmNode = async (user: User, onMessageReceived: any) => {
   }
 }
 
-const processKadMsg = (onMessageReceived: any) => async (kadMsgObj: any) => {
+const processKadMsg = (onMessageReceived: any) => (kadMsgObj: any) => {
   const message = new Message({
     content: kadMsgObj.msg,
     sender: MESSAGE_SENDER.THEM,
     timestamp: Date.now(),
   })
-  const contact = await createContactFromPublicKey(kadMsgObj.sender)
-  onMessageReceived({
-    contact,
-    message,
-  })
+  createContactFromPublicKey(kadMsgObj.sender)
+    .then(contact => onMessageReceived({
+      contact,
+      message,
+    }))
+    .catch(err => {
+      logger.error('Could not process kademlia message', err)
+    })
 }
 
 export const connectToKdmNode = async clientNode => {

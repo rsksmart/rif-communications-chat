@@ -52,7 +52,7 @@ export const createRNS = async (
 
 export const getDomainByPubKey = async (pubKey: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
-    fetch(`${API_ADD}/lookup?publicKey=${pubKey}`)
+    fetch(`${API_ADD}/lookup?publicKey=${encodeURIComponent(pubKey)}`)
       .then(response => {
         if (response.status === 404) {
           resolve()

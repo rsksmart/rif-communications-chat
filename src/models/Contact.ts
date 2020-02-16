@@ -1,59 +1,62 @@
-import { getDomainByPubKey } from 'api/RIFNameService';
-import Message from 'models/Message';
-import Multiaddr from 'multiaddr';
-import { PeerInfo } from 'peer-info';
-import { createPeerIdFromPublicKey, createPeerInfo } from 'rif-communications';
-import { IUserInfo } from 'types';
+import { getDomainByPubKey } from 'api/RIFNameService'
+import Message from 'models/Message'
+import Multiaddr from 'multiaddr'
+import { PeerInfo } from 'peer-info'
+import { createPeerIdFromPublicKey, createPeerInfo } from 'rif-communications'
+import { IUserInfo } from 'types'
 
 export interface IContactParams {
-  rnsName?: string;
-  publicKey: string;
-  multiaddr?: string;
-  chat?: Message[];
+  rnsName?: string
+  publicKey: string
+  multiaddr?: string
+  chat?: Message[]
 }
 
 export default class Contact implements IUserInfo {
   public static new = async (contactParams: IContactParams) => {
-    const contact = new Contact(contactParams);
-    const { publicKey, multiaddr } = contactParams;
+    const contact = new Contact(contactParams)
+    const { publicKey, multiaddr } = contactParams
 
-    const peerId = await createPeerIdFromPublicKey(publicKey);
-    contact.peerInfo = await createPeerInfo(peerId);
+    const peerId = await createPeerIdFromPublicKey(publicKey)
+    contact.peerInfo = await createPeerInfo(peerId)
     if (multiaddr) {
-      contact.peerInfo.multiaddrs.add(new Multiaddr(multiaddr));
+      contact.peerInfo.multiaddrs.add(new Multiaddr(multiaddr))
     }
 
-    return contact;
+    return contact
   };
-  public rnsName?: string;
-  public peerInfo: PeerInfo;
-  public publicKey: string;
-  public chat: Message[];
+  public rnsName?: string
+  public peerInfo: PeerInfo
+  public publicKey: string
+  public chat: Message[]
+
+  public get lastMessage() {
+    const chat = this.chat.filter(c => !c.isSync)
+    return chat[chat.length - 1]
+  }
 
   private constructor({ rnsName, publicKey, chat }: IContactParams) {
-    this.rnsName = rnsName;
-    this.chat = chat || [];
-    this.publicKey = publicKey;
+    this.rnsName = rnsName
+    this.chat = chat || []
+    this.publicKey = publicKey
   }
 }
 
 export const createContactFromPublicKey = async (
   publicKey: string,
-): Promise<Contact | null> => {
+): Promise<Contact> => {
   try {
-    const domains = await getDomainByPubKey(publicKey);
-    if (!domains) throw new Error('Domain not Found');
+    const domains = await getDomainByPubKey(publicKey)
+    if (!domains) throw new Error('Domain not Found')
 
-    const [rnsDomain] = domains;
-    const rnsName = rnsDomain.substring(0, rnsDomain.lastIndexOf('.rsk'));
+    const [rnsDomain] = domains
+    const rnsName = rnsDomain.substring(0, rnsDomain.lastIndexOf('.rsk'))
 
     return Contact.new({
       publicKey,
       rnsName,
-    });
+    })
   } catch (err) {
-    const logger = (await import('utils/Logger')).default.getInstance();
-    logger.error('Error when creating contact from public key:', err);
+    throw Error(`Error when creating contact from public key: ${err}`)
   }
-  return null;
-};
+}

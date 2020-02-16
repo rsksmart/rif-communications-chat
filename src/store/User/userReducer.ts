@@ -10,8 +10,14 @@ import {
   IContactsPayload,
   INodePayload,
   incrementSentMsgs,
+  ISyncPayload,
+  syncMessagesForContact,
+  getMissingMsgs,
 } from './userActions'
 import { initialState, IUserState } from './UserStore'
+import { sendMsg } from 'rif-communications'
+import { Message } from 'models'
+import { MESSAGE_SENDER } from 'models/Message'
 
 const persistence = LocalStorage.getInstance()
 const logger = Logger.getInstance()
@@ -41,6 +47,9 @@ const {
   ADD_USER,
   CREATE_USER,
   SET_CLIENT,
+  START_SYNC,
+  CHECK_SYNC_REQ,
+  CHECK_SYNC_DATA
 } = USER_ACTIONS
 
 const userActions: IUserActions = {
@@ -81,7 +90,7 @@ const userActions: IUserActions = {
       contacts: newContacts,
     }
   },
-  [SEND_MESSAGE]: (state, payload: IContactsPayload) => {
+  [SEND_MESSAGE]: (state, payload: IChatPayload) => {
     const { contacts, sentMsgs } = state
     const newContacts = updateContactsWithMessage(contacts, payload)
     return {
@@ -94,9 +103,76 @@ const userActions: IUserActions = {
     persistence.clear()
     return initialState
   },
+  [START_SYNC]: (state, payload: ISyncPayload) => {
+    const { isSync } = payload
+    return {
+      ...state,
+      isSync: isSync || false
+    }
+  },
+  [CHECK_SYNC_DATA]: (state, payload: IChatPayload) => {
+    const { contacts } = state
+    const { message, contact } = payload
+
+    const ownContact = contacts.find(c => c.publicKey === contact.publicKey)
+    if (message && ownContact) {
+      const { content } = message
+
+      try {
+        const data = JSON.parse(content)
+        const { sync_data } = data
+        const theirChat = sync_data.map((msg: Message) => {
+          return new Message({
+            content: msg.content,
+            sender: MESSAGE_SENDER.THEM,
+            timestamp: msg.timestamp,
+            isSync: false
+          })
+        })
+
+        ownContact.chat = syncMessagesForContact(ownContact, theirChat)
+        message.isSync = true
+      } catch (_) { /** Not a Sync Data message */ }
+    }
+    return state
+  },
+  [CHECK_SYNC_REQ]: (state, payload: IChatPayload) => {
+    const { contacts } = state
+    const { message, contact } = payload
+
+    const ownContact = contacts.find(c => c.publicKey === contact.publicKey)
+    if (message && ownContact) {
+      const { content } = message
+
+      try {
+        const msgContent = JSON.parse(content)
+        const { sync_request } = msgContent
+        const theirLastMsgTime = sync_request.timestamp
+        if (sync_request && theirLastMsgTime) {
+          message.isSync = true
+
+          const messages = ownContact.chat.filter(msg => !msg.isSync)
+          const lastMessage = messages[messages.length - 1]
+          const ownLastMsgTime = lastMessage?.timestamp
+          const missingMsgs: {
+            content: string
+            timestamp: number
+          }[] = getMissingMsgs(messages, theirLastMsgTime, ownLastMsgTime)
+
+          if (missingMsgs.length) {
+            const { clientNode, sentMsgs } = state
+            const { peerInfo } = ownContact
+            const message = JSON.stringify({ sync_data: missingMsgs })
+
+            sendMsg(clientNode, peerInfo, message, sentMsgs, false)
+          }
+        }
+      } catch (_) { /** Not a Sync request message */ }
+    }
+    return state
+  },
   [CREATE_USER_NODE]: (state, _payload) => state,
   [CONNECT_TO_NODE]: (state, _payload) => state,
   [ADD_USER]: (state, _payload) => state,
-  [CREATE_USER]: (state, _payload) => state,
+  [CREATE_USER]: (state, _payload) => state
 }
-

@@ -1,20 +1,13 @@
-import {
-  FormControl,
-  InputGroup,
-  InputGroupAppend,
-  InputGroupText,
-} from 'components/atoms/forms'
+import { FormControl, InputGroup, InputGroupAppend, InputGroupText } from 'components/atoms/forms'
 import { FormInfoBar } from 'components/molecules/FormInfoBar'
-import ModalFormTemplate, {
-  ModalFormTemplateProps,
-} from 'components/templates/ModalFormTemplate'
+import ModalFormTemplate, { ModalFormTemplateProps } from 'components/templates/ModalFormTemplate'
 import { useFormik } from 'formik'
-import { Contact, Message } from 'models'
 import React, { FC, useContext } from 'react'
 import { APP_ACTIONS } from 'store/App/appActions'
 import { checkUserExists, USER_ACTIONS } from 'store/User/userActions'
 import { createUser } from 'store/User/userController'
 import UserStore from 'store/User/UserStore'
+import { receiveMessage } from 'store/User/userUtils'
 
 export interface CreateUserModalProps {
   show: boolean
@@ -29,7 +22,9 @@ interface FormValues {
 interface FormErrors extends FormValues { }
 
 const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
-  const { dispatch } = useContext(UserStore)
+  const {
+    dispatch
+  } = useContext(UserStore)
 
   const formikProps = {
     initialErrors: {},
@@ -46,12 +41,7 @@ const CreateUserModal: FC<CreateUserModalProps> = ({ show, onHide }) => {
         try {
           const payload = await createUser(
             rnsName,
-            (payload: { contact: Contact; message: Message }) => {
-              dispatch({
-                type: USER_ACTIONS.RECEIVE_MESSAGE,
-                payload,
-              })
-            },
+            receiveMessage(dispatch)
           )
           dispatch({ type: USER_ACTIONS.SET_CLIENT, payload })
         } catch (err) {

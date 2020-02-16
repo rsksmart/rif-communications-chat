@@ -2,7 +2,7 @@ import Heading from 'components/atoms/Heading'
 import List, { ListProps } from 'components/atoms/List'
 import ListItem from 'components/atoms/ListItem'
 import SmallText from 'components/atoms/SmallText'
-import { Contact } from 'models'
+import { Contact, Message } from 'models'
 import React, { FC } from 'react'
 import { useHistory } from 'react-router'
 
@@ -17,8 +17,9 @@ const ContactList: FC<ContactListProps> = ({ contacts, ...rest }) => {
       {!!contacts &&
         contacts.map((contact: Contact) => {
           const { rnsName, publicKey, chat } = contact
-          const nChats = !!chat && chat.length
-          const lastChatContent = !!nChats && chat[nChats - 1].content
+          const realChat = chat.filter((msg: Message) => !msg.isSync)
+          const nChats = !!realChat && realChat.length
+          const lastChatContent = !!nChats && realChat[nChats - 1].content
 
           return (
             <ListItem

@@ -5,6 +5,7 @@ import { ROUTES } from 'routes'
 import UserStore from 'store/User/UserStore'
 import { recoverUser } from 'store/User/userUtils'
 import LocalStorage from 'utils/LocalStorage'
+import { USER_ACTIONS } from 'store/User/userActions'
 
 export interface LoginPageProps { }
 
@@ -40,12 +41,15 @@ const LoginPage: FC<LoginPageProps> = () => {
     const rnsName = user && user.rnsName
 
     if (!isRecovering && rnsName && keystore) {
+      dispatch({ type: USER_ACTIONS.START_SYNC, payload: { isSync: true } })
+
       const backTo = location.state && (location.state as { backTo: string }).backTo
       history.replace(backTo || ROUTES.PROFILE)
     }
-  }, [history, location, user, isRecovering])
+  }, [history, location, user, isRecovering, dispatch])
 
   return <LoginPageTemplate isRecovering={isRecovering} />
 }
 
 export default LoginPage
+
