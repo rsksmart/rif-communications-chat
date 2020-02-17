@@ -14,7 +14,7 @@ import {
   createPeerInfo,
 } from 'rif-communications'
 import LocalStorage from 'utils/LocalStorage'
-import { INodePayload } from './userActions'
+import { INodePayload, IChatPayload } from './userActions'
 import Logger from 'utils/Logger'
 
 const logger = Logger.getInstance()
@@ -71,7 +71,7 @@ const createKdmNode = async (user: User, onMessageReceived: any) => {
       user.pi,
       await publicIp.v4(),
       80,
-      processKadMsg(onMessageReceived),
+      processMessage(onMessageReceived),
     )
   } catch (e) {
     // At least start with localhost if public IP can not be obtained
@@ -79,18 +79,18 @@ const createKdmNode = async (user: User, onMessageReceived: any) => {
       user.pi,
       '127.0.0.1',
       80,
-      processKadMsg(onMessageReceived),
+      processMessage(onMessageReceived),
     )
   }
 }
 
-const processKadMsg = (onMessageReceived: any) => (kadMsgObj: any) => {
+const processMessage = (onMessageReceived: (payload: IChatPayload) => {}) => (msgObj: any) => {
   const message = new Message({
-    content: kadMsgObj.msg,
+    content: msgObj.msg,
     sender: MESSAGE_SENDER.THEM,
     timestamp: Date.now(),
   })
-  createContactFromPublicKey(kadMsgObj.sender)
+  createContactFromPublicKey(msgObj.sender)
     .then(contact => onMessageReceived({
       contact,
       message,
