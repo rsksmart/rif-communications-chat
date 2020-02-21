@@ -31,7 +31,7 @@ export const recoverUser = async (
     dispatch({ type: USER_ACTIONS.SET_CLIENT, payload })
     const newContacts = contacts
       ? await Promise.all(
-        contacts.map(async (contact: IContactParams) => await Contact.new(contact)),
+        contacts.map((contact: IContactParams) => Contact.new(contact)),
       )
       : []
     dispatch({

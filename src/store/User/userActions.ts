@@ -110,6 +110,14 @@ export const syncMessagesForContact = (contact: Contact, messages: Message[]): M
 
 export const updateContactsWithMessage = (contacts, payload: IChatPayload): Contact[] => {
   const { contact, message } = payload
+  try {
+    const { content } = message
+    JSON.parse(content)
+
+    return contacts
+  }
+  catch (_) { /* Just a regular message. */ }
+
   const { publicKey } = contact
   const existingContact = [...contacts].find(
     (c: Contact) => c.publicKey === publicKey,

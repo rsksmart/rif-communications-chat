@@ -16,7 +16,7 @@ import {
 } from './userActions'
 import { initialState, IUserState } from './UserStore'
 import { sendMsg } from 'rif-communications'
-import { Message } from 'models'
+import { Message, Contact } from 'models'
 import { MESSAGE_SENDER } from 'models/Message'
 
 const persistence = LocalStorage.getInstance()
@@ -114,7 +114,7 @@ const userActions: IUserActions = {
     const { contacts } = state
     const { message, contact } = payload
 
-    const ownContact = contacts.find(c => c.publicKey === contact.publicKey)
+    const ownContact = contacts.find((c: Contact) => c.publicKey === contact.publicKey)
     if (message && ownContact) {
       const { content } = message
 
@@ -125,13 +125,12 @@ const userActions: IUserActions = {
           return new Message({
             content: msg.content,
             sender: MESSAGE_SENDER.THEM,
-            timestamp: msg.timestamp,
-            isSync: false
+            timestamp: msg.timestamp
           })
         })
 
         ownContact.chat = syncMessagesForContact(ownContact, theirChat)
-        message.isSync = true
+        ownContact.lastSync = Date.now()
       } catch (_) { /** Not a Sync Data message */ }
     }
     return state
@@ -149,9 +148,7 @@ const userActions: IUserActions = {
         const { sync_request } = msgContent
         const theirLastMsgTime = sync_request.timestamp
         if (sync_request && theirLastMsgTime) {
-          message.isSync = true
-
-          const messages = ownContact.chat.filter(msg => !msg.isSync)
+          const messages = [...ownContact.chat]
           const lastMessage = messages[messages.length - 1]
           const ownLastMsgTime = lastMessage?.timestamp
           const missingMsgs: {

@@ -6,10 +6,11 @@ import { createPeerIdFromPublicKey, createPeerInfo } from 'rif-communications'
 import { IUserInfo } from 'types'
 
 export interface IContactParams {
-  rnsName?: string
-  publicKey: string
-  multiaddr?: string
   chat?: Message[]
+  lastSync?: number
+  multiaddr?: string
+  publicKey: string
+  rnsName?: string
 }
 
 export default class Contact implements IUserInfo {
@@ -25,20 +26,20 @@ export default class Contact implements IUserInfo {
 
     return contact
   };
-  public rnsName?: string
+  public chat: Message[]
+  public lastSync?: number
   public peerInfo: PeerInfo
   public publicKey: string
-  public chat: Message[]
+  public rnsName?: string
 
   public get lastMessage() {
-    const chat = this.chat.filter(c => !c.isSync)
-    return chat[chat.length - 1]
+    return this.chat[this.chat.length - 1]
   }
 
   private constructor({ rnsName, publicKey, chat }: IContactParams) {
-    this.rnsName = rnsName
     this.chat = chat || []
     this.publicKey = publicKey
+    this.rnsName = rnsName
   }
 }
 

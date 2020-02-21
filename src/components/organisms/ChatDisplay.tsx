@@ -8,7 +8,6 @@ export interface ChatDisplayProps {
 }
 
 const ChatDisplay: FC<ChatDisplayProps> = ({ chat }) => {
-  const cleanChat = chat.filter((message: Message) => !message.isSync)
   return (
     <div
       className="chat-display"
@@ -20,7 +19,7 @@ const ChatDisplay: FC<ChatDisplayProps> = ({ chat }) => {
         flexDirection: 'column',
       }}
     >
-      {cleanChat.map((message, i) => {
+      {chat.map((message, i) => {
         const colour =
           message.sender === MESSAGE_SENDER.ME ? 'light' : 'primary'
         const justified =
