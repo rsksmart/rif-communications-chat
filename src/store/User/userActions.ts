@@ -1,8 +1,7 @@
 import { libp2p } from 'libp2p'
-// import Contact from './Contact';
 import { fetchUserByName } from 'api/RIFNameService'
-import { Contact, User } from 'models'
-import { IAction } from 'store/storeUtils/interfaces'
+import { Contact, User, Message } from 'models'
+import { IAction, IActionPayload } from 'store/storeUtils/interfaces'
 import LocalStorage from 'utils/LocalStorage'
 import { IUserState } from './UserStore'
 
@@ -17,25 +16,34 @@ export enum USER_ACTIONS {
   SEND_MESSAGE = 'SEND_MESSAGE',
   RECEIVE_MESSAGE = 'RECEIVE_MESSAGE',
   SET_CLIENT = 'SET_CLIENT',
+  START_SYNC = "START_SYNC",
+  CHECK_SYNC_REQ = "CHECK_SYNC_REQ",
+  CHECK_SYNC_DATA = "CHECK_SYNC_DATA"
 }
 
 const persistence = LocalStorage.getInstance()
 
-export interface IChatPayload {
+export interface IChatPayload extends IActionPayload {
   readonly contact: Contact
-  readonly message?: string
+  readonly message: Message
 }
 
-export interface IContactsPayload {
+export interface ISyncPayload extends IActionPayload {
+  readonly isSync?: boolean
+  readonly sync_data?: Message[]
+  readonly contact?: Contact
+}
+
+export interface IContactsPayload extends IActionPayload {
   readonly contacts: Contact[]
 }
 
-export interface INodePayload {
+export interface INodePayload extends IActionPayload {
   user: User
   clientNode: libp2p
 }
 
-export type UserPayload = IChatPayload & IContactsPayload & INodePayload
+export type UserPayload = IChatPayload & IContactsPayload & INodePayload & ISyncPayload
 
 export interface UserAction extends IAction<UserPayload> {
   type: USER_ACTIONS
@@ -77,8 +85,39 @@ export const addContact = (
   return newContacts
 }
 
-export const updateContactsWithMessage = (contacts, payload): Contact[] => {
+export const getMissingMsgs = (messages: Message[], theirLastMsgTime: number, ownLastMsgTime?: number) => {
+  if (!ownLastMsgTime) {
+    return messages.map((message: Message) => {
+      const { timestamp, content } = message
+      return { timestamp, content }
+    })
+  }
+  return messages
+    .filter((message: Message) => message.timestamp > theirLastMsgTime)
+    .map((message: Message) => {
+      const { timestamp, content } = message
+      return { timestamp, content }
+    })
+}
+
+export const syncMessagesForContact = (contact: Contact, messages: Message[]): Message[] => {
+  const newChat = [
+    ...contact.chat,
+    ...messages
+  ]
+  return newChat.sort((a, b) => a.timestamp - b.timestamp)
+}
+
+export const updateContactsWithMessage = (contacts, payload: IChatPayload): Contact[] => {
   const { contact, message } = payload
+  try {
+    const { content } = message
+    JSON.parse(content)
+
+    return contacts
+  }
+  catch (_) { /* Just a regular message. */ }
+
   const { publicKey } = contact
   const existingContact = [...contacts].find(
     (c: Contact) => c.publicKey === publicKey,

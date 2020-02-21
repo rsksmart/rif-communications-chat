@@ -7,11 +7,12 @@ import { UserAction } from './userActions'
 import userReducer from './userReducer'
 
 export interface IUserState {
-  user: User | undefined
+  user?: User
   clientNode?: libp2p
   contacts: Contact[]
   isConnected?: boolean
   sentMsgs: number
+  isSync: boolean
 }
 
 interface IUserStoreProps {
@@ -23,6 +24,7 @@ export const initialState: IUserState = {
   user: undefined,
   contacts: [],
   sentMsgs: 0,
+  isSync: true
 }
 
 const UserStore = React.createContext({} as IUserStoreProps | any)

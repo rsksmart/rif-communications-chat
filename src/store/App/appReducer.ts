@@ -7,9 +7,9 @@ const logger = Logger.getInstance()
 
 const appReducer = (state = initialState, action: AppAction) => {
   const { type, payload } = action
-  const userAction = appActions[type]
-  if (!!userAction) logger.debug('appReducer -> action', action)
-  const newState = (!!userAction && userAction(state, payload)) || state
+  const appAction = appActions[type]
+  if (!!appAction) logger.debug('appReducer -> action', action)
+  const newState = (!!appAction && appAction(state, payload)) || state
 
   return newState
 }
