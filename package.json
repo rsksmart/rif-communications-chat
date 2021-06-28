@@ -32,7 +32,7 @@
     "formik": "^2.1.4",
     "js-libp2p-crypto": "0.2.0",
     "moment": "^2.24.0",
-    "multiaddr": "6.1.1",
+    "multiaddr": "9.0.2",
     "multihashes": "0.4.15",
     "public-ip": "^4.0.0",
     "react": "^16.10.2",
